@@ -1,0 +1,91 @@
+<!--<!DOCTYPE HTML>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Getting Started: Serving Web Content</title>-->
+<!--    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />-->
+<!--</head>-->
+<!--<body>-->
+<!--<p>Get your cool <a href="/hi">here</a></p>-->
+<!--<h1>cool!!</h1>-->
+<!--<button type="button" id="button">Click Me!</button>-->
+<!--<h1 id="jRes"></h1>-->
+<!--<p id="mypanel"></p>-->
+
+
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript">
+        var HttpClient = function() {
+            this.get = function(aUrl, aCallback) {
+                var anHttpRequest = new XMLHttpRequest();
+                anHttpRequest.onreadystatechange = function() {
+                    if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+                        aCallback(anHttpRequest.responseText);
+                }
+                anHttpRequest.open( "GET", aUrl, true );
+                anHttpRequest.send( null );
+            }
+        }
+        function func(){
+            var theurl='http://localhost:8080/Users/'+document.getElementById("nameArea").value;
+            alert(theurl);
+            var client = new HttpClient();
+            client.get(theurl, function(response) {
+                var response1 = JSON.parse(response);
+                //   alert(response);
+                document.getElementById("name").innerHTML = response1.name;
+                document.getElementById("mail").innerHTML = response1.mail;
+
+            });
+        }
+
+        function postExp() {
+            xhr = new XMLHttpRequest();
+            var url = "http://localhost:8080/process";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    console.log(json.email + ", " + json.name)
+                }
+            }
+            //    alert(document.getElementById("userName").value);
+
+            var data = JSON.stringify({
+                "ReqID": "123456",
+                "User":{
+                    "name": document.getElementById("userName").value,
+                    "mail": document.getElementById("userMail").value
+                }
+            });
+            //  alert(data);
+            xhr.send(data);
+        }
+    </script>
+</head>
+<body>
+<p>Get your cool <a href="/hi">here</a></p>
+<h1>cool!!</h1>
+<h1 id="jRes"></h1>
+<p id="mypanel"></p>
+<textarea id="nameArea" title="person name:"></textarea>
+<button onclick="func()" >Search User!</button>
+<table border="1">
+    <tr><td>name :</td><td id="name"></td></tr>
+    <tr><td>mail :</td><td id="mail"></td></tr>
+</table>
+<h1>add user:</h1>
+<textarea id="userName" title="person name"></textarea>
+<textarea id="userMail" title="person mail"></textarea>
+<button onclick="postExp()" >add User</button>
+
+
+</body>
+</html>
