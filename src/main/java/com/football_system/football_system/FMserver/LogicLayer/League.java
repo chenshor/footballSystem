@@ -1,5 +1,6 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.football_system.football_system.FMserver.DataLayer.*;
 
 import java.io.IOException;
@@ -15,10 +16,10 @@ public class League implements Serializable {
     }
 
     private LeagueType type;
-    private List<Referee> refereeList;
-    private List<Season> seasonList;
-    private Map<Season,Policy> policyList;
-    private Map<Season,RankPolicy> rankPolicyList;
+    @JsonIgnore private List<Referee> refereeList;
+    @JsonIgnore private List<Season> seasonList;
+    @JsonIgnore private Map<Season,Policy> policyList;
+    @JsonIgnore private Map<Season,RankPolicy> rankPolicyList;
     private String name;
 
     public League( LeagueType type, List<Referee> refereeList, List<Season> seasonList, Map<Season, Policy> policyList) {
@@ -164,7 +165,7 @@ public class League implements Serializable {
         return type;
     }
 
-    public String getTypeString(){
+    @JsonIgnore public String getTypeString(){
         return type.name();
     }
 
