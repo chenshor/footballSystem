@@ -3,8 +3,8 @@ var email;
 var password;
 
 class SecurityObj{
-    constructor(UserID , reqID , functionName ,object = []) {
-        this.UserID = UserID;
+    constructor(userID , reqID , functionName ,object = []) {
+        this.userID = userID;
         this.reqID = reqID;
         this.functionName = functionName ;
         this.object = object ;
@@ -26,7 +26,12 @@ class Team{
         this.status = status;
     }
 }
-
+class League {
+    constructor(type,name) {
+        this.type = type;
+        this.name=name ;
+    }
+}
 var Users = [] ;
 var Teams = [] ;
 
@@ -55,26 +60,57 @@ $( document ).ready(function() {
         $.get("/Teams", function(data, status){
 
             for(let i=0  ; i < data.length ; i++){
-                Teams[i] = data[i];
+                let league = new League(data[i].league.type ,data[i].league.type) ;
+                Teams[i] = new Team(data[i].name , data[i].stadium ,league , data[i].status);
             }
             for(let i = 0; i<Teams.length ; i++){
-                console.log(Teams[i]);
+                console.log(Teams[i].name+","+Teams[i].stadium+","+Teams[i].league.type+","+Teams[i].league.name+","+Teams[i].status);
             }
-            window.alert("Data: " + Teams + "\nStatus: " + status);
+          //  window.alert("Data: " + Teams + "\nStatus: " + status);
         });
 
+    });
+
+    let myTeamSearch;
+    $("#getTeam").click(function(){
+        let Url  = "/Teams/"+document.getElementById("Tname").value;
+        $.get(Url, function(data, status){
+
+                let league = new League(data.league.type ,data.league.type) ;
+                myTeamSearch = new Team(data.name , data.stadium ,league , data.status);
+
+                console.log(myTeamSearch.name+","+myTeamSearch.stadium+","+myTeamSearch.league.type+","+myTeamSearch.league.name+","+myTeamSearch.status);
+            //  window.alert("Data: " + Teams + "\nStatus: " + status);
+        });
+
+    });
+
+    $("#addTeam").click(function(){
+        let newTeam = [];
+        newTeam[0] = new Object()
+        let league= new League(  document.getElementById("LeagueType").value, document.getElementById("leagueName").value );
+        newTeam[0].Team = new Team(document.getElementById("TeamName").value,
+            document.getElementById("TeamStadium").value,
+            league,
+            document.getElementById("TeamStatus").value);
+
+        let SecureObj  = new SecurityObj(email,"1000","Login", newTeam) ;
+    //    window.alert(JSON.stringify(SecureObj));
+        postSend("/Representative/addTeam" , SecureObj);
     });
 
     $("#loginButton").click(function(){
         let signIn = [] ;
         signIn[0] = new Object() ;
-        signIn[0].email = document.getElementById("email").value;
+        email = document.getElementById("email").value;
+        signIn[0].email = email;
         signIn[0].password = document.getElementById("name").value;
-        var SecureObj  = new SecurityObj("1","12234556","Login", signIn) ;
+        let SecureObj  = new SecurityObj(email,"1000","Login", signIn) ;
         postSend("/Login" , SecureObj);
     });
 
     function postSend(url , request) {
+        window.alert(JSON.stringify(request));
         $.ajax({
             type: "POST",
             url: url,

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class SecurityObject {
 
-    private String UserID;
+    private String userID;
     private String reqID;
     private String functionName ;
     private List<Object> object;
@@ -17,6 +17,7 @@ public class SecurityObject {
     private static Map<String , User> systemUsers = new HashMap<>();
 
     public static boolean  Verification(String UserID , String reqID){
+        if(UserID == null || reqID == null) return false;
         return SecurityAccessControl.get(UserID).equals(reqID) ;
     }
     public static User Authorization(String UserID , String reqID){
@@ -43,18 +44,18 @@ public class SecurityObject {
         return secKey ;
     }
     public SecurityObject(String userID, String reqID, String functionName, List<Object> object) {
-        UserID = userID;
+        this.userID = userID;
         this.reqID = reqID;
         this.functionName = functionName;
         this.object = object;
     }
 
     public String getUserID() {
-        return UserID;
+        return userID;
     }
 
-    public void setUserID(String userID) {
-        UserID = userID;
+    public void setUserID(String UserID) {
+        this.userID = UserID;
     }
 
     public String getReqID() {
@@ -80,4 +81,6 @@ public class SecurityObject {
     public void setObject(List<Object> object) {
         this.object = object;
     }
+
+
 }
