@@ -1,4 +1,5 @@
 package com.football_system.football_system.FMserver.LogicLayer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.football_system.football_system.FMserver.DataLayer.*;
 
 import java.io.IOException;
