@@ -11,14 +11,14 @@ public class FootballSystemApplication {
 
 	public static IController system;
 	private static User user ;
-	public static Representitive representative ;
+	public static Representative representative ;
 
 
 	public static void main(String[] args) {
 		DataComp.setDataManager(new DataManager());
 		Administrator administrator = new Administrator("A", "B", "C");
 		user = new User("rep@gmail.com", "123456as", "Lior");
-		representative = new Representitive(user, "lama name"); // rep user
+		representative = new Representative(user, "lama name"); // rep user
 		user.addRole(representative);
 		system = new Controller(representative, administrator);
 // ------ add user

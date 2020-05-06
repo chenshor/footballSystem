@@ -484,4 +484,8 @@ public class GuestService implements IGuestService{
         }
         filtered.forEach(obj -> System.out.println(obj.toString()));
     }
+
+    public List<Team> getTeams(){
+        return guest.retrieveTeams();
+    }
 }

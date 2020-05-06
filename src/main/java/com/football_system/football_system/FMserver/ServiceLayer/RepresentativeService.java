@@ -128,4 +128,14 @@ public class RepresentativeService extends AUserService {
         }
         return league.gamescheduling(numberOfGamesPerTeam , season , allPossiableTimes);
     }
+
+    /**
+     * id: RepresentativeService@11
+     * create new Team
+     * @param name - team name
+     * @param stadium - stadium name
+     */
+    public void createTeam(String name, String stadium){
+        control.getRepresentative().createTeam(name, stadium, null);
+    }
 }
