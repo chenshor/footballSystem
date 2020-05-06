@@ -14,7 +14,7 @@ public class Controller implements IController{
     private Map<Guest,IGuestService> GuestServices;
     private List<User> currentUserList;
     private Map<User,List<IUserService>> UserServices;
-    private Representitive representitive;
+    private Representative representative;
     private Administrator administrator;
     public static Controller controllerSingleTone ;
     private static String configurationPath = "configurations.json";
@@ -38,21 +38,21 @@ public class Controller implements IController{
 
     /**
      * initialise system with arguments
-     * @param representitive
+     * @param representative
      * @param administrator
      */
     // first init
-    public Controller(Representitive representitive, Administrator administrator) {
-        this.representitive = representitive;
+    public Controller(Representative representative, Administrator administrator) {
+        this.representative = representative;
         this.administrator = administrator;
         currentGuestsList = new ArrayList<Guest>();
         GuestServices = new HashMap<Guest, IGuestService>();
         currentUserList = new ArrayList<User>();
         UserServices = new HashMap<User, List<IUserService>>();
-        addUser(representitive.getUser());
+        addUser(representative.getUser());
         addUser(administrator);
-        this.representitive.getUser().addRole(representitive);
-        addServicesToUser(representitive.getUser());
+        this.representative.getUser().addRole(representative);
+        addServicesToUser(representative.getUser());
 //        saveData();
     }
 
@@ -69,11 +69,11 @@ public class Controller implements IController{
             String rep = (String) controllerJSON.get("rep");
             Gson objects = new Gson();
             this.administrator = objects.fromJson(admin, Administrator.class);
-            this.representitive = objects.fromJson(rep, Representitive.class);
-            addUser(representitive.getUser());
+            this.representative = objects.fromJson(rep, Representative.class);
+            addUser(representative.getUser());
             addUser(administrator);
-            representitive.getUser().addRole(representitive);
-            addServicesToUser(representitive.getUser());
+            representative.getUser().addRole(representative);
+            addServicesToUser(representative.getUser());
         }catch (Exception E){
             E.printStackTrace();
         }
@@ -94,7 +94,7 @@ public class Controller implements IController{
     private void saveData() {
         Gson objects = new Gson();
         String adminJSON = objects.toJson(administrator);
-        String repJSON = objects.toJson(representitive);
+        String repJSON = objects.toJson(representative);
         JSONObject jsonWriter = new JSONObject();
         jsonWriter.put("admin", adminJSON);
         jsonWriter.put("rep", repJSON);
@@ -204,8 +204,8 @@ public class Controller implements IController{
      * representative getter
      * @return Representitive
      */
-    public Representitive getRepresentitive() {
-        return representitive;
+    public Representative getRepresentative() {
+        return representative;
     }
 
     /**
@@ -281,8 +281,8 @@ public class Controller implements IController{
                 createRefereeServiceForUser(user,(Referee)r);
             }else if(r instanceof Owner){
                 createOwnerServiceForUser(user,(Owner)r);
-            }else if(r instanceof Representitive){
-                createRepresentitiveServiceForUser(user,(Representitive)r);
+            }else if(r instanceof Representative){
+                createRepresentitiveServiceForUser(user,(Representative)r);
             }else if(r instanceof Manager){
                 createManagerServiceForUser(user,(Manager)r);
             }else{
@@ -308,7 +308,7 @@ public class Controller implements IController{
     }
 
 
-    private void createRepresentitiveServiceForUser(User user, Representitive r) {
+    private void createRepresentitiveServiceForUser(User user, Representative r) {
         if (user != null && r != null){
             RepresentativeService representativeService = new RepresentativeService(this);
             UserServices.get(user).add(representativeService);

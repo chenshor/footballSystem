@@ -7,6 +7,9 @@ import com.football_system.football_system.logicTest.SecurityObject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @SpringBootApplication
 public class FootballSystemApplication {
 
@@ -27,10 +30,23 @@ public class FootballSystemApplication {
 		Guest guest = new Guest();
 		FootballSystemApplication.system.addGuest(guest);
 		GuestService guestService = (GuestService) system.getGuestServices().get(guest);
-		User chen =  guestService.register("da","s","chen@walla.com", "1234567q") ;
-		SecurityObject.addUserToSystem(chen) ;
+		User reg =  guestService.register("da","s","chen@walla.com", "1234567q") ;
+		SecurityObject.addUserToSystem(reg) ;
+		setTeamsDB();
+     	SpringApplication.run(FootballSystemApplication.class, args);
+	}
 
-		SpringApplication.run(FootballSystemApplication.class, args);
+	private static void setTeamsDB() {
+		Team barcelona = new Team("FC Barcelona", "Camp Nou", null);
+		Team realMadrid = new Team("Real Madrid CF", "Bernabeu", null);
+		League championsLeague = new League(League.LeagueType.MAJOR_LEAGUE);
+		championsLeague.setName("Champions League");
+		barcelona.setLeague(championsLeague);
+		realMadrid.setLeague(championsLeague);
+		DataComp.getInstance().addTeam(barcelona);
+		DataComp.getInstance().addTeam(realMadrid);
+		barcelona.setStatus(Team.TeamStatus.activityOpened);
+		realMadrid.setStatus(Team.TeamStatus.activityOpened);
 	}
 
 }

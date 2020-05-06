@@ -13,20 +13,19 @@ public class Team implements Serializable {
     public enum TeamStatus {
         activityClosed, activityOpened
     }
-
     private String name;
     private String stadium;
-    private Page page;
-    private List<Player> playerList;
-    private List<Manager> managerList;
-    private List<Owner> ownerList;
-    private List<Game> away;
-    private List<Game> home;
+    @JsonIgnore private Page page;
+    @JsonIgnore private List<Player> playerList;
+    @JsonIgnore private List<Manager> managerList;
+    @JsonIgnore private List<Owner> ownerList;
+    @JsonIgnore private List<Game> away;
+    @JsonIgnore private List<Game> home;
     private League league;
-    private List<Coach> coachList;
-    private List<RoleHolder> roleHolders;
+    @JsonIgnore private List<Coach> coachList;
+    @JsonIgnore private List<RoleHolder> roleHolders;
     private TeamStatus status;
-    private boolean finalClose; // true if the admin closed (cant be changed after true)
+    @JsonIgnore private boolean finalClose; // true if the admin closed (cant be changed after true)
 
     private static IDataManager data(){
         return DataComp.getInstance();

@@ -30,7 +30,7 @@ public interface IController {
 
     void setUserServices(Map<User, List<IUserService>> userServices);
 
-    Representitive getRepresentitive();
+    Representative getRepresentative();
 
     Administrator getAdministrator();
 
