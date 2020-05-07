@@ -43,6 +43,8 @@ public class SecurityObject {
         SecurityAccessControl.put(user.getEmail() , secKey) ;
         return secKey ;
     }
+    public SecurityObject(){} ;
+
     public SecurityObject(String userID, String reqID, String functionName, List<Object> object) {
         this.userID = userID;
         this.reqID = reqID;

@@ -18,8 +18,8 @@ public class RepresentativeService extends AUserService {
      * @return boolean of success/unsuccessful operation
      * @throws Exception if league type illigel
      */
-    public boolean addLeague(League.LeagueType leagueType) throws IOException{
-        return League.addLeague(leagueType);
+    public boolean addLeague(League.LeagueType leagueType ,String name) throws IOException{
+        return League.addLeague(leagueType , name);
     }
 
     /**

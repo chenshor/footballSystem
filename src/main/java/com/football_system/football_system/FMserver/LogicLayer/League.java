@@ -40,7 +40,14 @@ public class League implements Serializable {
     }
 
 
-
+    public static League getLeagueByType(String Type){
+        LeagueType leagueType = League.LeagueType.valueOf(Type);
+        League leagueRes = null;
+        if(leagueType != null){
+            leagueRes = League.ShowAllLeagues().stream().filter(league -> league.getType().equals(leagueType)).findFirst().get();
+        }
+        return leagueRes;
+    }
     public String getName() {
         return name;
     }
@@ -65,7 +72,11 @@ public class League implements Serializable {
         this.type = leagueType;
         data().addLeague(this);
     }
-
+    public League(LeagueType leagueType ,String name){
+        this.type = leagueType;
+        this.name = name ;
+        data().addLeague(this);
+    }
     /**
      * id: League@1
      * check if League already exist
@@ -92,7 +103,7 @@ public class League implements Serializable {
      * @return if success/unsuccessful operation
      * @throws Exception if league type illegal
      */
-    public static boolean addLeague(League.LeagueType leagueType) throws IOException{
+    public static boolean addLeague(League.LeagueType leagueType ,String name) throws IOException{
         if(leagueType==null){
             throw new IOException("illegal league type");
         }
@@ -100,7 +111,7 @@ public class League implements Serializable {
         if(league != null){
             return false ;
         }
-        data().addLeague(new League(leagueType));
+        data().addLeague(new League(leagueType , name));
         return true;
     }
 

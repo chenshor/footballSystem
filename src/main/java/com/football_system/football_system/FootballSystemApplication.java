@@ -26,6 +26,24 @@ public class FootballSystemApplication {
 		user.addRole(representative);
 		system = new Controller(representative, administrator);
 		SecurityObject.addUserToSystem(user) ;
+
+
+
+		//---- add Seasons by respresentative
+		RepresentativeService representativeService = null;
+		for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
+			if (iUserService instanceof RepresentativeService) {
+				representativeService = (RepresentativeService) iUserService;
+			}
+		}
+		try {
+			representativeService.addLeague(League.LeagueType.MAJOR_LEAGUE, "championsLeague");
+			representativeService.addLeague(League.LeagueType.LEAGUE_A, "cool League");
+
+			representativeService.addSeason("2020-01-03", "2021-01-05", League.getLeagueByType("MAJOR_LEAGUE"));
+			representativeService.addSeason("2021-05-06", "2022-03-20", League.getLeagueByType("MAJOR_LEAGUE"));
+			representativeService.addSeason("2021-05-06", "2022-03-20", League.getLeagueByType("LEAGUE_A"));
+		}catch (Exception e){}
 // ------ add user
 		Guest guest = new Guest();
 		FootballSystemApplication.system.addGuest(guest);
@@ -39,7 +57,7 @@ public class FootballSystemApplication {
 	private static void setTeamsDB() {
 		Team barcelona = new Team("FC Barcelona", "Camp Nou", null);
 		Team realMadrid = new Team("Real Madrid CF", "Bernabeu", null);
-		League championsLeague = new League(League.LeagueType.MAJOR_LEAGUE);
+		League championsLeague = League.getLeagueByType("MAJOR_LEAGUE") ;
 		championsLeague.setName("Champions League");
 		barcelona.setLeague(championsLeague);
 		realMadrid.setLeague(championsLeague);

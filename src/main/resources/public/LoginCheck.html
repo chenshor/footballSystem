@@ -32,12 +32,43 @@
     <label >Team Stadium"</label>
     <input type="text" id="TeamStadium"><br><br>
     <label >league type</label>
-    <input type="text" id="LeagueType"><br><br>
+<!--    <input type="text" id="LeagueType"><br><br>-->
+    <select id="LeagueType" size="1">
+        MAJOR_LEAGUE, SECOND_LEAGUE, LEAGUE_A,LEAGUE_B, LEAGUE_C
+        <option>MAJOR_LEAGUE</option>
+        <option>SECOND_LEAGUE</option>
+        <option>LEAGUE_A</option>
+        <option>LEAGUE_B</option>
+        <option>LEAGUE_C</option>
+    </select>
+    <br>
     <label >league name</label>
     <input type="text" id="leagueName"><br><br>
     <label >status</label>
-    <input type="text" id="TeamStatus"><br><br>
+<!--   <input type="text" id="TeamStatus"><br><br>-->
+    <select id="TeamStatus" size="1">
+        <option>activityOpened</option>
+        <option>activityClosed</option>
+    </select>
+    <br>
     <button id="addTeam" >add team</button> // get request teams
 </p>
+<br>
+<br>
+<br>
+
+<form>
+    <label >Select League</label>
+    <select id="SelectLeague" size="1" >
+    </select>
+<br>
+    <label >Select Season</label>
+    <select id="SelectSeason" size="1" >
+    </select>
+</form>
+<label >number of games per team"</label>
+<input type="text" id="numberOfGamePerTeam"><br><br>
+<button id="gameSchedulingContinue" >Continue to Game Scheduling settings</button>
+
 </body>
 </html>

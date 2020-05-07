@@ -51,6 +51,22 @@ public class Season implements Serializable {
         leagueList = new LinkedList<League>();
         this.leagueList.add(league);
     }
+
+    public static Season getSeason(String start , String end){
+        Season seasonRes = null;
+        if(start != null && end != null){
+            seasonRes = Season.ShowAllSeasons().stream().filter(season -> season.getStart().equals(start)&&season.getEnd().equals(end)).findFirst().get();
+        }
+        return seasonRes;
+    }
+
+    public boolean seasonContainsLeague(String Type){
+      for (League league :getLeagueList()){
+          if(league.getType()==League.LeagueType.valueOf(Type)) return true;
+      }
+      return false;
+    }
+
     /**
      * id: Season@1
      * @param start date of the season

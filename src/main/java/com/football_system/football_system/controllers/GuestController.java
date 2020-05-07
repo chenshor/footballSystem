@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class GuestController {
@@ -36,17 +39,39 @@ public class GuestController {
         return guestService.getLeagues();
     }
 
-    @RequestMapping("/Leagues/{name}")
-    public League getLeagues(@PathVariable String name) {
-        return guestService.getLeagues().stream().filter(league -> league.getName().equals(name))
+    @RequestMapping("/Leagues/{type}")
+    public League getLeagues(@PathVariable String type) {
+        return guestService.getLeagues().stream().filter(league -> league.getType().equals(type))
                 .findFirst().get();
     }
 
-    @RequestMapping("/Season")
+    @RequestMapping("/Seasons")
     public List<Season> getSeason() {
         return guestService.getSesons();
     }
 
+
+    @RequestMapping("/Seasons/ByLeague/{leagueType}")
+    public List<Season> getSeason(@PathVariable String leagueType) {
+        List<Season> seasons = new LinkedList<>();
+        for (Season season:guestService.getSesons()) {
+            if(season.seasonContainsLeague(leagueType)){
+                seasons.add(season);
+            }
+        }
+        return seasons;
+    }
+
+
+    @RequestMapping("/Seasons/League/{leagueType}/numberGamesPerTeam/{numberOfGamesPerTeam}")
+    public Map<String,Integer> getNumberOfTeams(/*@PathVariable String season ,*/@PathVariable("leagueType") String leagueType  , @PathVariable("numberOfGamesPerTeam") String numberOfGamesPerTeam) {
+        HashMap <String,Integer> hashMap = new HashMap<>();
+        int numberOfTeams = Team.getAllTeamsInLeague(guestService.getLeagues().stream().filter(league -> league.getType()==League.LeagueType.valueOf(leagueType))
+                .findFirst().get()).size();
+        hashMap.put("number_of_Teams",numberOfTeams);
+        hashMap.put("number_of_dates_needed",League.numberOfNeededDates(Integer.parseInt(numberOfGamesPerTeam),numberOfTeams ));
+        return hashMap;
+    }
 //    @RequestMapping("/Season/{name}")
 //    public Season getSeason(@PathVariable String name) {
 //        return guestService.getSesons().stream().filter(season -> season.getName().equals(name))

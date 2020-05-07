@@ -10,6 +10,7 @@ import com.football_system.football_system.FootballSystemApplication;
 import com.football_system.football_system.logicTest.SecurityObject;
 import com.football_system.football_system.logicTest.UserTest;
 import jdk.nashorn.internal.runtime.UserAccessorProperty;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +46,7 @@ public class RepresentativeController {
                 representativeService = (RepresentativeService) iUserService;
             }
         }
-        if (representativeService == null) {
+        if (representativeService != null) {
             LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) securityObject.getObject().get(0);
             LinkedHashMap<String, Object> TeamDetails = (LinkedHashMap<String, Object>) objects.get("Team");
             Team newTeam = new Team(TeamDetails.get("name").toString(), TeamDetails.get("stadium").toString(), null);
@@ -73,14 +74,28 @@ public class RepresentativeController {
     }
 
     @RequestMapping(
-            value = "/add",
+            value = "/scheduleGame",
             method = RequestMethod.POST)
-    public boolean scheduleGame(@RequestBody SecurityObject securityObject)
+    public SecurityObject scheduleGame(@RequestBody SecurityObject securityObject)
             throws Exception {
-//scheduleGame(League league , int numberOfGamesPerTeam , Season season , List<String[]> allPossiableTimes)
-        if(SecurityObject.Authorization(securityObject)==null) return false ;
 
+        SecurityObject securityObject1 = new SecurityObject();
+        User user = SecurityObject.Authorization(securityObject);
+        if (user == null) return securityObject;
+        RepresentativeService representativeService = null;
+        for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
+            if (iUserService instanceof RepresentativeService) {
+                representativeService = (RepresentativeService) iUserService;
+            }
+        }
+        if (representativeService != null) {
+            League league = League.getLeagueByType("");
+            Season season = Season.getSeason("","");
+            int GamesPerTeam = 1;
+            List<String[]> possiableTimes = null;
+            int secdule = representativeService.scheduleGame(league, GamesPerTeam , season ,possiableTimes);
 
-        return true;
+        }
+        return securityObject;
     }
 }
