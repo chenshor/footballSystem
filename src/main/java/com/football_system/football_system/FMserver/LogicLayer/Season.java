@@ -55,7 +55,9 @@ public class Season implements Serializable {
     public static Season getSeason(String start , String end){
         Season seasonRes = null;
         if(start != null && end != null){
-            seasonRes = Season.ShowAllSeasons().stream().filter(season -> season.getStart().equals(start)&&season.getEnd().equals(end)).findFirst().get();
+            for(Season season : Season.ShowAllSeasons()){
+                if(season.getStart().equals(start)&&season.getEnd().equals(end)) return season;
+            }
         }
         return seasonRes;
     }

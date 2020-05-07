@@ -6,6 +6,7 @@ import com.football_system.football_system.FMserver.DataLayer.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -136,11 +137,12 @@ public class League implements Serializable {
      * @param numberOfGamesPerTeam
      * @return number of schduled Games
      */
-    public int gamescheduling(int numberOfGamesPerTeam , Season season , List<String[]> allPossiableTimes){
-        if (numberOfGamesPerTeam == 0 || season == null) return 0;
+    public List<Game> gamescheduling(int numberOfGamesPerTeam , Season season , List<String[]> allPossiableTimes){
+        if (numberOfGamesPerTeam == 0 || season == null) return null;
+        List<Game> gamesList = new LinkedList<>();
         List<Team> teams = Team.getAllTeamsInLeague(this);
         Team[] teamsArray = new Team[teams.size()];
-        if(allPossiableTimes.size()<numberOfNeededDates(numberOfGamesPerTeam , teams.size())) return 0;
+        if(allPossiableTimes.size()<numberOfNeededDates(numberOfGamesPerTeam , teams.size())) return null;
             teams.toArray(teamsArray);
         List<Referee> referees = Referee.legalRefereesForLeague(this, season);
         Referee[] refereesArray = new Referee[referees.size()];
@@ -159,8 +161,10 @@ public class League implements Serializable {
                         a = j;
                         b = i;
                     }
-                    Game game = new Game(season, teamsArray[a], teamsArray[b], null, refereesArray[refereeSchecule%(refereesArray.length-1)], null,
+                    Game game = new Game(season, teamsArray[a], teamsArray[b], null, refereesArray[refereeSchecule%(refereesArray.length)], null,
                             allPossiableTimes.get(nextTime)[0], allPossiableTimes.get(nextTime)[1], allPossiableTimes.get(nextTime)[2]);
+                    gamesList.add(game);
+                    data().addGame(game);
                     nextTime++;
                     refereeSchecule++;
                     teamsArray[a].addHomeGame(game);
@@ -170,7 +174,7 @@ public class League implements Serializable {
                 }
             }
         }
-        return games_counter;
+        return gamesList;
     }
     public LeagueType getType() {
         return type;

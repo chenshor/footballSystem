@@ -45,13 +45,29 @@ public class FootballSystemApplication {
 			representativeService.addSeason("2021-05-06", "2022-03-20", League.getLeagueByType("LEAGUE_A"));
 		}catch (Exception e){}
 // ------ add user
-		Guest guest = new Guest();
-		FootballSystemApplication.system.addGuest(guest);
-		GuestService guestService = (GuestService) system.getGuestServices().get(guest);
-		User reg =  guestService.register("da","s","chen@walla.com", "1234567q") ;
-		SecurityObject.addUserToSystem(reg) ;
-		setTeamsDB();
-     	SpringApplication.run(FootballSystemApplication.class, args);
+		try {
+			Guest guest = new Guest();
+			FootballSystemApplication.system.addGuest(guest);
+			GuestService guestService = (GuestService) system.getGuestServices().get(guest);
+			User reg = guestService.register("da", "s", "chen@walla.com", "1234567q");
+			SecurityObject.addUserToSystem(reg);
+			setTeamsDB();
+			SpringApplication.run(FootballSystemApplication.class, args);
+
+			//add refereeUser
+			Guest guest2 = new Guest();
+			FootballSystemApplication.system.addGuest(guest2);
+			GuestService guestService2 = (GuestService) system.getGuestServices().get(guest2);
+			User referee = guestService2.register("refer", "s", "referee@walla.com", "1234567q");
+			SecurityObject.addUserToSystem(referee);
+
+			representativeService.addNewRefereeFromUsers(referee, "very nice referee", "alon");
+			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2020-01-03","2021-01-05")) ;
+
+			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2021-05-06","2022-03-20")) ;
+
+		}catch (Exception e){}
+
 	}
 
 	private static void setTeamsDB() {

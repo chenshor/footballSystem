@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/Representative")
@@ -76,12 +75,14 @@ public class RepresentativeController {
     @RequestMapping(
             value = "/scheduleGame",
             method = RequestMethod.POST)
-    public SecurityObject scheduleGame(@RequestBody SecurityObject securityObject)
+    public String scheduleGame(@RequestBody SecurityObject securityObject)
             throws Exception {
 
-        SecurityObject securityObject1 = new SecurityObject();
+        //SecurityObject securityObject1 = new SecurityObject();
+        List<Game> games = null ;
+
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return securityObject;
+        if (user == null) return null;
         RepresentativeService representativeService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof RepresentativeService) {
@@ -89,13 +90,29 @@ public class RepresentativeController {
             }
         }
         if (representativeService != null) {
-            League league = League.getLeagueByType("");
-            Season season = Season.getSeason("","");
-            int GamesPerTeam = 1;
-            List<String[]> possiableTimes = null;
-            int secdule = representativeService.scheduleGame(league, GamesPerTeam , season ,possiableTimes);
+            LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) securityObject.getObject().get(0);
+            String leagueType = objects.get("league").toString();
+            String SeasonStartDate = objects.get("start").toString();
+            String SeasonEndDate = objects.get("end").toString();
+            int GamesPerTeam = Integer.parseInt(objects.get("numberOfGamesPerTeam").toString()) ;
+            ArrayList<Object> dates = (ArrayList<Object>) objects.get("date") ;
+          //  ArrayList<Object> dates =(  ArrayList<Object>)(((HashMap<String,Object>) ((ArrayList<Object>) objects.get("date")).get(0)).get("date"));
 
+            List<String[]> possiableTimes = new LinkedList<>();
+            for(Object date : dates){
+                LinkedHashMap<String,String> tempDate = (LinkedHashMap<String,String> )(date) ;
+                String [] gameDate = {tempDate.get("date"),tempDate.get("start") ,tempDate.get("end")} ;
+                possiableTimes.add(gameDate) ;
+            }
+            League league = League.getLeagueByType(leagueType);
+            Season season = Season.getSeason(SeasonStartDate,SeasonEndDate);
+
+
+            games = representativeService.scheduleGame(league, GamesPerTeam , season ,possiableTimes);
+           // securityObject.setObject(games);
         }
-        return securityObject;
+        //return games;
+        return "hi there!" ;
+    //    return securityObject;
     }
 }

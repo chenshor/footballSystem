@@ -32,11 +32,28 @@ class League {
         this.name=name ;
     }
 }
+
+class Season {
+    constructor(start,end) {
+        this.start = start;
+        this.end=end ;
+    }
+}
+
+class Game {
+    constructor(home,away,date,start,end) {
+        this.home = home;
+        this.away=away ;
+        this.date = date;
+        this.start = start;
+        this.end=end ;
+    }
+}
 var Users = [] ;
 var Teams = [] ;
 var Leagues = [];
 var Seasons = [];
-var numberOfDatesToSupply;
+var Games = [];
 
 
 $( document ).ready(function() {
@@ -81,10 +98,12 @@ $( document ).ready(function() {
 
     var numberOfNeededDates=0;
     var numberOfTeamsInLeague=0;
+    var numberOfGamePerTeam=0;
+    var leagueType;
     $("#gameSchedulingContinue").click(function(){
-        let leagueType = document.getElementById("SelectLeague").value;
+        leagueType = document.getElementById("SelectLeague").value;
         leagueType = leagueType.substring(leagueType.indexOf("type:")+5);
-        let numberOfGamePerTeam = document.getElementById("numberOfGamePerTeam").value;
+        numberOfGamePerTeam = document.getElementById("numberOfGamePerTeam").value;
         let url = "/Seasons/League/"+leagueType+"/numberGamesPerTeam/"+numberOfGamePerTeam ;
         window.alert(url);
         $.get(url, function(data, status){
@@ -92,6 +111,54 @@ $( document ).ready(function() {
             numberOfTeamsInLeague = data.number_of_Teams ;
 
             window.alert("teams:"+numberOfTeamsInLeague+" , number of dates:"+numberOfNeededDates);
+        });
+
+    });
+
+
+
+    $("#ScheduleGames").click(function(){
+        let newRequest = [] ;
+        newRequest[0] = new Object() ;
+        newRequest[0].league = leagueType;
+        let seasonSelection = document.getElementById("SelectSeason").value;
+        let start = seasonSelection.substring(seasonSelection.indexOf("start:")+6 , seasonSelection.indexOf(" ,end:"));
+        let end = seasonSelection.substring(seasonSelection.indexOf(",end:")+5);
+        newRequest[0].start = start;
+        newRequest[0].end = end ;
+        newRequest[0].numberOfGamesPerTeam = numberOfGamePerTeam ;
+        let datesFromForm = document.getElementById("allPassableDates").value;
+        let dates = datesFromForm.split(" ");
+        newRequest[0].date = [];
+        let j = 0;
+        for(let i=0 ; i < dates.length ; i=i+3){
+            newRequest[0].date[j] = new Object();
+            newRequest[0].date[j].date = dates[i] ;
+            newRequest[0].date[j].start = dates[i+1] ;
+            newRequest[0].date[j].end = dates[i+2] ;
+
+            j=j+1;
+        }
+
+        let SecureObj  = new SecurityObj(email,"1000","ScheduleGames", newRequest) ;
+
+        document.getElementById("code").value = JSON.stringify(SecureObj);
+        //    window.alert(JSON.stringify(SecureObj));
+        let games = postSend("/Representative/scheduleGame" , SecureObj);
+        // window.alert(games);
+        // for(let i=0 ; i < games.length ; i++){
+        //     Games[i] = new Game(games[i].home.name , games[i].away.name , games[i].date , games[i].start , games[i].end);
+        //     console.log(Games[i].name + Game[i]);
+        // }
+        // window.alert(games) ;
+    });
+
+    $("#showGames").click(function(){
+        $.get("/Games", function(data, status){
+            for(let i=0 ; i < data.length ; i++){
+                Games[i] = new Game(data[i].home.name , data[i].away.name , data[i].date , data[i].startTime , data[i].endTime);
+                console.log("home: "+Games[i].home +", away:"+ Games[i].away+", date:"+Games[i].date+", start:"+Games[i].start +", end:"+Games[i].end);
+            }
         });
 
     });
@@ -140,6 +207,9 @@ $( document ).ready(function() {
 
     });
 
+
+
+
     $("#addTeam").click(function(){
         let newTeam = [];
         newTeam[0] = new Object()
@@ -150,7 +220,7 @@ $( document ).ready(function() {
             document.getElementById("TeamStatus").value);
 
         let SecureObj  = new SecurityObj(email,"1000","Login", newTeam) ;
-    //    window.alert(JSON.stringify(SecureObj));
+
         postSend("/Representative/addTeam" , SecureObj);
     });
 
@@ -165,7 +235,7 @@ $( document ).ready(function() {
     });
 
     function postSend(url , request) {
-        window.alert(JSON.stringify(request));
+        alert(JSON.stringify(request));
         $.ajax({
             type: "POST",
             url: url,
@@ -174,10 +244,13 @@ $( document ).ready(function() {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function(data){
-                window.alert(data.reqID);
+               // window.alert(data.reqID);
+               //  JSON.parse(data);
+               //  window.alert(data);
+                return data;
             },
             failure: function(errMsg) {
-                alert(errMsg);
+                window.alert("error");
             }
         });
     }

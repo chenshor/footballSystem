@@ -62,6 +62,6 @@ public interface IUserService {
 
     void displayLog() throws IOException;
 
-    int scheduleGame(League league, int numberOfGamesPerTeam, Season season, List<String[]> allPossiableTimes) throws IOException;
+    List<Game> scheduleGame(League league, int numberOfGamesPerTeam, Season season, List<String[]> allPossiableTimes) throws IOException;
 
 }

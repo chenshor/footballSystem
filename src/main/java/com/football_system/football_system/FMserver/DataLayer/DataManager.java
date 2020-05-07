@@ -483,8 +483,13 @@ public class DataManager implements IDataManager, Serializable {
         return this.fanSearchNameHistory.get(fan);
     }
 
+    @Override
     public List<Game> getGameList() {
         return gameList;
+    }
+    @Override
+    public void addGame(Game game) {
+         gameList.add(game);
     }
 
     public List<Coach> getCoaches() {

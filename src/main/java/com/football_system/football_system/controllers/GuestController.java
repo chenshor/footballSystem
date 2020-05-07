@@ -1,9 +1,6 @@
 package com.football_system.football_system.controllers;
 
-import com.football_system.football_system.FMserver.LogicLayer.Guest;
-import com.football_system.football_system.FMserver.LogicLayer.League;
-import com.football_system.football_system.FMserver.LogicLayer.Season;
-import com.football_system.football_system.FMserver.LogicLayer.Team;
+import com.football_system.football_system.FMserver.LogicLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.GuestService;
 import com.football_system.football_system.FootballSystemApplication;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,9 +69,10 @@ public class GuestController {
         hashMap.put("number_of_dates_needed",League.numberOfNeededDates(Integer.parseInt(numberOfGamesPerTeam),numberOfTeams ));
         return hashMap;
     }
-//    @RequestMapping("/Season/{name}")
-//    public Season getSeason(@PathVariable String name) {
-//        return guestService.getSesons().stream().filter(season -> season.getName().equals(name))
-//                .findFirst().get();
-//    }
+
+    @RequestMapping("/Games")
+    public List<Game> getGames() {
+        return DataComp.getInstance().getGameList();
+    }
+
 }

@@ -163,7 +163,7 @@ public abstract class AUserService implements IUserService {
     }
 
     @Override
-    public int scheduleGame(League league, int numberOfGamesPerTeam, Season season, List<String[]> allPossiableTimes) throws IOException {
+    public List<Game> scheduleGame(League league, int numberOfGamesPerTeam, Season season, List<String[]> allPossiableTimes) throws IOException {
         throw new IOException("Unsupported method");
     }
 }

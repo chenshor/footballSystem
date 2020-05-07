@@ -60,5 +60,6 @@ public interface IDataManager {
     HashMap<Fan, List<String>> getFanSearchCategoryHistory();
     HashMap<Fan, List<String>> getFanSearchNameHistory();
     void addComplaint(Complaint complaint,User user) ;
+   void addGame(Game game);
 
 }

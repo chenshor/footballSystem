@@ -1,5 +1,7 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,17 +9,26 @@ import java.util.Observable;
 
 public class Game extends Observable implements Serializable {
 
+
     private Season season;
+
     private Team home;
+
     private Team away;
+    @JsonIgnore
     private Referee line;
+    @JsonIgnore
     private Referee main;
+    @JsonIgnore
     private List<GameEventCalender> gameEventCalender;
     private String date; // format "2019-04-09"
     private String startTime; // format "13:50"
     private String endTime;
+    @JsonIgnore
     private Result result;
+    @JsonIgnore
     private GameReport gameReport;
+
 
     public Game() {
     }

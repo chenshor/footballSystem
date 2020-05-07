@@ -1,5 +1,6 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.football_system.football_system.FMserver.DataLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.*;
 
@@ -16,12 +17,17 @@ import java.util.List;
 
 public class Referee extends Role implements Serializable {
 
+    @JsonIgnore
     private String qualification;
     private String name;
     private League league;
+    @JsonIgnore
     private List<Game> main;
+    @JsonIgnore
     private  List<Game> line;
+    @JsonIgnore
     private List<JudgmentApproval> judgmentApproval ;
+    @JsonIgnore
     private static final Logger testLogger = Logger.getLogger(RefereeService.class);
 
     public Referee(User user, String qualification, String name, League league) {
