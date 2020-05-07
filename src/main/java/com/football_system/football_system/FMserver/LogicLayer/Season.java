@@ -1,5 +1,6 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.football_system.football_system.FMserver.DataLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.*;
 
@@ -11,11 +12,17 @@ import java.util.Map;
 
 public class Season implements Serializable {
 
+    @JsonIgnore
     private IController system;
+
     private String start;
     private String end;
+    @JsonIgnore
     private List<Game> gameList;
+
     private List<League> leagueList;
+
+    @JsonIgnore
     private Map<League, Table> leagueTables;
 
     public Table getTable(League league){

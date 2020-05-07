@@ -1,15 +1,15 @@
 package com.football_system.football_system.controllers;
 
 
-import com.football_system.football_system.FMserver.LogicLayer.DataComp;
-import com.football_system.football_system.FMserver.LogicLayer.Guest;
-import com.football_system.football_system.FMserver.LogicLayer.League;
-import com.football_system.football_system.FMserver.LogicLayer.Team;
+import com.football_system.football_system.FMserver.LogicLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.GuestService;
+import com.football_system.football_system.FMserver.ServiceLayer.IUserService;
 import com.football_system.football_system.FMserver.ServiceLayer.Interest;
+import com.football_system.football_system.FMserver.ServiceLayer.RepresentativeService;
 import com.football_system.football_system.FootballSystemApplication;
 import com.football_system.football_system.logicTest.SecurityObject;
 import com.football_system.football_system.logicTest.UserTest;
+import jdk.nashorn.internal.runtime.UserAccessorProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,28 +37,39 @@ public class RepresentativeController {
             method = RequestMethod.POST)
     public boolean addTeam(@RequestBody SecurityObject securityObject)
             throws Exception {
-        if(SecurityObject.Authorization(securityObject)==null) return false ;
-        LinkedHashMap<String,Object> objects =  (LinkedHashMap<String,Object>)securityObject.getObject().get(0) ;
-        LinkedHashMap<String,Object> TeamDetails = (LinkedHashMap<String,Object>) objects.get("Team");
-        Team newTeam = new Team(TeamDetails.get("name").toString(), TeamDetails.get("stadium").toString(), null);
-        LinkedHashMap<String,Object> leagueDetails = (LinkedHashMap<String,Object>) TeamDetails.get("league");
-
-        League.LeagueType leagueType = League.LeagueType.MAJOR_LEAGUE;
-            try {
-                leagueType = League.LeagueType.valueOf( leagueDetails.get("type").toString());
-            }catch (Exception e){}
-
-        League championsLeague = new League(leagueType);
-        championsLeague.setName(leagueDetails.get("name").toString());
-        newTeam.setLeague(championsLeague);
-        DataComp.getInstance().addTeam(newTeam);
-        if(TeamDetails.get("status").toString().equals("activityOpened")){
-            newTeam.setStatus(Team.TeamStatus.activityOpened);
-        }else{
-            newTeam.setStatus(Team.TeamStatus.activityClosed);
+        User user = SecurityObject.Authorization(securityObject);
+        if (user == null) return false;
+        RepresentativeService representativeService = null;
+        for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
+            if (iUserService instanceof RepresentativeService) {
+                representativeService = (RepresentativeService) iUserService;
+            }
         }
+        if (representativeService == null) {
+            LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) securityObject.getObject().get(0);
+            LinkedHashMap<String, Object> TeamDetails = (LinkedHashMap<String, Object>) objects.get("Team");
+            Team newTeam = new Team(TeamDetails.get("name").toString(), TeamDetails.get("stadium").toString(), null);
+            LinkedHashMap<String, Object> leagueDetails = (LinkedHashMap<String, Object>) TeamDetails.get("league");
 
-        return true;
+            League.LeagueType leagueType = League.LeagueType.MAJOR_LEAGUE;
+            try {
+                leagueType = League.LeagueType.valueOf(leagueDetails.get("type").toString());
+            } catch (Exception e) {
+            }
+
+            League championsLeague = new League(leagueType);
+            championsLeague.setName(leagueDetails.get("name").toString());
+            newTeam.setLeague(championsLeague);
+            DataComp.getInstance().addTeam(newTeam);
+            if (TeamDetails.get("status").toString().equals("activityOpened")) {
+                newTeam.setStatus(Team.TeamStatus.activityOpened);
+            } else {
+                newTeam.setStatus(Team.TeamStatus.activityClosed);
+            }
+
+            return true;
+        }
+        return false;
     }
 
     @RequestMapping(

@@ -488,4 +488,12 @@ public class GuestService implements IGuestService{
     public List<Team> getTeams(){
         return guest.retrieveTeams();
     }
+
+    public List<League> getLeagues(){
+        return guest.retrieveLeagues();
+    }
+
+    public List<Season> getSesons(){
+        return guest.retrieveSeasons();
+    }
 }
