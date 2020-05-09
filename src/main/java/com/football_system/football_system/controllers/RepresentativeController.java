@@ -10,6 +10,7 @@ import com.football_system.football_system.FootballSystemApplication;
 import com.football_system.football_system.logicTest.SecurityObject;
 import com.football_system.football_system.logicTest.UserTest;
 import jdk.nashorn.internal.runtime.UserAccessorProperty;
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,21 +25,21 @@ import java.util.List;
 @RequestMapping("/Representative")
 public class RepresentativeController {
 
-//    @RequestMapping("/Teams")
-//    public List<Team> get() {
-////        Guest guest = new Guest() ;
-////        GuestService guestService = new GuestService(guest , FootballSystemApplication.system) ;
-////        return guestService.showInformationByCategory(Interest.Teams); ;
-//    }
+    private static Logger errorsLogger = Logger.getLogger("errors");
+    private static Logger eventsLogger = Logger.getLogger("events");
 
-
-    @RequestMapping(
-            value = "/addTeam",
-            method = RequestMethod.POST)
-    public boolean addTeam(@RequestBody SecurityObject securityObject)
-            throws Exception {
+    /**
+     * @param securityObject
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/addTeam", method = RequestMethod.POST)
+    public boolean addTeam(@RequestBody SecurityObject securityObject) throws Exception {
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return false;
+        if (user == null) {
+            errorsLogger.error(" Security Error - unauthorized Security Object received");
+            return false;
+        }
         RepresentativeService representativeService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof RepresentativeService) {
@@ -66,20 +67,30 @@ public class RepresentativeController {
             } else {
                 newTeam.setStatus(Team.TeamStatus.activityClosed);
             }
-
             return true;
         }
         return false;
     }
 
-    @RequestMapping(
-            value = "/add",
-            method = RequestMethod.POST)
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public boolean scheduleGame(@RequestBody SecurityObject securityObject)
             throws Exception {
 //scheduleGame(League league , int numberOfGamesPerTeam , Season season , List<String[]> allPossiableTimes)
-        if(SecurityObject.Authorization(securityObject)==null) return false ;
+        if (SecurityObject.Authorization(securityObject) == null) return false;
 
+
+        return true;
+    }
+
+    /**
+     * Set Rank Policy
+     *
+     * @param securityObject
+     * @return true if function completed with no errors
+     * @throws Exception
+     */
+    @RequestMapping(value = "/setRankPolicy", method = RequestMethod.POST)
+    public boolean setRankPolicy(@RequestBody SecurityObject securityObject) throws Exception {
 
         return true;
     }

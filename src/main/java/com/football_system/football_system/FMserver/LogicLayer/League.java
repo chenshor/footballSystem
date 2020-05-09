@@ -39,7 +39,9 @@ public class League implements Serializable {
 
     }
 
-
+    public Map<Season, RankPolicy> getRankPolicyList() {
+        return rankPolicyList;
+    }
 
     public String getName() {
         return name;

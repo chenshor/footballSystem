@@ -4,6 +4,7 @@ import com.football_system.football_system.FMserver.DataLayer.DataManager;
 import com.football_system.football_system.FMserver.LogicLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.*;
 import com.football_system.football_system.logicTest.SecurityObject;
+import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -16,7 +17,8 @@ public class FootballSystemApplication {
 	public static IController system;
 	private static User user ;
 	public static Representative representative ;
-
+	private static Logger errorsLogger = Logger.getLogger("errors");
+	private static Logger eventsLogger = Logger.getLogger("events");
 
 	public static void main(String[] args) {
 		DataComp.setDataManager(new DataManager());
@@ -44,6 +46,8 @@ public class FootballSystemApplication {
 		barcelona.setLeague(championsLeague);
 		realMadrid.setLeague(championsLeague);
 		DataComp.getInstance().addTeam(barcelona);
+		eventsLogger.info("TEST - write to events logger");
+		errorsLogger.error("TEST - write to errors logger");
 		DataComp.getInstance().addTeam(realMadrid);
 		barcelona.setStatus(Team.TeamStatus.activityOpened);
 		realMadrid.setStatus(Team.TeamStatus.activityOpened);
