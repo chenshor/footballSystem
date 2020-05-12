@@ -75,4 +75,11 @@ public class GuestController {
         return DataComp.getInstance().getGameList();
     }
 
+    @RequestMapping("/Games/gameUpdates/{game_id}")
+    public Object getGameUpdates(@PathVariable String game_id) {
+        Integer gameID = Integer.parseInt(game_id);
+        Object obj = GuestService.getEvents(gameID);
+        return obj;
+    }
+
 }

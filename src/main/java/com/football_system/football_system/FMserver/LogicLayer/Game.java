@@ -1,7 +1,9 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.football_system.football_system.FMserver.DataLayer.IDataManager;
 
+import javax.annotation.Generated;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Observable;
 public class Game extends Observable implements Serializable {
 
 
+    private Integer id;
     private Season season;
 
     private Team home;
@@ -20,7 +23,9 @@ public class Game extends Observable implements Serializable {
     @JsonIgnore
     private Referee main;
     @JsonIgnore
-    private List<GameEventCalender> gameEventCalender;
+    private List<GameEventCalender> gameEventCalenderHome;
+    @JsonIgnore
+    private List<GameEventCalender> gameEventCalenderAway;
     private String date; // format "2019-04-09"
     private String startTime; // format "13:50"
     private String endTime;
@@ -29,8 +34,14 @@ public class Game extends Observable implements Serializable {
     @JsonIgnore
     private GameReport gameReport;
 
-
+    public static boolean checkIfHomeTeam(String teamName , Integer game_id){
+        return Game.getGameById(game_id).getHome().getName().equals(teamName) ;
+    }
+    public static IDataManager data(){
+        return DataComp.getInstance();
+    }
     public Game() {
+
     }
 
     public Game(Season season, Team home, Team away, Referee line, Referee main, List<GameEventCalender> gameEventCalender, String date, String start, String end) {
@@ -39,13 +50,36 @@ public class Game extends Observable implements Serializable {
         this.away = away;
         this.line = line;
         this.main = main;
-        this.gameEventCalender = gameEventCalender;
+        this.gameEventCalenderHome = gameEventCalender;
+        this.gameEventCalenderAway = gameEventCalender;
+        if(this.gameEventCalenderHome == null){
+            this.gameEventCalenderHome = new LinkedList<>();
+        }
+        if(this.gameEventCalenderAway == null){
+            this.gameEventCalenderAway = new LinkedList<>();
+        }
         this.date=date;
         this.startTime=start;
         this.endTime=end;
         this.gameReport=new GameReport(this);
+        this.id = data().getGameList().size()+1; // remove it later
+        data().addGame(this);
     }
 
+    public static List<Game> getGamesByReferee(String refereeID){
+        List<Game> games = data().getGameList();
+        List<Game> refereeGames = new LinkedList<>();
+        for( Game game : games){
+            if(game.getMain().getUser().getEmail().equals(refereeID)){
+                refereeGames.add(game);
+            }
+        }
+        return refereeGames ;
+    }
+
+    public static Game getGameById(Integer id){
+        return data().getGameList().stream().filter(game -> game.getId().equals(id)).findFirst().get() ;
+    }
     public Result getResult() {
         return result;
     }
@@ -60,11 +94,18 @@ public class Game extends Observable implements Serializable {
         this.away = away;
         this.line = line;
         this.main = main;
-        this.gameEventCalender = new LinkedList<>();
+        if(this.gameEventCalenderHome == null){
+            this.gameEventCalenderHome = new LinkedList<>();
+        }
+        if(this.gameEventCalenderAway == null){
+            this.gameEventCalenderAway = new LinkedList<>();
+        }
         this.date=date;
         this.startTime=start;
         this.endTime=end;
         this.gameReport=new GameReport(this);
+        this.id = data().getGameList().size()+1; // remove it later
+        data().addGame(this);
     }
 
     public Season getSeason() {
@@ -108,11 +149,11 @@ public class Game extends Observable implements Serializable {
     }
 
     public List<GameEventCalender> getGameEventCalender() {
-        return gameEventCalender;
+        return gameEventCalenderHome;
     }
 
     public void setGameEventCalender(List<GameEventCalender> gameEventCalender) {
-        this.gameEventCalender = gameEventCalender;
+        this.gameEventCalenderHome = gameEventCalender;
     }
 
     public String getDate() {
@@ -179,8 +220,39 @@ public class Game extends Observable implements Serializable {
      * @param event - event to add
      */
     public void addEventGame(GameEventCalender event){
-        gameEventCalender.add(event);
+        gameEventCalenderHome.add(event);
         setChanged();
         notifyObservers(event);
+    }
+
+    public void addEventGame(boolean home , GameEventCalender event){
+        if(home) {
+            gameEventCalenderHome.add(event);
+        }else{
+            gameEventCalenderAway.add(event);
+        }
+
+        setChanged();
+        notifyObservers(event);
+
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public List<GameEventCalender> getGameEventCalenderHome() {
+        return gameEventCalenderHome;
+    }
+
+    public void getGameEventCalenderHome(List<GameEventCalender> gameEventCalenderHome) {
+        this.gameEventCalenderHome = gameEventCalenderHome;
+    }
+    public List<GameEventCalender> getGameEventCalenderAway() {
+        return gameEventCalenderAway;
+    }
+
+    public void setGameEventCalenderAway(List<GameEventCalender> gameEventCalenderAway) {
+        this.gameEventCalenderAway = gameEventCalenderAway;
     }
 }

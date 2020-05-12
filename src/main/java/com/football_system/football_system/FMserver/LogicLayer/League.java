@@ -164,7 +164,6 @@ public class League implements Serializable {
                     Game game = new Game(season, teamsArray[a], teamsArray[b], null, refereesArray[refereeSchecule%(refereesArray.length)], null,
                             allPossiableTimes.get(nextTime)[0], allPossiableTimes.get(nextTime)[1], allPossiableTimes.get(nextTime)[2]);
                     gamesList.add(game);
-                    data().addGame(game);
                     nextTime++;
                     refereeSchecule++;
                     teamsArray[a].addHomeGame(game);

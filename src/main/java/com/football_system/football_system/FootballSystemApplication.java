@@ -20,6 +20,7 @@ public class FootballSystemApplication {
 
 	public static void main(String[] args) {
 		DataComp.setDataManager(new DataManager());
+		SpringApplication.run(FootballSystemApplication.class, args);
 		Administrator administrator = new Administrator("A", "B", "C");
 		user = new User("rep@gmail.com", "123456as", "Lior");
 		representative = new Representative(user, "lama name"); // rep user
@@ -51,8 +52,8 @@ public class FootballSystemApplication {
 			GuestService guestService = (GuestService) system.getGuestServices().get(guest);
 			User reg = guestService.register("da", "s", "chen@walla.com", "1234567q");
 			SecurityObject.addUserToSystem(reg);
-			setTeamsDB();
-			SpringApplication.run(FootballSystemApplication.class, args);
+			//setTeamsDB();
+
 
 			//add refereeUser
 			Guest guest2 = new Guest();
@@ -63,24 +64,26 @@ public class FootballSystemApplication {
 
 			representativeService.addNewRefereeFromUsers(referee, "very nice referee", "alon");
 			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2020-01-03","2021-01-05")) ;
-
 			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2021-05-06","2022-03-20")) ;
 
+
+			Team barcelona = new Team("FC Barcelona", "Camp Nou", null);
+			Team realMadrid = new Team("Real Madrid CF", "Bernabeu", null);
+			League championsLeague = League.getLeagueByType("MAJOR_LEAGUE") ;
+			championsLeague.setName("Champions League");
+			barcelona.setLeague(championsLeague);
+			realMadrid.setLeague(championsLeague);
+			DataComp.getInstance().addTeam(barcelona);
+			DataComp.getInstance().addTeam(realMadrid);
+			barcelona.setStatus(Team.TeamStatus.activityOpened);
+			realMadrid.setStatus(Team.TeamStatus.activityOpened);
+			DataComp.getInstance().addGame(new Game( Season.getSeason("2020-01-03","2021-01-05") , barcelona,realMadrid, Referee.getReferees().get(0) ,Referee.getReferees().get(0) ,"2021-09-08","8:00","9:30"));
 		}catch (Exception e){}
 
 	}
 
-	private static void setTeamsDB() {
-		Team barcelona = new Team("FC Barcelona", "Camp Nou", null);
-		Team realMadrid = new Team("Real Madrid CF", "Bernabeu", null);
-		League championsLeague = League.getLeagueByType("MAJOR_LEAGUE") ;
-		championsLeague.setName("Champions League");
-		barcelona.setLeague(championsLeague);
-		realMadrid.setLeague(championsLeague);
-		DataComp.getInstance().addTeam(barcelona);
-		DataComp.getInstance().addTeam(realMadrid);
-		barcelona.setStatus(Team.TeamStatus.activityOpened);
-		realMadrid.setStatus(Team.TeamStatus.activityOpened);
-	}
+//	private static void setTeamsDB() {
+//
+//	}
 
 }

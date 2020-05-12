@@ -75,14 +75,14 @@ public class RepresentativeController {
     @RequestMapping(
             value = "/scheduleGame",
             method = RequestMethod.POST)
-    public String scheduleGame(@RequestBody SecurityObject securityObject)
+    public List<Game> scheduleGame(@RequestBody SecurityObject securityObject)
             throws Exception {
 
         //SecurityObject securityObject1 = new SecurityObject();
         List<Game> games = null ;
 
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return null;
+        if (user == null) return games;
         RepresentativeService representativeService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof RepresentativeService) {
@@ -107,12 +107,11 @@ public class RepresentativeController {
             League league = League.getLeagueByType(leagueType);
             Season season = Season.getSeason(SeasonStartDate,SeasonEndDate);
 
-
             games = representativeService.scheduleGame(league, GamesPerTeam , season ,possiableTimes);
            // securityObject.setObject(games);
         }
-        //return games;
-        return "hi there!" ;
+        return games;
+        //return "hi there!" ;
     //    return securityObject;
     }
 }

@@ -23,4 +23,8 @@ public interface IGuestService {
     List<Season> getSesons();
 
     List<Team> getTeams();
+
+    static List<GameEventCalender>[] getEvents(Integer game_id) {
+        return new List[0];
+    }
 }

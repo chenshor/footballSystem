@@ -496,4 +496,12 @@ public class GuestService implements IGuestService{
     public List<Season> getSesons(){
         return guest.retrieveSeasons();
     }
+
+    public static List<GameEventCalender>[] getEvents(Integer game_id){
+        Game game1 = Game.getGameById(game_id);
+        List<GameEventCalender>[] gameEventCalenders = new List[2];
+        gameEventCalenders[0] = game1.getGameEventCalenderHome();
+        gameEventCalenders[1] = game1.getGameEventCalenderAway();
+        return gameEventCalenders ;
+    }
 }

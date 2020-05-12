@@ -4,6 +4,10 @@ import com.football_system.football_system.FMserver.LogicLayer.*;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class RefereeService extends AUserService {
     private Referee referee;
@@ -109,4 +113,28 @@ public class RefereeService extends AUserService {
     public void createGameReport(Game game, String description)throws IOException {
       referee.createGameReport(game,description);
     }
+
+
+    public List<Game> getGamesByRefereeID(String refereeId){
+        return Game.getGamesByReferee(refereeId);
+    }
+
+    public void addEventGame(boolean home , Integer game_id ,String description, String eventType , int minute){
+        Game game1 = Game.getGameById(game_id);
+        game1.addEventGame(home , new GameEventCalender(game1,null ,null, eventType ,description , minute));
+    }
+
+    public GameEventCalender.eventType[] getEventTypes(){
+        return GameEventCalender.eventType.values() ;
+    }
+
+    public Map<String , String> getPlayingTeamsInTheGame(Integer game_id){
+        Game game1 = Game.getGameById(game_id);
+        Map map = new HashMap();
+        map.put("home",game1.getHome().getName());
+        map.put("away",game1.getAway().getName());
+        return map ;
+    }
+
+
 }

@@ -1,9 +1,12 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 public class GameEventCalender implements Serializable {
 
+    @JsonIgnore
     private Game game;
     private String hour; // format (13:50)
     private String date; // format "2019-04-09"
@@ -11,7 +14,7 @@ public class GameEventCalender implements Serializable {
     private String description;
     private int minute;
 
-    enum eventType{
+    public enum eventType{
         goal, offside,offense, redCard, yellowCard, injury,playerReplacement
     }
 

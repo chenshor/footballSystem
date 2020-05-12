@@ -1,6 +1,7 @@
 var SessionKey;
 var email;
 var password;
+var acsses = [] ; // referee / represintative / user / guest
 
 class SecurityObj{
     constructor(userID , reqID , functionName ,object = []) {
@@ -15,6 +16,14 @@ class User{ //UserTest not progect real User
     constructor(name , mail) {
         this.name=name ;
         this.mail = mail ;
+    }
+}
+
+class GameEvent{
+    constructor(type , description , minute) {
+        this.type=type ;
+        this.description = description ;
+        this.minute = minute ;
     }
 }
 
@@ -41,7 +50,8 @@ class Season {
 }
 
 class Game {
-    constructor(home,away,date,start,end) {
+    constructor(id,home,away,date,start,end) {
+        this.id=id;
         this.home = home;
         this.away=away ;
         this.date = date;
@@ -54,6 +64,8 @@ var Teams = [] ;
 var Leagues = [];
 var Seasons = [];
 var Games = [];
+var GameEventsHome = [] ;
+var GameEventsAway = [] ;
 
 
 $( document ).ready(function() {
@@ -142,10 +154,13 @@ $( document ).ready(function() {
 
         let SecureObj  = new SecurityObj(email,"1000","ScheduleGames", newRequest) ;
 
-        document.getElementById("code").value = JSON.stringify(SecureObj);
         //    window.alert(JSON.stringify(SecureObj));
-        let games = postSend("/Representative/scheduleGame" , SecureObj);
-        // window.alert(games);
+        postSend("/Representative/scheduleGame" , SecureObj ).then(function (v) {
+            console.log("good:"+v);
+            printGames(v);
+        }).catch(function (v) {
+            console.log("failed:"+v);
+        });
         // for(let i=0 ; i < games.length ; i++){
         //     Games[i] = new Game(games[i].home.name , games[i].away.name , games[i].date , games[i].start , games[i].end);
         //     console.log(Games[i].name + Game[i]);
@@ -153,11 +168,19 @@ $( document ).ready(function() {
         // window.alert(games) ;
     });
 
+    function printGames(data){
+        let Games = [] ;
+        console.log("succsses");
+        for(let i=0 ; i < data.length ; i++){
+            Games[i] = new Game(data[i].id ,data[i].home.name , data[i].away.name , data[i].date , data[i].startTime , data[i].endTime);
+            console.log("game id:"+Games[i].id +", home: "+Games[i].home +", away:"+ Games[i].away+", date:"+Games[i].date+", start:"+Games[i].start +", end:"+Games[i].end);
+        }
+    }
     $("#showGames").click(function(){
         $.get("/Games", function(data, status){
             for(let i=0 ; i < data.length ; i++){
-                Games[i] = new Game(data[i].home.name , data[i].away.name , data[i].date , data[i].startTime , data[i].endTime);
-                console.log("home: "+Games[i].home +", away:"+ Games[i].away+", date:"+Games[i].date+", start:"+Games[i].start +", end:"+Games[i].end);
+                Games[i] = new Game(data[i].id ,data[i].home.name , data[i].away.name , data[i].date , data[i].startTime , data[i].endTime);
+                console.log("game id:"+Games[i].id +", home: "+Games[i].home +", away:"+ Games[i].away+", date:"+Games[i].date+", start:"+Games[i].start +", end:"+Games[i].end);
             }
         });
 
@@ -231,28 +254,167 @@ $( document ).ready(function() {
         signIn[0].email = email;
         signIn[0].password = document.getElementById("name").value;
         let SecureObj  = new SecurityObj(email,"1000","Login", signIn) ;
-        postSend("/Login" , SecureObj);
+        postSend("/Login" , SecureObj).then(function (data) {
+            console.log(data);
+            document.getElementById("myRoles").innerHTML = data.object[0];
+        }).catch(function (err) {
+            console.log("failed:"+err);
+        });
     });
 
-    function postSend(url , request) {
-        alert(JSON.stringify(request));
+
+    $("#GameChoose").click(function(){
+        let refereeOptions = [] ;
+        refereeOptions[0] = new Object() ;
+        refereeOptions[0].referee_id = email  ;
+        let SecureObj  = new SecurityObj(email,"1000","GameChoose", refereeOptions) ;
+        postSend("/Referee/getGamesByReferee" , SecureObj).then(function (data) {
+            let Games = [] ;
+            console.log("succsses");
+            for(let i=0 ; i < data.length ; i++) {
+                Games[i] = new Game(data[i].id, data[i].home.name, data[i].away.name, data[i].date, data[i].startTime, data[i].endTime);
+                console.log("game id:" + Games[i].id + ", home: " + Games[i].home + ", away:" + Games[i].away + ", date:" + Games[i].date + ", start:" + Games[i].start + ", end:" + Games[i].end);
+            }
+            let select  = document.getElementById("SelectGame");
+            for (let i = select.options.length-1; i >= 0; i--) {
+                select.options[i] = null;
+            }
+
+            for (let i = 0; i < data.length; i++) {
+                Seasons[i] = data[i];
+                var x = document.getElementById("SelectGame");
+                var option = document.createElement("option");
+                option.text = "game id:"+Games[i].id+ ", home: "+Games[i].home +", away:"+ Games[i].away+", date:"+Games[i].date ;
+                x.add(option);
+            }
+
+        }).catch(function (data) {
+            console.log("request failed");
+        });
+    });
+
+    let game_id;
+    $("#startGameRefereeOption").click(function(){
+        let gameSelection = document.getElementById("SelectGame").value;
+        game_id = gameSelection.substring(gameSelection.indexOf("game id:")+8 , gameSelection.indexOf(", home:"));
+        let gameID = [] ;
+        gameID[0] = new Object() ;
+        gameID[0].game_id = game_id  ;
+        let SecureObj  = new SecurityObj(email,"1000","startGame", gameID) ;
+        postSend("/Referee/getEventProperties",SecureObj).then(function (data) {
+            console.log(data);
+         //   let select  = document.getElementById("eventTypeSelectAddEvent");
+            // for (let i = select.options.length-1; i >= 0; i--) {
+            //     select.options[i] = null;
+            // }
+
+            for (let i = 0; i < data[0].length; i++) {
+                var x = document.getElementById("eventTypeSelectAddEvent");
+                var option = document.createElement("option");
+                option.text = data[0][i] ;
+                x.add(option);
+            }
+            // for (let i = select.options.length-1; i >= 0; i--) {
+            //     select.options[i] = null;
+            // }
+
+            var x = document.getElementById("teamSelectAddEvent");
+            var option = document.createElement("option");
+            option.text = data[1].home ;
+            x.add(option);
+            var option = document.createElement("option");
+            option.text = data[1].away ;
+            x.add(option);
+
+        }).catch(function (data) {
+            console.log(data);
+        });
+    });
+
+    $("#addGameEvent").click(function(){
+
+        let minute = document.getElementById("GameMinute").value;
+        let team = document.getElementById("teamSelectAddEvent").value;
+        let eventType = document.getElementById("eventTypeSelectAddEvent").value;
+        let description = document.getElementById("descripitionAddEvent").value;
+        let eventProperties = [] ;
+        eventProperties[0] = new Object() ;
+        eventProperties[0].game_id = game_id  ;
+        eventProperties[0].minute = minute  ;
+        eventProperties[0].team = team  ;
+        eventProperties[0].eventType = eventType  ;
+        eventProperties[0].description = description  ;
+
+        let SecureObj  = new SecurityObj(email,"1000","addGameEvent", eventProperties) ;
+        postSendWithoutReturn("/Referee/addEventToGame", SecureObj);
+        console.log("done!!!");
+    });
+
+    $("#showGameEvents").click(function(){
+        let Url  = "/Games/gameUpdates/"+document.getElementById("gameIdForGameEvents").value;
+        $.get(Url, function(data, status){
+            let content ="home: \n" ;
+            for(let i=0; i<data[0].length ;i++){
+                GameEventsHome[i] = new GameEvent(data[0][i].type , data[0][i].description ,data[0][i].minute) ;
+                content=content+"type: "+GameEventsHome[i].type+", description:"+GameEventsHome[i].description+", minute:"+GameEventsHome[i].minute+"\n";
+            }
+            content=content+"\n away: \n"
+            for(let i=0; i<data[1].length ;i++){
+                GameEventsAway[i] = new GameEvent(data[1][i].type , data[1][i].description ,data[1][i].minute) ;
+                content=content+"type: "+GameEventsAway[i].type+", description:"+GameEventsAway[i].description+", minute:"+GameEventsAway[i].minute+"\n";
+            }
+            document.getElementById("GameEvents").innerText = content;
+        });
+
+    });
+
+    async function postSend(url, request) {
+        document.getElementById("code").value = JSON.stringify(request);
+        console.log(JSON.stringify(request));
+        const p = async () => {
+            try {
+                var res;
+                await $.ajax({
+                    type: "POST",
+                    url: url,
+                    // The key needs to match your method's input parameter (case-sensitive).
+                    data: JSON.stringify(request),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    processData: false,
+                    success: function (resources) {
+                        res = resources;
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+                return res;
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        return await p();
+
+    }
+    function postSendWithoutReturn(url, request) {
+        document.getElementById("code").value = JSON.stringify(request);
+        console.log(JSON.stringify(request));
         $.ajax({
             type: "POST",
             url: url,
             // The key needs to match your method's input parameter (case-sensitive).
-            data: JSON.stringify(request) ,
+            data: JSON.stringify(request),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-            success: function(data){
-               // window.alert(data.reqID);
-               //  JSON.parse(data);
-               //  window.alert(data);
-                return data;
+            processData: false,
+            success: function () {
             },
-            failure: function(errMsg) {
-                window.alert("error");
+            error: function () {
             }
         });
+
+
     }
 });
 

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 @RestController
 public class LoginController {
@@ -39,7 +41,22 @@ public class LoginController {
 
         User reg =  guestService.register("da","s",data.get("email"), data.get("password")) ;
         if(guestService.logIn(data.get("email") , data.get("password"))) {
-            SecurityObject so = new SecurityObject("", "key12344", "", null);
+            User user = SecurityObject.Authorization(securityObject);
+            List<String> roles =new LinkedList<>();
+            for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
+                if (iUserService instanceof RefereeService) {
+                    roles.add("Referee");
+                }
+                if (iUserService instanceof FanService) {
+                    roles.add("Fan");
+                }
+                if (iUserService instanceof RepresentativeService) {
+                    roles.add("Representative");
+                }
+            }
+            List<Object> obj = new LinkedList<>();
+            obj.add(roles);
+            SecurityObject so = new SecurityObject(data.get("email"), "key12344", "", obj);
             return so;
         }
         return null ;

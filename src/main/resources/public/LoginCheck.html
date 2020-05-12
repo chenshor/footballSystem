@@ -14,13 +14,15 @@
 <p>
     <label>your email</label>
     <br>
-    <textarea id="email" ></textarea>
+    <textarea id="email" autocomplete="on"></textarea>
     <br>
     <label>your password</label>
     <br>
-    <textarea id="name"></textarea>
+    <textarea id="name" autocomplete="on"></textarea>
     <br>
     <button id="loginButton" >Login test</button> // post request
+    <br>
+    <bold><p id="myRoles"></p></bold>
 </p>
 
 <button id="b3" >Teams</button> // get request teams
@@ -86,6 +88,40 @@
 <button id="showGames" >show Games in console window</button> // get request teams
 <br>
 <br>
+<br>
+<h1>game management</h1>
+<button id="GameChoose" >start game managment</button> // get request teams
+<form>
+    <label >Select your game</label>
+    <select id="SelectGame" size="1" >
+    </select>
+    <br>
+</form>
+<button id="startGameRefereeOption" >start game management</button> // get request teams
+<br>
+<br>
+<h1>add event</h1>
+<form>
+    <label >minute</label>
+    <input type="text" id="GameMinute"><br><br>
+    <label >team</label>
+    <select id="teamSelectAddEvent" size="1" >
+    </select>
+    <label >event type</label>
+    <select id="eventTypeSelectAddEvent" size="1" >
+    </select>
+    <br>
+    <label>description</label>
+    <textarea id="descripitionAddEvent"></textarea>
+    <br>
+</form>
+<button id="addGameEvent" >add game event</button> // get request teams
+<br>
+<h1>all game events</h1><br>
+<input type="text" id="gameIdForGameEvents"><br><br>
+<button id="showGameEvents" >show game events</button> // get request teams
+<p id="GameEvents"></p>
+
 <label>code box</label>
 <textarea id="code"></textarea>
 </body>
