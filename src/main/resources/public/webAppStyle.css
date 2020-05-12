@@ -1,0 +1,117 @@
+/* GENERAL CSS */
+body {
+    font-family: 'Jost', sans-serif;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    background: whitesmoke;
+}
+
+input,
+textarea {
+    outline: none;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    border-radius: 0 !important;
+}
+
+input::content {
+    font-size: 1.2rem !important;
+}
+
+button,
+button:active,
+button:focus {
+    outline: none;
+    box-shadow: none !important;
+    border: 0 solid #ccc !important;
+}
+/* GENERAL CSS */
+
+/* LOGIN CSS*/
+#login {
+    width: 50%;
+    text-align: center;
+    min-width: 450px;
+}
+
+#sign-in {
+    display: inline-block;
+    width: 50%;
+    min-width: 400px !important;
+    background: white;
+    margin-top: 13%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 6%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#sign-in button {
+    margin-top: 20px;
+    border-radius: 0;
+    font-size: 1.2rem;
+    padding-left: 24%;
+    padding-right: 24%;
+    background: #292F35;
+}
+
+#sign-in input {
+    background: transparent;
+    border: none !important;
+    border-bottom: #292F35 solid 1px !important;
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 1.2rem;
+}
+
+#sign-in input::placeholder {
+
+}
+
+#guest-btn {
+    border-radius: 0 !important;
+    color: #292F35;
+    border: #292F35 solid 1px !important;
+    background: transparent !important;
+    padding-left: 10% !important;
+    padding-right: 10% !important;
+}
+
+#guest-btn:hover {
+    border-radius: 0 !important;
+    color: white;
+    background: #292F35 !important;
+}
+
+#sign-in form {
+    text-align: center;
+    margin-top: 10%;
+}
+
+#sign-in label {
+    margin-left: 13%;
+    margin-bottom: -8%;
+    width: 90px;
+    display: inline-flex;
+    float: left;
+}
+
+#sign-in .form-group {
+    height: 70px !important;
+}
+
+#sign-in h4{
+    width: 80%;
+    text-align: center;
+    border-bottom: 1px solid #292F35;
+    line-height: 0.1em;
+    margin: 16% 0 10% 10%;
+}
+
+h4 span {
+    background:#fff;
+    padding:0 10px;
+}
+/* LOGIN CSS*/
