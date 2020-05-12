@@ -40,6 +40,9 @@ public class League implements Serializable {
 
     }
 
+    public Map<Season, RankPolicy> getRankPolicyList() {
+        return rankPolicyList;
+    }
 
     public static League getLeagueByType(String Type){
         LeagueType leagueType = League.LeagueType.valueOf(Type);
@@ -73,6 +76,7 @@ public class League implements Serializable {
         this.type = leagueType;
         data().addLeague(this);
     }
+
     public League(LeagueType leagueType ,String name){
         this.type = leagueType;
         this.name = name ;

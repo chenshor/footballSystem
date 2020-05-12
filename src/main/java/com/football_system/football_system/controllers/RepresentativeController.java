@@ -11,6 +11,7 @@ import com.football_system.football_system.logicTest.SecurityObject;
 import com.football_system.football_system.logicTest.UserTest;
 import jdk.nashorn.internal.runtime.UserAccessorProperty;
 import org.springframework.boot.web.servlet.server.Session;
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +25,8 @@ import java.util.*;
 @RequestMapping("/Representative")
 public class RepresentativeController {
 
-//    @RequestMapping("/Teams")
-//    public List<Team> get() {
-////        Guest guest = new Guest() ;
-////        GuestService guestService = new GuestService(guest , FootballSystemApplication.system) ;
-////        return guestService.showInformationByCategory(Interest.Teams); ;
-//    }
+    private static Logger errorsLogger = Logger.getLogger("errors");
+    private static Logger eventsLogger = Logger.getLogger("events");
 
 
     @RequestMapping(
@@ -113,5 +110,18 @@ public class RepresentativeController {
         return games;
         //return "hi there!" ;
     //    return securityObject;
+    }
+
+    /**
+     * Set Rank Policy
+     *
+     * @param securityObject
+     * @return true if function completed with no errors
+     * @throws Exception
+     */
+    @RequestMapping(value = "/setRankPolicy", method = RequestMethod.POST)
+    public boolean setRankPolicy(@RequestBody SecurityObject securityObject) throws Exception {
+
+        return true;
     }
 }

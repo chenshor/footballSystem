@@ -14,6 +14,7 @@ public class RepresentativeService extends AUserService {
     /**
      * id: RepresentativeService@1
      * add new League
+     *
      * @param leagueType
      * @return boolean of success/unsuccessful operation
      * @throws Exception if league type illigel
@@ -24,30 +25,33 @@ public class RepresentativeService extends AUserService {
 
     /**
      * id: RepresentativeService@2
+     *
      * @return show all Leagues that existing in the system
      */
-    public List<League> showAllLeagus() throws IOException{
+    public List<League> showAllLeagus() throws IOException {
         return League.ShowAllLeagues();
     }
 
     /**
      * id: RepresentativeService@3
      * can add new season -or- if season existing addes a league to it
-     * @param start date of season
-     * @param end date of season
+     *
+     * @param start  date of season
+     * @param end    date of season
      * @param league to link the season to League
      * @throws IOException if season already exists
      */
-    public void addSeason(String start , String end , League league ) throws IOException{
-        Season.addSeason(start , end ,league);
+    public void addSeason(String start, String end, League league) throws IOException {
+        Season.addSeason(start, end, league);
     }
 
     /**
      * id: RepresentativeService@4
      * show all existing Seasons
+     *
      * @return all system Seasons
      */
-    public List<Season> showAllSeasons() throws IOException{
+    public List<Season> showAllSeasons() throws IOException {
         return Season.ShowAllSeasons();
     }
 
@@ -105,6 +109,7 @@ public class RepresentativeService extends AUserService {
     /**
      * id: RepresentativeService@9
      * show all system referees
+     *
      * @return true if added successfully
      */
     public boolean removeJudgmentApproval(Referee referee , League league, Season season ) throws IOException{
@@ -115,6 +120,7 @@ public class RepresentativeService extends AUserService {
     /**
      * id: RepresentativeService@10
      * schedule all games
+     *
      * @param league
      * @param numberOfGamesPerTeam number Of Games Per Team in season
      * @param season
@@ -132,10 +138,58 @@ public class RepresentativeService extends AUserService {
     /**
      * id: RepresentativeService@11
      * create new Team
-     * @param name - team name
+     *
+     * @param name    - team name
      * @param stadium - stadium name
      */
-    public void createTeam(String name, String stadium){
+    public void createTeam(String name, String stadium) {
         control.getRepresentative().createTeam(name, stadium, null);
+    }
+
+    /**
+     * Set Rank Policy to specific league in specific season
+     * NOT DEFAULT
+     *
+     * @param season - season
+     * @param league - league
+     * @param win - points fo win
+     * @param draw - points for draw
+     * @param lose - points for  draw
+     * @return boolean indicates action success
+     */
+    public boolean setRankPolicy(Season season, League league, int win, int draw, int lose) {
+        RankPolicy newRankPolicy = createRank(season, league, win, draw, lose);
+        if (newRankPolicy == null) return false;
+        league.getRankPolicyList().remove(season);
+        league.getRankPolicyList().put(season, newRankPolicy);
+        return true;
+    }
+
+    /**
+     * Set Rank Policy to specific league in specific season
+     * DEFAULT
+     *
+     * @param season - season
+     * @param league - league
+     * @return boolean indicates action success
+     */
+    public boolean setRankPolicy(Season season, League league) {
+        RankPolicy newRankPolicy = createDefaultRank(season, league);
+        if (newRankPolicy == null) return false;
+        league.getRankPolicyList().remove(season);
+        league.getRankPolicyList().put(season, newRankPolicy);
+        return true;
+    }
+
+    private RankPolicy createDefaultRank(Season season, League league) {
+        if (season == null) return null;
+        if (league == null) return null;
+        return new RankPolicy(league, season);
+    }
+
+    private RankPolicy createRank(Season season, League league, int win, int draw, int lose) {
+        if (season == null) return null;
+        if (league == null) return null;
+        return new RankPolicy(league, season, win, draw, lose);
     }
 }

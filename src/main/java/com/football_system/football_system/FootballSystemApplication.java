@@ -4,11 +4,9 @@ import com.football_system.football_system.FMserver.DataLayer.DataManager;
 import com.football_system.football_system.FMserver.LogicLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.*;
 import com.football_system.football_system.logicTest.SecurityObject;
+import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class FootballSystemApplication {
@@ -16,7 +14,8 @@ public class FootballSystemApplication {
 	public static IController system;
 	private static User user ;
 	public static Representative representative ;
-
+	private static Logger errorsLogger = Logger.getLogger("errors");
+	private static Logger eventsLogger = Logger.getLogger("events");
 
 	public static void main(String[] args) {
 		DataComp.setDataManager(new DataManager());
@@ -81,9 +80,5 @@ public class FootballSystemApplication {
 		}catch (Exception e){}
 
 	}
-
-//	private static void setTeamsDB() {
-//
-//	}
 
 }
