@@ -29,6 +29,7 @@ public class DataManager implements IDataManager, Serializable {
     private List<Game> gameList;
     private LinkedList<Referee> RefereeList;
     private List<Administrator> administrators;
+//    TO DO : set new Loggers
     private static final Logger systemLogger = Logger.getLogger(DataManager.class);
 
     public DataManager() {
