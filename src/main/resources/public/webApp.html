@@ -24,11 +24,8 @@
 
 <body>
 
-<!-- Side NavBar -->
-
-
 <!-- Login -->
-<div class="page-div" id="login">
+<div class="page-div" id="login" hidden >
     <div id="sign-in" class="container">
         <h1> SIGN IN </h1>
         <br>
@@ -51,16 +48,88 @@
 <!-- Login -->
 
 <!-- Main Layout -->
-<div id="mainLayout" hidden>
-    <h1> Yessssss !!!! </h1>
+<div id="mainLayout">
+    <!-- Side NavBar -->
+    <div id="sideNavBar">
+        <h5>FOOTBALL<br>MANAGER</h5>
+        <div id="optionList">
+            <button class="navButton" onclick="leagueContent(event)">
+                <div>
+                    <i class="fas fa-trophy"></i>
+                    Leagues
+                </div>
+            </button>
+            <button class="navButton" onclick="seasonContent(event)">
+                <div>
+                    <i class="fas fa-calendar-alt"></i>
+                    Seasons
+                </div>
+            </button>
+            <button class="navButton">
+                <div>
+                    <i class="fas fa-users"></i>
+                    Teams
+                </div>
+            </button>
+            <button class="navButton">
+                <div>
+                    <i class="far fa-futbol"></i>
+                    Games
+                </div>
+            </button>
+            <button class="navButton">
+                <div>
+                    <i class="fas fa-tshirt"></i>
+                    Fan
+                </div>
+            </button>
+            <button class="navButton">
+                <div>
+                    <i class="fas fa-stopwatch"></i>
+                    Referee
+                </div>
+            </button>
+            <button class="navButton">
+                <div>
+                    <i class="fas fa-user-tie"></i>
+                    Operation
+                </div>
+            </button>
+        </div>
+        <div id="notifications">
+            <button class="navButton">
+                Updates
+                <span class="badge badge-pill badge-danger" id="notificationsNumber">3</span>
+            </button>
+        </div>
+        <br>
+    </div>
+    <!-- Side NavBar -->
+
+    <div id="changeableContent">
+        <!-- LEAGUES -->
+        <div id="leaguesView" hidden>
+            <h1> Leagues </h1>
+            <div id="leagueCards" class="cardContent">
+
+            </div>
+        </div>
+        <!-- SEASONS -->
+        <div id="seasonsView">
+            <h1> Seasons </h1>
+            <div id="seasonCards" class="cardContent">
+
+            </div>
+        </div>
+    </div>
 </div>
 <!-- Main Layout -->
 
+<!-- Font Awesome -->
+<script defer src="https://use.fontawesome.com/releases/v5.10.2/js/all.js"></script>
+<script src="https://kit.fontawesome.com/f6a2967fd7.js" crossorigin="anonymous"></script>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
