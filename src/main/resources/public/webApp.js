@@ -194,6 +194,10 @@ var cards = $();
 // Create League View Content
 function leagueContent(event) {
     event.preventDefault();
+    $("#seasonsView").css("display","none");
+    $("#TeamsView").css("display","none");
+    $("#GamesView").css("display","none");
+    $("#leaguesView").css("display","block");
     $('#leagueCards').empty();
     $.get("/Leagues", function (data) {
         data.forEach(function(item) {
@@ -222,6 +226,10 @@ function createLeagueCard(cardInfo) {
 
 function seasonContent(event) {
     event.preventDefault();
+    $("#leaguesView").css("display","none");
+    $("#TeamsView").css("display","none");
+    $("#GamesView").css("display","none");
+    $("#seasonsView").css("display","block");
     $('#seasonCards').empty();
     $.get("/Seasons", function (data) {
         data.forEach(function(item) {
@@ -248,5 +256,78 @@ function createSeasonCard(cardInfo) {
     return $(seasonCardTemplate.join(''));
 }
 
+function TeamsContent(event) {
+    event.preventDefault();
+    $("#leaguesView").css("display","none");
+    $("#seasonsView").css("display","none");
+    $("#GamesView").css("display","none");
+    $("#TeamsView").css("display","block");
+    $('#TeamCards').empty();
+    $.get("/Teams", function (data) {
+        data.forEach(function(item) {
+            cards = cards.add(createTeamsCard(item));
+        });
+    });
+    $('#TeamCards').append(cards);
+    cards = $();
+}
+
+function createTeamsCard(cardInfo) {
+    var teamsCardTemplate = [
+        '<div class="card" style="width: 18rem;">',
+        '<div class="card-body">',
+        '<h5 class="card-title">Team: ',
+            cardInfo.name || 'undefined',
+        '</h5>',
+        '<h6 class="card-subtitle mb-2 text-muted">Stadium: ',
+        // 2020-2021
+       cardInfo.stadium || 'undefined',
+        '</h6>',
+        '<button class="moreInfoButton">More Info</button></div></div></div></div>'
+    ];
+    return $(teamsCardTemplate.join(''));
+}
+
+function GamesContent(event) {
+    event.preventDefault();
+    $('#GamesCards').empty();
+    $("#leaguesView").css("display","none");
+    $("#seasonsView").css("display","none");
+    $("#TeamsView").css("display","none");
+    $("#GamesView").css("display","block");
+    $.get("/Games", function (data) {
+        data.forEach(function(item) {
+            cards = cards.add(createGamesCard(item));
+        });
+    });
+    $('#GamesCards').append(cards);
+    cards = $();
+}
+function createGamesCard(cardInfo) {
+    var gamesCardTemplate = [
+        '<div class="card" style="width: 18rem;">',
+        '<div class="card-body">',
+        '<h5 class="card-title">Game: </h5>',
+        '<h6 class="card-subtitle mb-3 text-muted">Home Team: ',
+        // 2020-2021
+        cardInfo.home.name || 'undefined', //
+        '</h6>',
+        '<h6 class="card-subtitle mb-3 text-muted">Away Team: ',
+        // 2020-2021
+        cardInfo.away.name || 'undefined', //
+        '</h6>',
+        '<h6 class="card-subtitle mb-3 text-muted">Stadium: ',
+        // 2020-2021
+        cardInfo.home.stadium || 'undefined', //
+        '</h6>',
+        '<h6 class="card-subtitle mb-3 text-muted">Date: ',
+        // 2020-2021
+        cardInfo.date || 'undefined', //
+        '</h6>',
+
+        '<button class="moreInfoButton">More Info</button></div></div></div></div>'
+    ];
+    return $(gamesCardTemplate.join(''));
+}
 
 //</editor-fold>
