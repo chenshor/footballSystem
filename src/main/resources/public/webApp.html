@@ -65,13 +65,13 @@
                     Seasons
                 </div>
             </button>
-            <button class="navButton">
+            <button class="navButton" onclick="TeamsContent(event)">
                 <div>
                     <i class="fas fa-users"></i>
                     Teams
                 </div>
             </button>
-            <button class="navButton">
+            <button class="navButton" onclick="GamesContent(event)">
                 <div>
                     <i class="far fa-futbol"></i>
                     Games
@@ -108,7 +108,7 @@
 
     <div id="changeableContent">
         <!-- LEAGUES -->
-        <div id="leaguesView" hidden>
+        <div id="leaguesView" >
             <h1> Leagues </h1>
             <div id="leagueCards" class="cardContent">
 
@@ -118,6 +118,18 @@
         <div id="seasonsView">
             <h1> Seasons </h1>
             <div id="seasonCards" class="cardContent">
+
+            </div>
+        </div>
+        <div id="TeamsView">
+            <h1> Teams </h1>
+            <div id="TeamCards" class="cardContent">
+
+            </div>
+        </div>
+        <div id="GamesView">
+            <h1> Games </h1>
+            <div id="GamesCards" class="cardContent">
 
             </div>
         </div>
