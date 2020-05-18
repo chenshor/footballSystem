@@ -192,17 +192,21 @@ function changeLayout(fan, representative, referee) {
 var cards = $();
 
 // Create League View Content
-function leagueContent(event) {
-    event.preventDefault();
-    $('#leagueCards').empty();
-    $.get("/Leagues", function (data) {
-        data.forEach(function(item) {
-            cards = cards.add(createLeagueCard(item));
+$(document).ready( function () {
+    $('#leagueButton').click(function () {
+        $('#leaguesView').removeAttr('hidden');
+        $('#leaguesView').show();
+        $('#seasonsView').hide();
+        $('#leagueCards').empty();
+        $.get("/Leagues", function (data) {
+            cards = $();
+            data.forEach(function(item) {
+                cards = (createLeagueCard(item));
+                $('#leagueCards').append(cards);
+            });
         });
     });
-    $('#leagueCards').append(cards);
-    cards = $();
-}
+});
 
 // Info Card Builder - league
 function createLeagueCard(cardInfo) {
@@ -220,17 +224,22 @@ function createLeagueCard(cardInfo) {
     return $(leagueCardTemplate.join(''));
 }
 
-function seasonContent(event) {
-    event.preventDefault();
-    $('#seasonCards').empty();
-    $.get("/Seasons", function (data) {
-        data.forEach(function(item) {
-            cards = cards.add(createSeasonCard(item));
+
+// Create Season View Content
+$(document).ready( function () {
+    $('#seasonButton').click(function () {
+        $('#leaguesView').hide();
+        $('#seasonsView').show();
+        $('#seasonCards').empty();
+        $.get("/Seasons", function (data) {
+            cards = $();
+            data.forEach(function(item) {
+                cards = (createSeasonCard(item));
+                $('#seasonCards').append(cards);
+            });
         });
     });
-    $('#seasonCards').append(cards);
-    cards = $();
-}
+});
 
 // Info Card Builder - league
 function createSeasonCard(cardInfo) {
