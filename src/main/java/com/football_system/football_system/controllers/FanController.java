@@ -92,7 +92,7 @@ public class FanController {
             }
         }
         if (fanService != null) {
-            LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) securityObject.getObject().get(0);
+          //  LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) securityObject.getObject().get(0);
             for ( Alert alert: user.getAlerts()) {
                 alert.setReaded(true);
             }

@@ -59,6 +59,15 @@ class Game {
         this.end=end ;
     }
 }
+
+
+class Alert {
+    constructor(description,date,readed) {
+        this.description=description;
+        this.date = date;
+        this.readed=readed ;
+    }
+}
 var Users = [] ;
 var Teams = [] ;
 var Leagues = [];
@@ -82,7 +91,8 @@ function connectToChat(userName) {
         stompClient.subscribe("/topic/messages/" + userName, function (response) {
             console.log("updated!");
             let data = JSON.parse(response.body);
-            window.alert(data.message) ;
+            new Alert(data.description , data.date , data.read);
+            window.alert(data.description) ;
         });
     });
 }
@@ -408,6 +418,31 @@ $( document ).ready(function() {
         }).catch(function (data) {
             console.log(data);
         });
+    });
+    $("#getAlerts").click(function () {
+
+        let gameID = [] ;
+        gameID[0] = new Object() ;
+        let SecureObj  = new SecurityObj(email,"1000","getAlerts", gameID) ;
+        postSend("/Fan/getUpdates",SecureObj).then(function (data) {
+            let alerts=[];
+            let content = "";
+            for(let i=0; i<data.length ;i++){
+                alerts[i] = new Alert(data[0].description , data[0].date , data[0].readed);
+                content=content+"description: "+ alerts[i].description+", date:"+ alerts[i].date+", readed:"+ alerts[i].readed+"\n";
+            }
+            console.log(content);
+        }).catch(function (data) {
+            console.log(data);
+        });
+    });
+
+    $("#setAllAlertsReaded").click(function () {
+
+        let gameID = [] ;
+        gameID[0] = new Object() ;
+        let SecureObj  = new SecurityObj(email,"1000","SubscibeToGame", gameID) ;
+        postSend("/Fan/setUpdatesReaded",SecureObj) ;
     });
 
     async function postSend(url, request) {
