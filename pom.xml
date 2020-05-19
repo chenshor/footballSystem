@@ -72,7 +72,11 @@
 			<artifactId>spring-web</artifactId>
 			<version>5.2.5.RELEASE</version>
 		</dependency>
-		<!--    JSON Simple    -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <!--    JSON Simple    -->
 	</dependencies>
 
 	<build>

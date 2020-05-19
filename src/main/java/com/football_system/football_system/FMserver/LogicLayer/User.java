@@ -17,6 +17,11 @@ public class User implements Serializable {
     private String lastName;
     private String userName;
     private List<Role> roles;
+
+    public List<Alert> getAlerts() {
+        return alerts;
+    }
+
     private List<Alert> alerts;
 
     private static IDataManager data(){

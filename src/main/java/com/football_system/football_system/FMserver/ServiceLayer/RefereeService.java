@@ -119,9 +119,9 @@ public class RefereeService extends AUserService {
         return Game.getGamesByReferee(refereeId);
     }
 
-    public void addEventGame(boolean home , Integer game_id ,String description, String eventType , int minute){
+    public HashMap<User , Alert> addEventGame(boolean home , Integer game_id ,String description, String eventType , int minute){
         Game game1 = Game.getGameById(game_id);
-        game1.addEventGame(home , new GameEventCalender(game1,null ,null, eventType ,description , minute));
+        return game1.addEventGame(home , new GameEventCalender(game1,null ,null, eventType ,description , minute));
     }
 
     public GameEventCalender.eventType[] getEventTypes(){

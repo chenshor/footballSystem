@@ -2,22 +2,15 @@ package com.football_system.football_system.controllers;
 
 
 import com.football_system.football_system.FMserver.LogicLayer.*;
-import com.football_system.football_system.FMserver.ServiceLayer.GuestService;
 import com.football_system.football_system.FMserver.ServiceLayer.IUserService;
-import com.football_system.football_system.FMserver.ServiceLayer.Interest;
 import com.football_system.football_system.FMserver.ServiceLayer.RepresentativeService;
 import com.football_system.football_system.FootballSystemApplication;
 import com.football_system.football_system.logicTest.SecurityObject;
-import com.football_system.football_system.logicTest.UserTest;
-import jdk.nashorn.internal.runtime.UserAccessorProperty;
-import org.springframework.boot.web.servlet.server.Session;
 import org.apache.log4j.Logger;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -124,4 +117,8 @@ public class RepresentativeController {
 
         return true;
     }
+
+
+
+
 }

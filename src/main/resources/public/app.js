@@ -67,7 +67,29 @@ var Games = [];
 var GameEventsHome = [] ;
 var GameEventsAway = [] ;
 
+//------------------------------------------------------------------------ updates
 
+const url = 'http://localhost:8080';
+let stompClient;
+let newMessages = new Array() ;
+
+function connectToChat(userName) {
+    console.log("connecting to chat...")
+    let socket = new SockJS(url + '/chat');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log("connected to: " + frame);
+        stompClient.subscribe("/topic/messages/" + userName, function (response) {
+            console.log("updated!");
+            let data = JSON.parse(response.body);
+            window.alert(data.message) ;
+        });
+    });
+}
+
+
+
+//-------------------------------------------------------------------------
 $( document ).ready(function() {
     console.log( "ready! david" );
     // init all options ----------------------------------------------------------
@@ -242,7 +264,7 @@ $( document ).ready(function() {
             league,
             document.getElementById("TeamStatus").value);
 
-        let SecureObj  = new SecurityObj(email,"1000","Login", newTeam) ;
+        let SecureObj  = new SecurityObj(email,"1000","addTeam", newTeam) ;
 
         postSend("/Representative/addTeam" , SecureObj);
     });
@@ -257,6 +279,7 @@ $( document ).ready(function() {
         postSend("/Login" , SecureObj).then(function (data) {
             console.log(data);
             document.getElementById("myRoles").innerHTML = data.object[0];
+            connectToChat(email); // --------------------------------------------------------------- must add for push massages
         }).catch(function (err) {
             console.log("failed:"+err);
         });
@@ -346,8 +369,9 @@ $( document ).ready(function() {
         eventProperties[0].description = description  ;
 
         let SecureObj  = new SecurityObj(email,"1000","addGameEvent", eventProperties) ;
-        postSendWithoutReturn("/Referee/addEventToGame", SecureObj);
-        console.log("done!!!");
+        //postSendWithoutReturn("/app/Referee/addEventToGame", SecureObj);
+        stompClient.send("/app/chat",{},JSON.stringify(SecureObj));
+        //console.log("done!!!");
     });
 
     $("#showGameEvents").click(function(){
@@ -368,8 +392,25 @@ $( document ).ready(function() {
 
     });
 
+    $("#SubscibeToGame").click(function () {
+
+        let gameID = [] ;
+        gameID[0] = new Object() ;
+        gameID[0].game_id =  document.getElementById("gameIdSubscribe").value;
+        if(document.getElementById("followStatus").value=="true"){
+            gameID[0].Subscribe = true ;
+        }else{
+            gameID[0].Subscribe = false;
+        }
+        let SecureObj  = new SecurityObj(email,"1000","SubscibeToGame", gameID) ;
+        postSend("/Fan/Subscribe",SecureObj).then(function (data) {
+            console.log(data);
+        }).catch(function (data) {
+            console.log(data);
+        });
+    });
+
     async function postSend(url, request) {
-        document.getElementById("code").value = JSON.stringify(request);
         console.log(JSON.stringify(request));
         const p = async () => {
             try {
@@ -395,7 +436,6 @@ $( document ).ready(function() {
             }
         }
         return await p();
-
     }
     function postSendWithoutReturn(url, request) {
         document.getElementById("code").value = JSON.stringify(request);
