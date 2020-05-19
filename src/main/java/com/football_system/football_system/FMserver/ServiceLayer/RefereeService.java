@@ -105,13 +105,15 @@ public class RefereeService extends AUserService {
      * UC 10.4.2
      * ID: RefereeService@6
      * creates game report for a specific game by main referee
-     * @param game - the game we want to create a report for
+     * @param game_id - the game id we want to create a report for
      * @param description - description of the report
      * @throws IOException
      */
     @Override
-    public void createGameReport(Game game, String description)throws IOException {
-      referee.createGameReport(game,description);
+    public void createGameReport(Integer game_id, String description)throws IOException {
+        Game game1 = Game.getGameById(game_id);
+        if(game1 == null) return ;
+        referee.createGameReport(game1,description);
     }
 
 
@@ -121,6 +123,7 @@ public class RefereeService extends AUserService {
 
     public HashMap<User , Alert> addEventGame(boolean home , Integer game_id ,String description, String eventType , int minute){
         Game game1 = Game.getGameById(game_id);
+        if(game1 == null) return null;
         return game1.addEventGame(home , new GameEventCalender(game1,null ,null, eventType ,description , minute));
     }
 

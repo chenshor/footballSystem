@@ -46,7 +46,7 @@ public interface IUserService {
 
     List<Season> showAllSeasons() throws IOException;
 
-    void createGameReport(Game game, String description) throws IOException;
+    void createGameReport(Integer game_id, String description)throws IOException ;
 
     void addGameEventAfterGame(Game game, String description, String eventType) throws IOException;
 

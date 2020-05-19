@@ -441,9 +441,21 @@ $( document ).ready(function() {
 
         let gameID = [] ;
         gameID[0] = new Object() ;
-        let SecureObj  = new SecurityObj(email,"1000","SubscibeToGame", gameID) ;
+        let SecureObj  = new SecurityObj(email,"1000","setAllAlertsReaded", gameID) ;
         postSend("/Fan/setUpdatesReaded",SecureObj) ;
     });
+
+
+    $("#sendReport").click(function () {
+
+        let report = [] ;
+        report[0] = new Object() ;
+        report[0].game_id =  game_id ;
+        report[0].description = document.getElementById("reportDescription").value;
+        let SecureObj  = new SecurityObj(email,"1000","sendReport", report) ;
+        postSend("/Referee/createReport",SecureObj) ;
+    });
+
 
     async function postSend(url, request) {
         console.log(JSON.stringify(request));

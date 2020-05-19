@@ -38,7 +38,6 @@ public class RepresentativeController {
         if (representativeService != null) {
             LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) securityObject.getObject().get(0);
             LinkedHashMap<String, Object> TeamDetails = (LinkedHashMap<String, Object>) objects.get("Team");
-            Team newTeam = new Team(TeamDetails.get("name").toString(), TeamDetails.get("stadium").toString(), null);
             LinkedHashMap<String, Object> leagueDetails = (LinkedHashMap<String, Object>) TeamDetails.get("league");
 
             League.LeagueType leagueType = League.LeagueType.MAJOR_LEAGUE;
@@ -47,15 +46,18 @@ public class RepresentativeController {
             } catch (Exception e) {
             }
 
-            League championsLeague = new League(leagueType);
-            championsLeague.setName(leagueDetails.get("name").toString());
-            newTeam.setLeague(championsLeague);
+            League league  = League.checkIfLeagueExist(leagueType) ;
+            if(league == null) return false ;
+
+            Team newTeam = new Team(TeamDetails.get("name").toString(), TeamDetails.get("stadium").toString(), null);
+           // league.setName(leagueDetails.get("name").toString());
+            newTeam.setLeague(league);
             DataComp.getInstance().addTeam(newTeam);
-            if (TeamDetails.get("status").toString().equals("activityOpened")) {
-                newTeam.setStatus(Team.TeamStatus.activityOpened);
-            } else {
-                newTeam.setStatus(Team.TeamStatus.activityClosed);
-            }
+          //  if (TeamDetails.get("status").toString().equals("activityOpened")) {
+            newTeam.setStatus(Team.TeamStatus.activityOpened);
+//            } else {
+//                newTeam.setStatus(Team.TeamStatus.activityClosed);
+//            }
 
             return true;
         }
