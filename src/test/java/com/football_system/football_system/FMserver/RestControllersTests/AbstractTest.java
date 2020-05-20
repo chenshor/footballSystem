@@ -1,10 +1,11 @@
-package com.football_system.football_system;
+package com.football_system.football_system.FMserver.RestControllersTests;
 
 import java.io.IOException;
 
 import com.football_system.football_system.FMserver.DataLayer.DataManager;
 import com.football_system.football_system.FMserver.LogicLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.*;
+import com.football_system.football_system.FootballSystemApplication;
 import com.football_system.football_system.logicTest.SecurityObject;
 import org.junit.Assert;
 import org.junit.runner.RunWith;

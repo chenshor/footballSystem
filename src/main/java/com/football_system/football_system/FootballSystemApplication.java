@@ -18,8 +18,13 @@ public class FootballSystemApplication {
 	private static Logger eventsLogger = Logger.getLogger("events");
 
 	public static void main(String[] args) {
-		DataComp.setDataManager(new DataManager());
 		SpringApplication.run(FootballSystemApplication.class, args);
+		run();
+	}
+
+
+	public static void run(){
+		DataComp.setDataManager(new DataManager());
 		Administrator administrator = new Administrator("A", "B", "C");
 		user = new User("rep@gmail.com", "12345678", "Lior");
 		representative = new Representative(user, "lama name"); // rep user

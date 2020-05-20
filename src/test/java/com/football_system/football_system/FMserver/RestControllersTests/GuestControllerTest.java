@@ -1,12 +1,8 @@
-package com.football_system.football_system;
+package com.football_system.football_system.FMserver.RestControllersTests;
 
 
 import com.football_system.football_system.FMserver.LogicLayer.*;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Map;
 
@@ -17,11 +13,7 @@ public class GuestControllerTest extends AbstractTest {
 
     private String url = "http://localhost:8080/";
 
-//    @Override
-//    @Before
-//    public void setUp(){
-//        super.setUp();
-//    }
+
     @Test
     public void  getTeams() throws Exception{
         try {
@@ -102,8 +94,5 @@ public class GuestControllerTest extends AbstractTest {
             assertTrue(false);
         }
     }
-
-
-
 
 }
