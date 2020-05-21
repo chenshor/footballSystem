@@ -1,11 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <script src="./jquery-3.5.1.min.js"></script>
+    <!--    libs for stomp and sockjs-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+
     <script type="text/javascript" src="./app.js"></script>
     <title>Title</title>
 <!--  //  <meta charset="UTF-8">-->
+
+
+
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -117,12 +186,37 @@
 </form>
 <button id="addGameEvent" >add game event</button> // get request teams
 <br>
+<label>create report</label>
+<br>
+<textarea id="reportDescription"></textarea><br>
+<button id="sendReport">send report</button><br>
+<br>
+<br>
 <h1>all game events</h1><br>
 <input type="text" id="gameIdForGameEvents"><br><br>
 <button id="showGameEvents" >show game events</button> // get request teams
 <p id="GameEvents"></p>
+<br>
 
+<br>
 <label>code box</label>
 <textarea id="code"></textarea>
+<br>
+<br>
+<br>
+<label>subscribe to game id</label><br>
+<input id="gameIdSubscribe"><br>
+<label>follow/unfollow</label><br>
+<input id="followStatus">
+<br>
+<br>
+<button id="SubscibeToGame">Subscribe</button>
+<br>
+<br>
+<button id="getAlerts">get all alerts to console</button>
+<br>
+<br>
+<button id="setAllAlertsReaded">set all alert be readed</button>
+
 </body>
 </html>

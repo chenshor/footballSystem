@@ -61,7 +61,7 @@ public abstract class AUserService implements IUserService {
     }
 
     @Override
-    public void createGameReport(Game game, String description) throws IOException {
+    public void createGameReport(Integer game_id , String description) throws IOException {
         throw new IOException("no games");
     }
 

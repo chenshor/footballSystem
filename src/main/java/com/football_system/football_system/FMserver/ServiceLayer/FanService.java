@@ -36,11 +36,23 @@ public class FanService extends AUserService{
     /**
      * id: FanService@2
      * USE CASE - 3.3
-     * add Games to the follow list of a Fan
-     * @param games
+     * add Game to the follow list of a Fan
+     * @param game_id
      */
-    public void followOnGames(List<Observable> games){
-        games.forEach(game -> game.addObserver(this.fan));
+    public void followOnGame(Integer game_id){
+        //games.forEach(game -> game.addObserver(this.fan));
+        Game game = Game.getGameById(game_id);
+        if(game!=null) {
+            game.addSubscriber(this.fan);
+        }
+    }
+
+    public void removeFollowOnGame(Integer game_id){
+        //games.forEach(game -> game.addObserver(this.fan));
+        Game game = Game.getGameById(game_id);
+        if(game!=null) {
+            game.removeSubscriber(this.fan);
+        }
     }
 
     /**

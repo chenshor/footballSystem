@@ -5,11 +5,12 @@ import com.football_system.football_system.FMserver.DataLayer.IDataManager;
 
 import javax.annotation.Generated;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 
-public class Game extends Observable implements Serializable {
+public class Game  implements Serializable {
 
 
     private Integer id;
@@ -33,6 +34,8 @@ public class Game extends Observable implements Serializable {
     private Result result;
     @JsonIgnore
     private GameReport gameReport;
+    @JsonIgnore
+    private List<Fan> subscribers;
 
     public static boolean checkIfHomeTeam(String teamName , Integer game_id){
         return Game.getGameById(game_id).getHome().getName().equals(teamName) ;
@@ -62,6 +65,7 @@ public class Game extends Observable implements Serializable {
         this.startTime=start;
         this.endTime=end;
         this.gameReport=new GameReport(this);
+        this.subscribers = new LinkedList<>();
         this.id = data().getGameList().size()+1; // remove it later
         data().addGame(this);
     }
@@ -104,6 +108,7 @@ public class Game extends Observable implements Serializable {
         this.startTime=start;
         this.endTime=end;
         this.gameReport=new GameReport(this);
+        this.subscribers = new LinkedList<>();
         this.id = data().getGameList().size()+1; // remove it later
         data().addGame(this);
     }
@@ -221,20 +226,31 @@ public class Game extends Observable implements Serializable {
      */
     public void addEventGame(GameEventCalender event){
         gameEventCalenderHome.add(event);
-        setChanged();
-        notifyObservers(event);
     }
 
-    public void addEventGame(boolean home , GameEventCalender event){
+    public HashMap<User , Alert> addEventGame(boolean home , GameEventCalender event){
+        HashMap<User , Alert> userListHashMap = new HashMap<>();
         if(home) {
             gameEventCalenderHome.add(event);
         }else{
             gameEventCalenderAway.add(event);
         }
 
-        setChanged();
-        notifyObservers(event);
+        String description = null ;
+        if(home) {
+            description = this.home.getName() + " against "+ this.away.getName() +" : "+ this.home.getName() + " makes "+event.getType() +", "+event.getDescription();
+        }else{
+            description = this.home.getName() + " against "+ this.away.getName() +" : "+ this.away.getName() + " makes "+event.getType() +", "+event.getDescription();
 
+        }
+        for (Fan fan: subscribers) {
+            User user  = fan.getUser();
+            Alert alert = new Alert(user , description , this.getDate() , false) ;
+            user.addAlerts(alert);
+            userListHashMap.put(user , alert) ;
+        }
+
+        return userListHashMap;
     }
 
     public Integer getId() {
@@ -254,5 +270,28 @@ public class Game extends Observable implements Serializable {
 
     public void setGameEventCalenderAway(List<GameEventCalender> gameEventCalenderAway) {
         this.gameEventCalenderAway = gameEventCalenderAway;
+    }
+
+    public List<Fan> getSubscribers() {
+        return subscribers;
+    }
+
+    public void addSubscriber(Fan fan){
+
+        if( ! subscribers.contains(fan)) {
+            subscribers.add(fan);
+        }
+        if(! fan.getGames().contains(this)){
+            fan.addGameToSubscribe(this);
+        }
+    }
+
+    public void removeSubscriber(Fan fan){
+        if(subscribers.contains(fan)) {
+            subscribers.remove(fan);
+        }
+        if(fan.getGames().contains(this)){
+            fan.removeGameFromSubscribe(this);
+        }
     }
 }

@@ -9,11 +9,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Fan extends Role implements Serializable, Observer {
+public class Fan extends Role implements Serializable {
 
     private List<Page> pages;
-    private List<Observable> games;
+    private List<Game> games;
     private String name;
+
 
     public Fan(User user, String name) {
         super(user);
@@ -146,18 +147,18 @@ public class Fan extends Role implements Serializable, Observer {
         return searchHistory;
     }
 
-    /**
-     * id: fan@8
-     * update - observer
-     * @param game - Observable Game
-     * @param event - update
-     */
-    @Override
-    public void update(Observable game, Object event) throws ClassCastException{
-        if (this.games.contains(game)){
-            alertUser(event);
-        }
-    }
+//    /**
+//     * id: fan@8
+//     * update - observer
+//     * @param game - Observable Game
+//     * @param event - update
+//     */
+//    @Override
+//    public void update(Observable game, Object event) throws ClassCastException{
+//        if (this.games.contains(game)){
+//            alertUser(event);
+//        }
+//    }
 
     /**
      * id: fan@9
@@ -177,7 +178,16 @@ public class Fan extends Role implements Serializable, Observer {
      * games followed by fan getter
      * @return
      */
-    public List<Observable> getGames() {
+    public List<Game> getGames() {
         return games;
+    }
+
+
+    public void addGameToSubscribe(Game game){
+        games.add(game);
+    }
+
+    public void removeGameFromSubscribe(Game game){
+        games.remove(game);
     }
 }

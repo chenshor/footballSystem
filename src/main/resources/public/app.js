@@ -59,6 +59,15 @@ class Game {
         this.end=end ;
     }
 }
+
+
+class Alert {
+    constructor(description,date,readed) {
+        this.description=description;
+        this.date = date;
+        this.readed=readed ;
+    }
+}
 var Users = [] ;
 var Teams = [] ;
 var Leagues = [];
@@ -67,7 +76,30 @@ var Games = [];
 var GameEventsHome = [] ;
 var GameEventsAway = [] ;
 
+//------------------------------------------------------------------------ updates
 
+const url = 'http://localhost:8080';
+let stompClient;
+let newMessages = new Array() ;
+
+function connectToChat(userName) {
+    console.log("connecting to chat...")
+    let socket = new SockJS(url + '/chat');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log("connected to: " + frame);
+        stompClient.subscribe("/topic/messages/" + userName, function (response) {
+            console.log("updated!");
+            let data = JSON.parse(response.body);
+            new Alert(data.description , data.date , data.read);
+            window.alert(data.description) ;
+        });
+    });
+}
+
+
+
+//-------------------------------------------------------------------------
 $( document ).ready(function() {
     console.log( "ready! david" );
     // init all options ----------------------------------------------------------
@@ -242,7 +274,7 @@ $( document ).ready(function() {
             league,
             document.getElementById("TeamStatus").value);
 
-        let SecureObj  = new SecurityObj(email,"1000","Login", newTeam) ;
+        let SecureObj  = new SecurityObj(email,"1000","addTeam", newTeam) ;
 
         postSend("/Representative/addTeam" , SecureObj);
     });
@@ -257,6 +289,7 @@ $( document ).ready(function() {
         postSend("/Login" , SecureObj).then(function (data) {
             console.log(data);
             document.getElementById("myRoles").innerHTML = data.object[0];
+            connectToChat(email); // --------------------------------------------------------------- must add for push massages
         }).catch(function (err) {
             console.log("failed:"+err);
         });
@@ -346,8 +379,9 @@ $( document ).ready(function() {
         eventProperties[0].description = description  ;
 
         let SecureObj  = new SecurityObj(email,"1000","addGameEvent", eventProperties) ;
-        postSendWithoutReturn("/Referee/addEventToGame", SecureObj);
-        console.log("done!!!");
+        //postSendWithoutReturn("/app/Referee/addEventToGame", SecureObj);
+        stompClient.send("/app/chat",{},JSON.stringify(SecureObj));
+        //console.log("done!!!");
     });
 
     $("#showGameEvents").click(function(){
@@ -368,8 +402,62 @@ $( document ).ready(function() {
 
     });
 
+    $("#SubscibeToGame").click(function () {
+
+        let gameID = [] ;
+        gameID[0] = new Object() ;
+        gameID[0].game_id =  document.getElementById("gameIdSubscribe").value;
+        if(document.getElementById("followStatus").value=="true"){
+            gameID[0].Subscribe = true ;
+        }else{
+            gameID[0].Subscribe = false;
+        }
+        let SecureObj  = new SecurityObj(email,"1000","SubscibeToGame", gameID) ;
+        postSend("/Fan/Subscribe",SecureObj).then(function (data) {
+            console.log(data);
+        }).catch(function (data) {
+            console.log(data);
+        });
+    });
+    $("#getAlerts").click(function () {
+
+        let gameID = [] ;
+        gameID[0] = new Object() ;
+        let SecureObj  = new SecurityObj(email,"1000","getAlerts", gameID) ;
+        postSend("/Fan/getUpdates",SecureObj).then(function (data) {
+            let alerts=[];
+            let content = "";
+            for(let i=0; i<data.length ;i++){
+                alerts[i] = new Alert(data[0].description , data[0].date , data[0].readed);
+                content=content+"description: "+ alerts[i].description+", date:"+ alerts[i].date+", readed:"+ alerts[i].readed+"\n";
+            }
+            console.log(content);
+        }).catch(function (data) {
+            console.log(data);
+        });
+    });
+
+    $("#setAllAlertsReaded").click(function () {
+
+        let gameID = [] ;
+        gameID[0] = new Object() ;
+        let SecureObj  = new SecurityObj(email,"1000","setAllAlertsReaded", gameID) ;
+        postSend("/Fan/setUpdatesReaded",SecureObj) ;
+    });
+
+
+    $("#sendReport").click(function () {
+
+        let report = [] ;
+        report[0] = new Object() ;
+        report[0].game_id =  game_id ;
+        report[0].description = document.getElementById("reportDescription").value;
+        let SecureObj  = new SecurityObj(email,"1000","sendReport", report) ;
+        postSend("/Referee/createReport",SecureObj) ;
+    });
+
+
     async function postSend(url, request) {
-        document.getElementById("code").value = JSON.stringify(request);
         console.log(JSON.stringify(request));
         const p = async () => {
             try {
@@ -395,7 +483,6 @@ $( document ).ready(function() {
             }
         }
         return await p();
-
     }
     function postSendWithoutReturn(url, request) {
         document.getElementById("code").value = JSON.stringify(request);

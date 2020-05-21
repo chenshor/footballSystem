@@ -2,22 +2,15 @@ package com.football_system.football_system.controllers;
 
 
 import com.football_system.football_system.FMserver.LogicLayer.*;
-import com.football_system.football_system.FMserver.ServiceLayer.GuestService;
 import com.football_system.football_system.FMserver.ServiceLayer.IUserService;
-import com.football_system.football_system.FMserver.ServiceLayer.Interest;
 import com.football_system.football_system.FMserver.ServiceLayer.RepresentativeService;
 import com.football_system.football_system.FootballSystemApplication;
 import com.football_system.football_system.logicTest.SecurityObject;
-import com.football_system.football_system.logicTest.UserTest;
-import jdk.nashorn.internal.runtime.UserAccessorProperty;
-import org.springframework.boot.web.servlet.server.Session;
 import org.apache.log4j.Logger;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -45,7 +38,6 @@ public class RepresentativeController {
         if (representativeService != null) {
             LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) securityObject.getObject().get(0);
             LinkedHashMap<String, Object> TeamDetails = (LinkedHashMap<String, Object>) objects.get("Team");
-            Team newTeam = new Team(TeamDetails.get("name").toString(), TeamDetails.get("stadium").toString(), null);
             LinkedHashMap<String, Object> leagueDetails = (LinkedHashMap<String, Object>) TeamDetails.get("league");
 
             League.LeagueType leagueType = League.LeagueType.MAJOR_LEAGUE;
@@ -54,15 +46,18 @@ public class RepresentativeController {
             } catch (Exception e) {
             }
 
-            League championsLeague = new League(leagueType);
-            championsLeague.setName(leagueDetails.get("name").toString());
-            newTeam.setLeague(championsLeague);
+            League league  = League.checkIfLeagueExist(leagueType) ;
+            if(league == null) return false ;
+
+            Team newTeam = new Team(TeamDetails.get("name").toString(), TeamDetails.get("stadium").toString(), null);
+           // league.setName(leagueDetails.get("name").toString());
+            newTeam.setLeague(league);
             DataComp.getInstance().addTeam(newTeam);
-            if (TeamDetails.get("status").toString().equals("activityOpened")) {
-                newTeam.setStatus(Team.TeamStatus.activityOpened);
-            } else {
-                newTeam.setStatus(Team.TeamStatus.activityClosed);
-            }
+          //  if (TeamDetails.get("status").toString().equals("activityOpened")) {
+            newTeam.setStatus(Team.TeamStatus.activityOpened);
+//            } else {
+//                newTeam.setStatus(Team.TeamStatus.activityClosed);
+//            }
 
             return true;
         }
@@ -124,4 +119,8 @@ public class RepresentativeController {
 
         return true;
     }
+
+
+
+
 }

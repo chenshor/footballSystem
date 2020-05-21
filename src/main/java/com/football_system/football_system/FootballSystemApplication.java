@@ -18,10 +18,15 @@ public class FootballSystemApplication {
 	private static Logger eventsLogger = Logger.getLogger("events");
 
 	public static void main(String[] args) {
-		DataComp.setDataManager(new DataManager());
 		SpringApplication.run(FootballSystemApplication.class, args);
+		run();
+	}
+
+
+	public static void run(){
+		DataComp.setDataManager(new DataManager());
 		Administrator administrator = new Administrator("A", "B", "C");
-		user = new User("rep@gmail.com", "123456as", "Lior");
+		user = new User("rep@gmail.com", "12345678", "Lior");
 		representative = new Representative(user, "lama name"); // rep user
 		user.addRole(representative);
 		system = new Controller(representative, administrator);
@@ -49,7 +54,7 @@ public class FootballSystemApplication {
 			Guest guest = new Guest();
 			FootballSystemApplication.system.addGuest(guest);
 			GuestService guestService = (GuestService) system.getGuestServices().get(guest);
-			User reg = guestService.register("da", "s", "chen@walla.com", "1234567q");
+			User reg = guestService.register("da", "s", "chen@walla.com", "12345678");
 			SecurityObject.addUserToSystem(reg);
 			//setTeamsDB();
 
@@ -58,7 +63,7 @@ public class FootballSystemApplication {
 			Guest guest2 = new Guest();
 			FootballSystemApplication.system.addGuest(guest2);
 			GuestService guestService2 = (GuestService) system.getGuestServices().get(guest2);
-			User referee = guestService2.register("refer", "s", "referee@walla.com", "1234567q");
+			User referee = guestService2.register("refer", "s", "referee@walla.com", "12345678");
 			SecurityObject.addUserToSystem(referee);
 
 			representativeService.addNewRefereeFromUsers(referee, "very nice referee", "alon");
