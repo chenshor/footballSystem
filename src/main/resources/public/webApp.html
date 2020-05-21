@@ -25,7 +25,7 @@
 <body>
 
 <!-- Login -->
-<div class="page-div" id="login" hidden >
+<div class="page-div" id="login" hidden>
     <div id="sign-in" class="container">
         <h1> SIGN IN </h1>
         <br>
@@ -36,7 +36,7 @@
                 <input type="email" class="form-control" id="userEmail">
             </div>
             <div class="form-group">
-                <label for="userPassword"  id="userPasswordLabel">Password</label>
+                <label for="userPassword" id="userPasswordLabel">Password</label>
                 <input type="password" class="form-control" id="userPassword">
             </div>
         </form>
@@ -99,7 +99,7 @@
         <div id="notifications">
             <button class="navButton">
                 Updates
-                <span class="badge badge-pill badge-danger" id="notificationsNumber">3</span>
+                <span class="badge badge-pill badge-dark" id="notificationsNumber">3</span>
             </button>
         </div>
         <br>
@@ -108,29 +108,85 @@
 
     <div id="changeableContent">
         <!-- LEAGUES -->
-        <div id="leaguesView" >
+        <div id="leaguesView" hidden>
             <h1> Leagues </h1>
             <div id="leagueCards" class="cardContent">
 
             </div>
         </div>
         <!-- SEASONS -->
-        <div id="seasonsView">
+        <div id="seasonsView" hidden>
             <h1> Seasons </h1>
             <div id="seasonCards" class="cardContent">
 
             </div>
         </div>
-        <div id="TeamsView">
+        <!-- TEAMS -->
+        <div id="TeamsView" hidden>
             <h1> Teams </h1>
             <div id="TeamCards" class="cardContent">
 
             </div>
         </div>
-        <div id="GamesView">
+        <!-- GAMES -->
+        <div id="GamesView" hidden>
             <h1> Games </h1>
             <div id="GamesCards" class="cardContent">
 
+            </div>
+        </div>
+        <!-- FAN -->
+        <!-- REFEREE -->
+        <div id="RefereeView">
+            <div id="gameTime">
+                <button id="StartEnd"> START GAME</button>
+                <br>
+                <div class="progress" style="height: 30px; width: 80%; margin-left: 10%">
+                    <div class="progress-bar progress-bar-striped bg-dark" role="progressbar" style="width: 10%"
+                         aria-valuenow="50" aria-valuemin="10" aria-valuemax="100">
+                        <h4>0'</h4>
+                    </div>
+                </div>
+            </div>
+            <div id="EventTitle">
+                <h4> HOME </h4>
+                <h4> AWAY </h4>
+            </div>
+            <div id="GameEvent">
+                <div id="HomeEvents">
+                    <div>7' - Yellow Card - Pique</div>
+                    <div><br></div>
+                    <div>20' - Goal - Messi</div>
+                    <div>26' - Red Card - Pique</div>
+                </div>
+                <div id="AwayEvents">
+                    <div><br></div>
+                    <div>Goal - Asensio - 19'</div>
+                    <div><br></div>
+                </div>
+            </div>
+            <div id="RefController">
+                <h4>Game Event Manager</h4>
+                <form id="addEventForm">
+                    <div class="row">
+                        <div class="col-1">
+                            <input style="text-align: center"
+                                   type="text" class="form-control" placeholder="minute">
+                        </div>
+                        <div class="col-2">
+                            <input type="text" class="form-control" placeholder="team">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="event">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="details">
+                        </div>
+                        <div class="col-2">
+                            <button id="addEvent">ADD</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

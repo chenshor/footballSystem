@@ -8,6 +8,7 @@ body {
     background: whitesmoke;
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 
 input,
@@ -29,6 +30,11 @@ button:focus {
     box-shadow: none !important;
     border: 0 solid #ccc !important;
 }
+
+button:hover {
+    transition-duration: .4s;
+}
+
 /* GENERAL CSS */
 
 /* LOGIN CSS*/
@@ -105,7 +111,7 @@ button:focus {
     height: 70px !important;
 }
 
-#sign-in h4{
+#sign-in h4 {
     width: 80%;
     text-align: center;
     border-bottom: 1px solid #292F35;
@@ -114,9 +120,10 @@ button:focus {
 }
 
 h4 span {
-    background:#fff;
-    padding:0 10px;
+    background: #fff;
+    padding: 0 10px;
 }
+
 /* LOGIN CSS*/
 
 /* MAIN LAYOUT CSS */
@@ -137,7 +144,6 @@ h4 span {
 }
 
 #changeableContent {
-
     background: transparent;
     height: 100%;
     padding: 4%;
@@ -199,6 +205,7 @@ h4 span {
 #notificationsNumber {
     margin-right: -18px;
 }
+
 /* MAIN LAYOUT CSS */
 
 /* CHANGEABLE CONTENT */
@@ -238,3 +245,136 @@ h4 span {
     margin: 5%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
+/* CHANGEABLE CONTENT */
+
+/* REFEREE */
+
+#GameEvent {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 50%));
+    width: 80%;
+    margin-left: 10%;
+    height: 45% !important;
+    min-width: 600px;
+    background: transparent;
+    margin-top: 12px;
+    text-align: center;
+    overflow: auto;
+}
+
+#EventTitle {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 50%));
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 30px;
+    text-align: center;
+}
+
+#RefereeView h2 {
+    text-align: center;
+}
+
+#RefereeView h1 {
+    text-align: left;
+}
+
+#RefereeView {
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+}
+
+#gameTime h2 {
+    text-align: center !important;
+}
+
+#gameTime {
+    background: transparent;
+    width: 70%;
+    padding: 1%;
+    margin-left: 15%;
+}
+
+#StartEnd {
+    border-radius: 0 !important;
+    color: #292F35;
+    border: #292F35 solid 1px !important;
+    background: transparent !important;
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+    margin-bottom: 2%;
+    padding-top: .5%;
+    padding-bottom: .5%;
+}
+
+#StartEnd:hover {
+    border-radius: 0 !important;
+    color: white;
+    background: #292F35 !important;
+}
+
+.progress-bar h4 {
+    margin-top: 10px;
+    border: #292F35 solid 1px !important;
+}
+
+#HomeEvents,
+#AwayEvents {
+    background: transparent;
+    padding: 2%;
+}
+
+#HomeEvents {
+    padding-left: 30%;
+    text-align: left;
+}
+
+#AwayEvents {
+    padding-right: 30%;
+    text-align: right;
+}
+
+#RefController {
+    background: white;
+    height: 20%;
+    margin-top: 3%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#RefController h4 {
+    text-align: left;
+    padding: 1%;
+}
+
+#addEventForm {
+    padding: 1%;
+}
+
+#addEventForm input {
+    border: none !important;
+    border-bottom: #292F35 solid 1px !important;
+    font-size: 1.2rem;
+    padding-bottom: .5%;
+}
+
+#addEvent {
+    border-radius: 0 !important;
+    color: #292F35;
+    border: #292F35 solid 1px !important;
+    background: transparent !important;
+    padding-left: 25% !important;
+    padding-right: 25% !important;
+    padding-top: .5%;
+    padding-bottom: .5%;
+    margin-top: 2%;
+}
+
+#addEvent:hover {
+    border-radius: 0 !important;
+    color: white;
+    background: #292F35 !important;
+}
+
+/* REFEREE */

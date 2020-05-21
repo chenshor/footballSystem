@@ -248,7 +248,6 @@ function createSeasonCard(cardInfo) {
         '<div class="card-body">',
         '<h5 class="card-title">Season</h5>',
         '<h6 class="card-subtitle mb-2 text-muted">',
-        // 2020-2021
         cardInfo.start.substr(0,5) || 'undefined',
         cardInfo.end.substr(0,4) || 'undefined',
         '</h6>',
@@ -277,12 +276,14 @@ function createTeamsCard(cardInfo) {
     var teamsCardTemplate = [
         '<div class="card" style="width: 18rem;">',
         '<div class="card-body">',
-        '<h5 class="card-title">Team: ',
-            cardInfo.name || 'undefined',
+        '<h5 class="card-title">',
+        cardInfo.name || 'undefined',
         '</h5>',
         '<h6 class="card-subtitle mb-2 text-muted">Stadium: ',
-        // 2020-2021
-       cardInfo.stadium || 'undefined',
+        cardInfo.stadium || 'undefined',
+        '</h6>',
+        '<h6 class="card-subtitle mb-2 text-muted">League: ',
+        cardInfo.league.name || 'undefined',
         '</h6>',
         '<button class="moreInfoButton">More Info</button></div></div></div></div>'
     ];
@@ -308,21 +309,22 @@ function createGamesCard(cardInfo) {
     var gamesCardTemplate = [
         '<div class="card" style="width: 18rem;">',
         '<div class="card-body">',
-        '<h5 class="card-title">Game: </h5>',
-        '<h6 class="card-subtitle mb-3 text-muted">Home Team: ',
-        // 2020-2021
+        '<h5 class="card-title">',
+        cardInfo.home.name,
+        '<br>VS<br>',
+        cardInfo.away.name,
+        '</h5>',
+        '<hr>',
+        '<h6 class="card-subtitle mb-3 text-muted">Home: ',
         cardInfo.home.name || 'undefined', //
         '</h6>',
-        '<h6 class="card-subtitle mb-3 text-muted">Away Team: ',
-        // 2020-2021
+        '<h6 class="card-subtitle mb-3 text-muted">Away: ',
         cardInfo.away.name || 'undefined', //
         '</h6>',
         '<h6 class="card-subtitle mb-3 text-muted">Stadium: ',
-        // 2020-2021
         cardInfo.home.stadium || 'undefined', //
         '</h6>',
         '<h6 class="card-subtitle mb-3 text-muted">Date: ',
-        // 2020-2021
         cardInfo.date || 'undefined', //
         '</h6>',
 
