@@ -392,3 +392,37 @@ h4 span {
 }
 
 /* REFEREE */
+
+/* REP */
+
+#RepView {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(100px, 50%));
+    grid-template-rows: repeat(3, minmax(100px, 33%));
+    grid-gap: 3%;
+    height: 100%;
+}
+
+#SchedulePolicy,
+#RankPolicy,
+#addTeam {
+    background: white;
+    border-top: #292F35 solid 6px !important;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#addTeam {
+    grid-column: 1/-1;
+    padding: 1%;
+}
+
+#RankPolicy {
+    grid-row: 2/-1;
+    padding: 2%;
+}
+
+#SchedulePolicy {
+    grid-row: 2/-1;
+    padding: 2%;
+}
+/* REP */
