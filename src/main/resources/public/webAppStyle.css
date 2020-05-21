@@ -250,27 +250,6 @@ h4 span {
 
 /* REFEREE */
 
-#GameEvent {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(200px, 50%));
-    width: 80%;
-    margin-left: 10%;
-    height: 45% !important;
-    min-width: 600px;
-    background: transparent;
-    margin-top: 12px;
-    text-align: center;
-    overflow: auto;
-}
-
-#EventTitle {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(200px, 50%));
-    width: 80%;
-    margin-left: 10%;
-    margin-top: 30px;
-    text-align: center;
-}
 
 #RefereeView h2 {
     text-align: center;
@@ -317,39 +296,74 @@ h4 span {
 
 .progress-bar h4 {
     margin-top: 10px;
-    border: #292F35 solid 1px !important;
+}
+
+.progress {
+    border: #292F35 solid 2px !important;
+}
+
+#GameEvent {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 50%));
+    width: 60%;
+    margin-left: 20%;
+    height: 350px !important;
+    min-width: 600px;
+    background: white;
+    margin-top: 12px;
+    text-align: center;
+    overflow: auto;
+    border-bottom: #292F35 solid 3px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding-top: 1%;
+}
+
+#EventTitle {
+    display: grid;
+    grid-template-columns: minmax(200px, 45%) minmax(50px, 10%) minmax(200px, 45%);
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 30px;
+    text-align: center;
+    background: #292F35;
+    padding: 1%;
+    color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #HomeEvents,
 #AwayEvents {
     background: transparent;
     padding: 2%;
+    font-size: 1.25rem;
 }
 
 #HomeEvents {
-    padding-left: 30%;
+    padding-left: 20%;
     text-align: left;
 }
 
 #AwayEvents {
-    padding-right: 30%;
+    padding-right: 20%;
     text-align: right;
 }
 
 #RefController {
     background: white;
-    height: 20%;
+    height: 170px;
     margin-top: 3%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-left: #292F35 solid 5px;
 }
 
 #RefController h4 {
     text-align: left;
-    padding: 1%;
+    padding: 2% 1% 1% 2%;
+    margin-left: 1%;
 }
 
 #addEventForm {
-    padding: 1%;
+    padding: 0% 1% 1% 3%;
 }
 
 #addEventForm input {
