@@ -8,7 +8,6 @@
 
     <!-- My JavaScript -->
     <script src="./jquery-3.5.1.min.js"></script>
-    <script type="text/javascript" src="./webApp.js"></script>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -130,7 +129,34 @@
             </div>
         </div>
         <!-- REFEREE -->
-        <div id="RefereeView" >
+        <div id="RefView">
+            <div class="container" id="GameSelector">
+                <h3> Game Manager </h3>
+                <h5> Select Game To Manage </h5>
+                <div class="select-box">
+                    <div class="option-container">
+                        <div class="option">
+                            <input type="radio" calss="radio" id="ExampleGame" name="GameOption">
+                            <label for="ExampleGame">Example Game</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" calss="radio" id="NewExampleGame" name="GameOption">
+                            <label for="NewExampleGame">New Example Game</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" calss="radio" id="VeryNewExampleGame" name="GameOption">
+                            <label for="VeryNewExampleGame">Very New Example Game</label>
+                        </div>
+                    </div>
+                    <div class="selectedGame">
+                        Select Game
+                    </div>
+                </div>
+                <br>
+                <button id="selectGame">Start Manage</button>
+            </div>
+        </div>
+        <div id="RefereeView" hidden>
             <div id="gameTime">
                 <button id="StartEnd"> START GAME</button>
                 <br>
@@ -206,5 +232,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+<script type="text/javascript" src="./webApp.js"></script>
 </body>
 </html>
