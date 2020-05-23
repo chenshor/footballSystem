@@ -76,13 +76,13 @@
                     Games
                 </div>
             </button>
-            <button class="navButton">
+            <button class="navButton" id="refereeButton" hidden>
                 <div>
                     <i class="fas fa-stopwatch"></i>
                     Referee
                 </div>
             </button>
-            <button class="navButton">
+            <button class="navButton" hidden>
                 <div>
                     <i class="fas fa-user-tie"></i>
                     Operation
@@ -134,7 +134,7 @@
                 <h3> Game Manager </h3>
                 <h5> Select Game To Manage </h5>
                 <div class="select-box">
-                    <div class="option-container">
+                    <div class="option-container" id="gameOptions">
                         <div class="option">
                             <input type="radio" calss="radio" id="ExampleGame" name="GameOption">
                             <label for="ExampleGame">Example Game</label>
@@ -148,7 +148,7 @@
                             <label for="VeryNewExampleGame">Very New Example Game</label>
                         </div>
                     </div>
-                    <div class="selectedGame">
+                    <div class="selected" id="selectedGame">
                         Select Game
                     </div>
                 </div>

@@ -490,7 +490,7 @@ h4 span {
     order: 1;
 }
 
-.selectedGame {
+.selected {
     background: #292F35;
     border-radius: 0;
     margin-bottom: 2px;
@@ -499,7 +499,7 @@ h4 span {
     order: 0;
 }
 
-.selectedGame::after {
+.selected::after {
     content: "";
     background-size: contain;
     background: url("./graphics/arrow.png") no-repeat;
@@ -517,7 +517,7 @@ h4 span {
     overflow-y: auto;
 }
 
-.select-box .option-container.active + .selectedGame::after {
+.select-box .option-container.active + .selected::after {
     transform: rotateX(180deg);
     top: -8%;
 }
@@ -534,7 +534,7 @@ h4 span {
 }
 
 .select-box .option,
-.selectedGame {
+.selected {
     padding: 3px 12px;
     cursor: pointer;
 }

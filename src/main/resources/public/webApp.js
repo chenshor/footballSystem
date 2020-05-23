@@ -174,14 +174,14 @@ function postSendWithoutReturn(url, request) {
 function changeLayout(fan, representative, referee) {
     document.getElementById('login').hidden = true;
     document.getElementById('mainLayout').hidden = false;
-    if(fan == true) {
-
+    if (fan == true) {
+        // Show Notifications
     }
-    if(representative == true) {
-
+    if (representative == true) {
+        // Show Rep Button
     }
-    if(referee == true) {
-
+    if (referee == true) {
+        // Show Referee Button
     }
 }
 
@@ -192,7 +192,7 @@ function changeLayout(fan, representative, referee) {
 var cards = $();
 
 // Create League View Content
-$(document).ready( function () {
+$(document).ready(function () {
     $('#leagueButton').click(function () {
         $('#leaguesView').removeAttr('hidden');
         $('#leaguesView').show();
@@ -200,7 +200,7 @@ $(document).ready( function () {
         $('#leagueCards').empty();
         $.get("/Leagues", function (data) {
             cards = $();
-            data.forEach(function(item) {
+            data.forEach(function (item) {
                 cards = (createLeagueCard(item));
                 $('#leagueCards').append(cards);
             });
@@ -226,14 +226,14 @@ function createLeagueCard(cardInfo) {
 
 
 // Create Season View Content
-$(document).ready( function () {
+$(document).ready(function () {
     $('#seasonButton').click(function () {
         $('#leaguesView').hide();
         $('#seasonsView').show();
         $('#seasonCards').empty();
         $.get("/Seasons", function (data) {
             cards = $();
-            data.forEach(function(item) {
+            data.forEach(function (item) {
                 cards = (createSeasonCard(item));
                 $('#seasonCards').append(cards);
             });
@@ -248,8 +248,8 @@ function createSeasonCard(cardInfo) {
         '<div class="card-body">',
         '<h5 class="card-title">Season</h5>',
         '<h6 class="card-subtitle mb-2 text-muted">',
-        cardInfo.start.substr(0,5) || 'undefined',
-        cardInfo.end.substr(0,4) || 'undefined',
+        cardInfo.start.substr(0, 5) || 'undefined',
+        cardInfo.end.substr(0, 4) || 'undefined',
         '</h6>',
         '<button class="moreInfoButton">More Info</button></div></div></div></div>'
     ];
@@ -258,13 +258,13 @@ function createSeasonCard(cardInfo) {
 
 function TeamsContent(event) {
     event.preventDefault();
-    $("#leaguesView").css("display","none");
-    $("#seasonsView").css("display","none");
-    $("#GamesView").css("display","none");
-    $("#TeamsView").css("display","block");
+    $("#leaguesView").css("display", "none");
+    $("#seasonsView").css("display", "none");
+    $("#GamesView").css("display", "none");
+    $("#TeamsView").css("display", "block");
     $('#TeamCards').empty();
     $.get("/Teams", function (data) {
-        data.forEach(function(item) {
+        data.forEach(function (item) {
             cards = cards.add(createTeamsCard(item));
         });
     });
@@ -293,18 +293,19 @@ function createTeamsCard(cardInfo) {
 function GamesContent(event) {
     event.preventDefault();
     $('#GamesCards').empty();
-    $("#leaguesView").css("display","none");
-    $("#seasonsView").css("display","none");
-    $("#TeamsView").css("display","none");
-    $("#GamesView").css("display","block");
+    $("#leaguesView").css("display", "none");
+    $("#seasonsView").css("display", "none");
+    $("#TeamsView").css("display", "none");
+    $("#GamesView").css("display", "block");
     $.get("/Games", function (data) {
-        data.forEach(function(item) {
+        data.forEach(function (item) {
             cards = cards.add(createGamesCard(item));
         });
     });
     $('#GamesCards').append(cards);
     cards = $();
 }
+
 function createGamesCard(cardInfo) {
     var gamesCardTemplate = [
         '<div class="card" style="width: 18rem;">',
@@ -335,7 +336,7 @@ function createGamesCard(cardInfo) {
 
 //</editor-fold>
 
-const selected = document.querySelector(".selectedGame");
+const selected = document.querySelector(".selected");
 const optionContainer = document.querySelector(".option-container");
 
 const optionsList = document.querySelectorAll(".option");
@@ -347,6 +348,90 @@ selected.addEventListener("click", () => {
 optionsList.forEach(o => {
     o.addEventListener("click", () => {
         selected.innerHTML = o.querySelector("label").innerHTML;
+        GameOptionID = o.querySelector("label").htmlFor;
         optionContainer.classList.remove("active");
     });
+});
+
+function createGameOption(gameOptionInfo) {
+    let gameOptionTemplate = [
+        '<div class="option">',
+        '<input type="radio" class="radio" id="gameOption',
+            gameOptionInfo.id || 'undefined',
+        '" name="GameOption">',
+        '<label for=gameOption',
+            gameOptionInfo.id || 'undefined',
+        '>',
+            gameOptionInfo.home || 'undefined',
+        ' VS ',
+            gameOptionInfo.away || 'undefined',
+        '</label></div>'
+    ];
+    return $(gameOptionTemplate.join(''));
+}
+
+var GameOptions = $();
+var GameOptionID;
+let game_id;
+
+$('#refereeButton').click(function () {
+    let refereeOptions = [];
+    refereeOptions[0] = new Object();
+    refereeOptions[0].referee_id = email;
+    let SecureObj = new SecurityObj(email, "1000", "GameChoose", refereeOptions);
+    postSend("/Referee/getGamesByReferee", SecureObj).then(function (data) {
+        let Games = [];
+        $('#gameOptions').empty();
+        GameOptions = $();
+        data.forEach(game => {
+            GameOptions = (createGameOption(game));
+            $('#gameOptions').append(GameOptions);
+        });
+    }).catch(function (data) {
+        console.log("request failed");
+    });
+});
+
+$("#selectGame").click(function () {
+    let gameID = [];
+    gameID[0] = new Object();
+    gameID[0].game_id = GameOptionID.substr(10);
+    let SecureObj = new SecurityObj(email, "1000", "startGame", gameID);
+    postSend("/Referee/getEventProperties", SecureObj).then(function (data) {
+        for (let i = 0; i < data[0].length; i++) {
+            var x = document.getElementById("eventTypeSelectAddEvent");
+            var option = document.createElement("option");
+            option.text = data[0][i];
+            x.add(option);
+        }
+        var x = document.getElementById("teamSelectAddEvent");
+        var option = document.createElement("option");
+        option.text = data[1].home;
+        x.add(option);
+        var option = document.createElement("option");
+        option.text = data[1].away;
+        x.add(option);
+    }).catch(function (data) {
+        console.log(data);
+    });
+});
+
+$("#addGameEvent").click(function () {
+
+    let minute = document.getElementById("GameMinute").value;
+    let team = document.getElementById("teamSelectAddEvent").value;
+    let eventType = document.getElementById("eventTypeSelectAddEvent").value;
+    let description = document.getElementById("descripitionAddEvent").value;
+    let eventProperties = [];
+    eventProperties[0] = new Object();
+    eventProperties[0].game_id = game_id;
+    eventProperties[0].minute = minute;
+    eventProperties[0].team = team;
+    eventProperties[0].eventType = eventType;
+    eventProperties[0].description = description;
+
+    let SecureObj = new SecurityObj(email, "1000", "addGameEvent", eventProperties);
+    //postSendWithoutReturn("/app/Referee/addEventToGame", SecureObj);
+    stompClient.send("/app/chat", {}, JSON.stringify(SecureObj));
+    //console.log("done!!!");
 });
