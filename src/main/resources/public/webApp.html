@@ -129,24 +129,12 @@
             </div>
         </div>
         <!-- REFEREE -->
-        <div id="RefView">
+        <div id="RefView" hidden>
             <div class="container" id="GameSelector">
                 <h3> Game Manager </h3>
                 <h5> Select Game To Manage </h5>
                 <div class="select-box">
                     <div class="option-container" id="gameOptions">
-                        <div class="option">
-                            <input type="radio" calss="radio" id="ExampleGame" name="GameOption">
-                            <label for="ExampleGame">Example Game</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" calss="radio" id="NewExampleGame" name="GameOption">
-                            <label for="NewExampleGame">New Example Game</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" calss="radio" id="VeryNewExampleGame" name="GameOption">
-                            <label for="VeryNewExampleGame">Very New Example Game</label>
-                        </div>
                     </div>
                     <div class="selected" id="selectedGame">
                         Select Game
@@ -190,13 +178,13 @@
                 <form id="addEventForm">
                     <div class="row">
                         <div class="col-2">
-                            <input type="text" class="form-control" placeholder="team">
+                            <select class="form-control" id="eventTypeSelectAddEvent"></select>
                         </div>
                         <div class="col">
-                            <input type="text" class="form-control" placeholder="event">
+                            <select class="form-control" id="teamSelectAddEvent"></select>
                         </div>
                         <div class="col">
-                            <input type="text" class="form-control" placeholder="details">
+                            <input type="text" class="form-control" placeholder="details" id="description">
                         </div>
                         <div class="col-2">
                             <button id="addEvent">ADD</button>
@@ -206,7 +194,7 @@
             </div>
         </div>
         <!-- REPRESENTATIVE -->
-        <div id="RepView" hidden>
+        <div id="RepView" >
             <div id="addTeam">
                 <h1>ADD TEAM</h1>
             </div>

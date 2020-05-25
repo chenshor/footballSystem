@@ -395,33 +395,34 @@ $('#refereeButton').click(function () {
 $("#selectGame").click(function () {
     let gameID = [];
     gameID[0] = new Object();
-    gameID[0].game_id = GameOptionID.substr(10);
+    // gameID[0].game_id = GameOptionID.substr(10);
     let SecureObj = new SecurityObj(email, "1000", "startGame", gameID);
     postSend("/Referee/getEventProperties", SecureObj).then(function (data) {
+        var eventType = document.getElementById("eventTypeSelectAddEvent");
         for (let i = 0; i < data[0].length; i++) {
-            var x = document.getElementById("eventTypeSelectAddEvent");
             var option = document.createElement("option");
             option.text = data[0][i];
-            x.add(option);
+            eventType.add(option);
         }
-        var x = document.getElementById("teamSelectAddEvent");
+        var teamSelector = document.getElementById("teamSelectAddEvent");
         var option = document.createElement("option");
         option.text = data[1].home;
-        x.add(option);
+        teamSelector.add(option);
         var option = document.createElement("option");
         option.text = data[1].away;
-        x.add(option);
+        teamSelector.add(option);
     }).catch(function (data) {
         console.log(data);
     });
+    $('#RefView').hide();
+    $('#RefereeView').removeAttr('hidden');
 });
 
 $("#addGameEvent").click(function () {
-
     let minute = document.getElementById("GameMinute").value;
     let team = document.getElementById("teamSelectAddEvent").value;
     let eventType = document.getElementById("eventTypeSelectAddEvent").value;
-    let description = document.getElementById("descripitionAddEvent").value;
+    let description = document.getElementById("description").value;
     let eventProperties = [];
     eventProperties[0] = new Object();
     eventProperties[0].game_id = game_id;
