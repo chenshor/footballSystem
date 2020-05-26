@@ -45,9 +45,9 @@ public class FootballSystemApplication {
 			representativeService.addLeague(League.LeagueType.MAJOR_LEAGUE, "championsLeague");
 			representativeService.addLeague(League.LeagueType.LEAGUE_A, "cool League");
 
-			representativeService.addSeason("2020-01-03", "2021-01-05", League.getLeagueByType("MAJOR_LEAGUE"));
-			representativeService.addSeason("2021-05-06", "2022-03-20", League.getLeagueByType("MAJOR_LEAGUE"));
-			representativeService.addSeason("2021-05-06", "2022-03-20", League.getLeagueByType("LEAGUE_A"));
+			representativeService.addSeason("2020", "2021", League.getLeagueByType("MAJOR_LEAGUE"));
+			representativeService.addSeason("2021", "2022", League.getLeagueByType("MAJOR_LEAGUE"));
+			representativeService.addSeason("2022", "2023", League.getLeagueByType("LEAGUE_A"));
 		}catch (Exception e){}
 // ------ add user
 		try {
@@ -67,8 +67,8 @@ public class FootballSystemApplication {
 			SecurityObject.addUserToSystem(referee);
 
 			representativeService.addNewRefereeFromUsers(referee, "very nice referee", "alon");
-			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2020-01-03","2021-01-05")) ;
-			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2021-05-06","2022-03-20")) ;
+			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2020","2021")) ;
+			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2021","2023")) ;
 
 
 			Team barcelona = new Team("FC Barcelona", "Camp Nou", null);
@@ -81,7 +81,7 @@ public class FootballSystemApplication {
 			DataComp.getInstance().addTeam(realMadrid);
 			barcelona.setStatus(Team.TeamStatus.activityOpened);
 			realMadrid.setStatus(Team.TeamStatus.activityOpened);
-			DataComp.getInstance().addGame(new Game( Season.getSeason("2020-01-03","2021-01-05") , barcelona,realMadrid, Referee.getReferees().get(0) ,Referee.getReferees().get(0) ,"2021-09-08","8:00","9:30"));
+			DataComp.getInstance().addGame(new Game( Season.getSeason("2020","2021") , barcelona,realMadrid, Referee.getReferees().get(0) ,Referee.getReferees().get(0) ,"2021-09-08","8:00","9:30"));
 		}catch (Exception e){}
 
 	}
