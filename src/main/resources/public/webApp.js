@@ -97,6 +97,15 @@ $(document).ready(function () {
 
 // LOGIN function
 $(document).ready(function () {
+    ////// just for tests without login
+    $.get("/Seasons", function (data) {
+        cards = $();
+        data.forEach(function (item) {
+            cards = (seasonSelect(item));
+            $('#SeasonypeGame').append(cards);
+        });
+    });
+    ////////////////////////////
     $("#loginSubmit").click(function (event) {
         event.preventDefault();
         let signIn = [];
@@ -179,6 +188,13 @@ $(document).ready(function () {
         }
         if (representative == true) {
             // Show Rep Button
+            $.get("/Seasons", function (data) {
+                cards = $();
+                data.forEach(function (item) {
+                    cards = (seasonSelect(item));
+                    $('#SeasonypeGame').append(cards);
+                });
+            });
         }
         if (referee == true) {
             // Show Referee Button
@@ -437,9 +453,9 @@ $(document).ready(function () {
         //console.log("done!!!");
     });
 // $(document).ready(function () {
-    $("#submitTeam").on('submit',function (e) {
-        e.preventDefault();
-        e.stopPropagation();
+    $("#submitTeam").on('click',function (e) {
+        // e.preventDefault();
+        // e.stopPropagation();
         let newTeam = [];
         newTeam[0] = new Object()
         let league = new League(document.getElementById("leaguesType").value, null);
@@ -470,15 +486,6 @@ $(document).ready(function () {
         // }
     }
 
-    function showAddSchedule() {
-        var x = document.getElementById("GamePolicy1");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-
 
     var numberOfNeededDates = 0;
     var numberOfTeamsInLeague = 0;
@@ -496,20 +503,17 @@ $(document).ready(function () {
             numberOfNeededDates = data.number_of_dates_needed;
             numberOfTeamsInLeague = data.number_of_Teams;
 
-            cards = createdates(numberOfNeededDates);
-            $('#GamePolicy2').append(cards);
-
-            window.alert("teams:" + numberOfTeamsInLeague + " , number of dates:" + numberOfNeededDates);
+            cards = createDates(numberOfNeededDates);
+            $('#GamePolicy2').prepend(cards);
+              var stage1 = document.getElementById("GamePolicy2");
+              stage1.style.display = "block";
+            // window.alert("teams:" + numberOfTeamsInLeague + " , number of dates:" + numberOfNeededDates);
         });
 
         // // )
     });
 
-// });
 
-    async function getNumbeOfGames() {
-
-    }
 
 
     function switchDivSchedual() {
@@ -520,55 +524,61 @@ $(document).ready(function () {
     }
 
 
-    function createdates(dateInfo) {
+    function createDates(dateInfo) {
         var gamesCardTemplate = [
-            '<div class="formDates"',
+            '<div class="formDates">',
             '<form>',
             '<label id="dateInput">',
             'Please enter ',
             dateInfo, ' games dates and start and finish hours:', '</label>', '<br>'];
         var index = 8;
         for (var i = 0; i < dateInfo; i++) {
-            gamesCardTemplate[index] = '<input id="GameDates" type="date">';
+            let id2="GameDates"+i;
+            gamesCardTemplate[index] = '<input id='+id2+' type="date">';
             index++;
-            gamesCardTemplate[index] = '<input id="GameDates" type="time">';
+            id2="startHour"+i;
+            gamesCardTemplate[index] = '<input id='+id2+' type="time">';
             index++;
-            gamesCardTemplate[index] = '<input id="GameDates" type="time">';
+            id2="endHour"+i;
+            gamesCardTemplate[index] = '<input id='+id2+' type="time">';
             index++;
             gamesCardTemplate[index] = '<br>';
             index++;
         }
-        gamesCardTemplate[index] = '<button id="submitGame1" class="btn btn-primary"  ' +
-            'type="submit">Submit Games</button></form></div>';
+        gamesCardTemplate[index]='</form></div>';
+        // gamesCardTemplate[index] = '<button id="submitGame1" class="btn btn-primary"  ' +
+        //     'type="button">Submit Games</button></form></div>';
         return gamesCardTemplate;
     }
 
-    $("#ScheduleGames").click(function () {
+
+    $("#submitGame1").click(function () {
         let newRequest = [];
         newRequest[0] = new Object();
         newRequest[0].league = leagueType;
         let seasonSelection = document.getElementById("SeasonypeGame").value;
-        let start = seasonSelection.substring(seasonSelection.indexOf("start:") + 6, seasonSelection.indexOf(" ,end:"));
-        let end = seasonSelection.substring(seasonSelection.indexOf(",end:") + 5);
+        let start = seasonSelection.substring(0,4);
+        let end = seasonSelection.substring(6,10);
         newRequest[0].start = start;
         newRequest[0].end = end;
         newRequest[0].numberOfGamesPerTeam = numberOfGamePerTeam;
-        let datesFromForm = document.getElementById("GameDates").value;
-        let dates = datesFromForm.split(" ");
         newRequest[0].date = [];
-        let j = 0;
-        for (let i = 0; i < dates.length; i = i + 3) {
-            newRequest[0].date[j] = new Object();
-            newRequest[0].date[j].date = dates[i];
-            newRequest[0].date[j].start = dates[i + 1];
-            newRequest[0].date[j].end = dates[i + 2];
-
-            j = j + 1;
+        for( let i=0; i<numberOfNeededDates;i++){
+            let id1="GameDates"+i;
+            let datesFromForm = document.getElementById(id1).value;
+            id1="startHour"+i;
+            let start= document.getElementById(id1).value;
+            id1="endHour"+i;
+            let end= document.getElementById(id1).value;
+            newRequest[0].date[i]= new Object();
+            newRequest[0].date[i].date=datesFromForm;
+            newRequest[0].date[i].start=start;
+            newRequest[0].date[i].end=end;
         }
 
-        let SecureObj = new SecurityObj(email, "1000", "ScheduleGames", newRequest);
-
-        //    window.alert(JSON.stringify(SecureObj));
+        let SecureObj = new SecurityObj(email, "1000", "submitGame1", newRequest);
+        console.log(SecureObj);
+           window.alert(JSON.stringify(SecureObj));
         postSend("/Representative/scheduleGame", SecureObj).then(function (v) {
             console.log("good:" + v);
             printGames(v);
@@ -581,4 +591,27 @@ $(document).ready(function () {
         // }
         // window.alert(games) ;
     });
+
+    function seasonSelect(cardInfo){
+        var leagueCardTemplate = [
+            '<option value='+
+            cardInfo.start.substr(0, 5)+ '-'+
+            cardInfo.end.substr(0, 4) + ">"+
+            cardInfo.start.substr(0, 5)+ '-'+
+            cardInfo.end.substr(0, 4)+
+                "</option>",
+
+        ];
+        return $(leagueCardTemplate.join(''));
+    }
+    function printGames(data){
+        let Games = [] ;
+        console.log("succsses");
+        for(let i=0 ; i < data.length ; i++){
+            Games[i] = new Game(data[i].id ,data[i].home.name , data[i].away.name , data[i].date , data[i].startTime , data[i].endTime);
+            console.log("game id:"+Games[i].id +", home: "+Games[i].home +", away:"+ Games[i].away+", date:"+Games[i].date+", start:"+Games[i].start +", end:"+Games[i].end);
+        }
+    }
+
+
 });
