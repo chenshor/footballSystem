@@ -115,7 +115,7 @@
             </div>
         </div>
         <!-- TEAMS -->
-        <div id="TeamsView" hidden>
+        <div id="TeamsView"  >
             <h1> Teams </h1>
             <div id="TeamCards" class="cardContent">
 
@@ -194,16 +194,79 @@
             </div>
         </div>
         <!-- REPRESENTATIVE -->
-        <div id="RepView" >
-            <div id="addTeam">
-                <h1>ADD TEAM</h1>
+        <div id="RepView">
+            <div id="addTeam"  >
+                <h1 >ADD TEAM</h1>
+                <div id="addNewTeam">
+                <form>
+                    <div class="form-group">
+                        <label id="teamName">Team's Name:</label>
+                        <input type="text" class="form-control" id="inputTeamName">
+                    </div>
+                    <div class="form-group">
+                        <label id="teamStadium">Team's Stadium:</label>
+                        <input type="text" class="form-control" id="inputStadium">
+                    </div>
+                    <div class="form-group">
+                        <label>League Type:</label>
+                        <div class="form-group">
+                            <select name="Leagues" id="leaguesType">
+                                <option value="MAJOR_LEAGUE">MAJOR_LEAGUE</option>
+                                <option value="SECOND_LEAGUE">SECOND_LEAGUE</option>
+                                <option value="LEAGUE_A">LEAGUE_A</option>
+                                <option value="LEAGUE_B">LEAGUE_B</option>
+                                <option value="LEAGUE_C">LEAGUE_C</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="submitTeam"   type="button" class="btn btn-primary">Add Team</button>
+                </form>
+                </div>
             </div>
-            <div id="RankPolicy">
-                <h1>RANK POLICY</h1>
-            </div>
-            <div id="SchedulePolicy">
+            <!--<div id="RankPolicy" >-->
+                <!--<h1>RANK POLICY</h1>-->
+                <!--<div>-->
+
+                <!--</div>-->
+            <!--</div>-->
+            <div id="SchedulePolicy"  >
                 <h1>SCHEDULE POLICY</h1>
+                <div id="GamePolicy1">
+                    <form>
+                        <label>League Type:</label>
+                        <div class="form-group">
+                            <select name="Leagues" id="leagueTypeGame">
+                                <option value="MAJOR_LEAGUE">MAJOR_LEAGUE</option>
+                                <option value="SECOND_LEAGUE">SECOND_LEAGUE</option>
+                                <option value="LEAGUE_A">LEAGUE_A</option>
+                                <option value="LEAGUE_B">LEAGUE_B</option>
+                                <option value="LEAGUE_C">LEAGUE_C</option>
+                            </select>
+                        </div>
+                        <label>Season:</label>
+                        <div class="form-group">
+                            <select name="Leagues" id="SeasonypeGame">
+                                <option value="MAJOR_LEAGUE">MAJOR_LEAGUE</option>
+                                <!--<option value="SECOND_LEAGUE">SECOND_LEAGUE</option>-->
+                                <!--<option value="LEAGUE_A">LEAGUE_A</option>-->
+                                <!--<option value="LEAGUE_B">LEAGUE_B</option>-->
+                                <!--<option value="LEAGUE_C">LEAGUE_C</option>-->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label id="numOfGames">Number Of Games Per Team:</label>
+                            <input type="text" class="form-control" id="inputNumGames">
+                        </div>
+                        <button id="submitGame" type="button" class="btn btn-primary">Continue</button>
+                    </form>
+                </div>
+                <br>
+
+                <div id="GamePolicy2" >
+
+                </div>
             </div>
+
         </div>
     </div>
 </div>

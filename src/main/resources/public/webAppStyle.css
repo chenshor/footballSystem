@@ -99,6 +99,7 @@ button:hover {
     margin-top: 10%;
 }
 
+
 #sign-in label {
     margin-left: 13%;
     margin-bottom: -8%;
@@ -109,6 +110,10 @@ button:hover {
 
 #sign-in .form-group {
     height: 70px !important;
+}
+
+.form-control{
+
 }
 
 #sign-in h4 {
@@ -435,7 +440,7 @@ h4 span {
 #RepView {
     display: grid;
     grid-template-columns: repeat(2, minmax(100px, 50%));
-    grid-template-rows: repeat(3, minmax(100px, 33%));
+    grid-template-rows: repeat(3, minmax(100px, 50%));
     grid-gap: 3%;
     height: 100%;
 }
@@ -451,7 +456,9 @@ h4 span {
 #addTeam {
     grid-column: 1/-1;
     padding: 1%;
+
 }
+
 
 #RankPolicy {
     grid-row: 2/-1;
@@ -552,5 +559,32 @@ h4 span {
 input[type=radio] {
     display: none !important;
 }
+
+/*#addNewTeam{*/
+    /*display: none;*/
+/*}*/
+#GamePolicy1 {
+    display: block;
+}
+/*#GamePolicy2{*/
+    /*display: none;*/
+/*}*/
+
+#submitGame,
+#submitGame1,
+#submitTeam{
+    margin-top: 20px;
+    border-radius: 0;
+    font-size: 1.2rem;
+    padding-left: 24%;
+    padding-right: 24%;
+    background: #292F35;
+    width: 5%;
+}
+
+#inputStadium{
+    width: 20%;
+}
+
 
 /* MY SELECT BOX */

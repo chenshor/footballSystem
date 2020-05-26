@@ -1,7 +1,7 @@
 // Web App JS File
 
 // Variables
-var email;
+var email = "rep@gmail.com";
 var password;
 var fan = false;
 var referee = false;
@@ -89,6 +89,7 @@ $(document).ready(function () {
             input.setAttribute('autocomplete', 'off')
         }
     );
+
 });
 
 
@@ -117,7 +118,6 @@ $(document).ready(function () {
             console.log("failed: " + err);
         });
     });
-});
 
 
 //</editor-fold>
@@ -125,74 +125,74 @@ $(document).ready(function () {
 //<editor-fold desc="GENERAL FUNCTIONS">
 
 // POST request with return value
-async function postSend(url, request) {
-    const p = async () => {
-        try {
-            var res;
-            await $.ajax({
-                type: "POST",
-                url: url,
-                // The key needs to match your method's input parameter (case-sensitive).
-                data: JSON.stringify(request),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                processData: false,
-                success: function (resources) {
-                    res = resources;
-                },
-                error: function (err) {
-                    console.log(err);
-                }
-            });
-            return res;
-        } catch (err) {
-            console.log(err);
-        }
-    };
-    return await p();
+    async function postSend(url, request) {
+        const p = async () => {
+            try {
+                var res;
+                await $.ajax({
+                    type: "POST",
+                    url: url,
+                    // The key needs to match your method's input parameter (case-sensitive).
+                    data: JSON.stringify(request),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    processData: false,
+                    success: function (resources) {
+                        res = resources;
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+                return res;
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        return await p();
 
-}
+    }
 
 // POST request with no return value
-function postSendWithoutReturn(url, request) {
-    $.ajax({
-        type: "POST",
-        url: url,
-        // The key needs to match your method's input parameter (case-sensitive).
-        data: JSON.stringify(request),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        processData: false,
-        success: function () {
-        },
-        error: function () {
-        }
-    });
-}
+    function postSendWithoutReturn(url, request) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            // The key needs to match your method's input parameter (case-sensitive).
+            data: JSON.stringify(request),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            processData: false,
+            success: function () {
+            },
+            error: function () {
+            }
+        });
+    }
 
 // CHANGE LAYOUT - based on user privileges
-function changeLayout(fan, representative, referee) {
-    document.getElementById('login').hidden = true;
-    document.getElementById('mainLayout').hidden = false;
-    if (fan == true) {
-        // Show Notifications
+    function changeLayout(fan, representative, referee) {
+        document.getElementById('login').hidden = true;
+        document.getElementById('mainLayout').hidden = false;
+        if (fan == true) {
+            // Show Notifications
+        }
+        if (representative == true) {
+            // Show Rep Button
+        }
+        if (referee == true) {
+            // Show Referee Button
+        }
     }
-    if (representative == true) {
-        // Show Rep Button
-    }
-    if (referee == true) {
-        // Show Referee Button
-    }
-}
 
 //</editor-fold>
 
 //<editor-fold desc="CONTENT GENERATOR">
 
-var cards = $();
+    var cards = $();
 
 // Create League View Content
-$(document).ready(function () {
+// $(document).ready(function () {
     $('#leagueButton').click(function () {
         $('#leaguesView').removeAttr('hidden');
         $('#leaguesView').show();
@@ -206,27 +206,27 @@ $(document).ready(function () {
             });
         });
     });
-});
+// });
 
 // Info Card Builder - league
-function createLeagueCard(cardInfo) {
-    var leagueCardTemplate = [
-        '<div class="card" style="width: 18rem;">',
-        '<div class="card-body">',
-        '<h5 class="card-title">',
-        cardInfo.name || 'undefined',
-        '</h5>',
-        '<h6 class="card-subtitle mb-2 text-muted">',
-        cardInfo.type || 'undefined',
-        '</h6>',
-        '<button class="moreInfoButton">More Info</button></div></div>'
-    ];
-    return $(leagueCardTemplate.join(''));
-}
+    function createLeagueCard(cardInfo) {
+        var leagueCardTemplate = [
+            '<div class="card" style="width: 18rem;">',
+            '<div class="card-body">',
+            '<h5 class="card-title">',
+            cardInfo.name || 'undefined',
+            '</h5>',
+            '<h6 class="card-subtitle mb-2 text-muted">',
+            cardInfo.type || 'undefined',
+            '</h6>',
+            '<button class="moreInfoButton">More Info</button></div></div>'
+        ];
+        return $(leagueCardTemplate.join(''));
+    }
 
 
 // Create Season View Content
-$(document).ready(function () {
+// $(document).ready(function () {
     $('#seasonButton').click(function () {
         $('#leaguesView').hide();
         $('#seasonsView').show();
@@ -239,200 +239,346 @@ $(document).ready(function () {
             });
         });
     });
-});
+// });
 
 // Info Card Builder - league
-function createSeasonCard(cardInfo) {
-    var seasonCardTemplate = [
-        '<div class="card" style="width: 18rem;">',
-        '<div class="card-body">',
-        '<h5 class="card-title">Season</h5>',
-        '<h6 class="card-subtitle mb-2 text-muted">',
-        cardInfo.start.substr(0, 5) || 'undefined',
-        cardInfo.end.substr(0, 4) || 'undefined',
-        '</h6>',
-        '<button class="moreInfoButton">More Info</button></div></div></div></div>'
-    ];
-    return $(seasonCardTemplate.join(''));
-}
+    function createSeasonCard(cardInfo) {
+        var seasonCardTemplate = [
+            '<div class="card" style="width: 18rem;">',
+            '<div class="card-body">',
+            '<h5 class="card-title">Season</h5>',
+            '<h6 class="card-subtitle mb-2 text-muted">',
+            cardInfo.start.substr(0, 5) || 'undefined',
+            cardInfo.end.substr(0, 4) || 'undefined',
+            '</h6>',
+            '<button class="moreInfoButton">More Info</button></div></div></div></div>'
+        ];
+        return $(seasonCardTemplate.join(''));
+    }
 
-function TeamsContent(event) {
-    event.preventDefault();
-    $("#leaguesView").css("display", "none");
-    $("#seasonsView").css("display", "none");
-    $("#GamesView").css("display", "none");
-    $("#TeamsView").css("display", "block");
-    $('#TeamCards').empty();
-    $.get("/Teams", function (data) {
-        data.forEach(function (item) {
-            cards = cards.add(createTeamsCard(item));
+    function TeamsContent(event) {
+        event.preventDefault();
+        $("#leaguesView").css("display", "none");
+        $("#seasonsView").css("display", "none");
+        $("#GamesView").css("display", "none");
+        $("#TeamsView").css("display", "block");
+        $('#TeamCards').empty();
+        $.get("/Teams", function (data) {
+            data.forEach(function (item) {
+                cards = cards.add(createTeamsCard(item));
+            });
         });
-    });
-    $('#TeamCards').append(cards);
-    cards = $();
-}
+        $('#TeamCards').append(cards);
+        cards = $();
+    }
 
-function createTeamsCard(cardInfo) {
-    var teamsCardTemplate = [
-        '<div class="card" style="width: 18rem;">',
-        '<div class="card-body">',
-        '<h5 class="card-title">',
-        cardInfo.name || 'undefined',
-        '</h5>',
-        '<h6 class="card-subtitle mb-2 text-muted">Stadium: ',
-        cardInfo.stadium || 'undefined',
-        '</h6>',
-        '<h6 class="card-subtitle mb-2 text-muted">League: ',
-        cardInfo.league.name || 'undefined',
-        '</h6>',
-        '<button class="moreInfoButton">More Info</button></div></div></div></div>'
-    ];
-    return $(teamsCardTemplate.join(''));
-}
+    function createTeamsCard(cardInfo) {
+        var teamsCardTemplate = [
+            '<div class="card" style="width: 18rem;">',
+            '<div class="card-body">',
+            '<h5 class="card-title">',
+            cardInfo.name || 'undefined',
+            '</h5>',
+            '<h6 class="card-subtitle mb-2 text-muted">Stadium: ',
+            cardInfo.stadium || 'undefined',
+            '</h6>',
+            '<h6 class="card-subtitle mb-2 text-muted">League: ',
+            cardInfo.league.name || 'undefined',
+            '</h6>',
+            '<button class="moreInfoButton">More Info</button></div></div></div></div>'
+        ];
+        return $(teamsCardTemplate.join(''));
+    }
 
-function GamesContent(event) {
-    event.preventDefault();
-    $('#GamesCards').empty();
-    $("#leaguesView").css("display", "none");
-    $("#seasonsView").css("display", "none");
-    $("#TeamsView").css("display", "none");
-    $("#GamesView").css("display", "block");
-    $.get("/Games", function (data) {
-        data.forEach(function (item) {
-            cards = cards.add(createGamesCard(item));
+    function GamesContent(event) {
+        event.preventDefault();
+        $('#GamesCards').empty();
+        $("#leaguesView").css("display", "none");
+        $("#seasonsView").css("display", "none");
+        $("#TeamsView").css("display", "none");
+        $("#GamesView").css("display", "block");
+        $.get("/Games", function (data) {
+            data.forEach(function (item) {
+                cards = cards.add(createGamesCard(item));
+            });
         });
-    });
-    $('#GamesCards').append(cards);
-    cards = $();
-}
+        $('#GamesCards').append(cards);
+        cards = $();
+    }
 
-function createGamesCard(cardInfo) {
-    var gamesCardTemplate = [
-        '<div class="card" style="width: 18rem;">',
-        '<div class="card-body">',
-        '<h5 class="card-title">',
-        cardInfo.home.name,
-        '<br>VS<br>',
-        cardInfo.away.name,
-        '</h5>',
-        '<hr>',
-        '<h6 class="card-subtitle mb-3 text-muted">Home: ',
-        cardInfo.home.name || 'undefined', //
-        '</h6>',
-        '<h6 class="card-subtitle mb-3 text-muted">Away: ',
-        cardInfo.away.name || 'undefined', //
-        '</h6>',
-        '<h6 class="card-subtitle mb-3 text-muted">Stadium: ',
-        cardInfo.home.stadium || 'undefined', //
-        '</h6>',
-        '<h6 class="card-subtitle mb-3 text-muted">Date: ',
-        cardInfo.date || 'undefined', //
-        '</h6>',
+    function createGamesCard(cardInfo) {
+        var gamesCardTemplate = [
+            '<div class="card" style="width: 18rem;">',
+            '<div class="card-body">',
+            '<h5 class="card-title">',
+            cardInfo.home.name,
+            '<br>VS<br>',
+            cardInfo.away.name,
+            '</h5>',
+            '<hr>',
+            '<h6 class="card-subtitle mb-3 text-muted">Home: ',
+            cardInfo.home.name || 'undefined', //
+            '</h6>',
+            '<h6 class="card-subtitle mb-3 text-muted">Away: ',
+            cardInfo.away.name || 'undefined', //
+            '</h6>',
+            '<h6 class="card-subtitle mb-3 text-muted">Stadium: ',
+            cardInfo.home.stadium || 'undefined', //
+            '</h6>',
+            '<h6 class="card-subtitle mb-3 text-muted">Date: ',
+            cardInfo.date || 'undefined', //
+            '</h6>',
 
-        '<button class="moreInfoButton">More Info</button></div></div></div></div>'
-    ];
-    return $(gamesCardTemplate.join(''));
-}
+            '<button class="moreInfoButton">More Info</button></div></div></div></div>'
+        ];
+        return $(gamesCardTemplate.join(''));
+    }
 
 //</editor-fold>
 
-const selected = document.querySelector(".selected");
-const optionContainer = document.querySelector(".option-container");
+    const selected = document.querySelector(".selected");
+    const optionContainer = document.querySelector(".option-container");
 
-const optionsList = document.querySelectorAll(".option");
+    const optionsList = document.querySelectorAll(".option");
 
-selected.addEventListener("click", () => {
-    optionContainer.classList.toggle("active");
-});
-
-optionsList.forEach(o => {
-    o.addEventListener("click", () => {
-        selected.innerHTML = o.querySelector("label").innerHTML;
-        GameOptionID = o.querySelector("label").htmlFor;
-        optionContainer.classList.remove("active");
+    selected.addEventListener("click", () => {
+        optionContainer.classList.toggle("active");
     });
-});
 
-function createGameOption(gameOptionInfo) {
-    let gameOptionTemplate = [
-        '<div class="option">',
-        '<input type="radio" class="radio" id="gameOption',
-            gameOptionInfo.id || 'undefined',
-        '" name="GameOption">',
-        '<label for=gameOption',
-            gameOptionInfo.id || 'undefined',
-        '>',
-            gameOptionInfo.home || 'undefined',
-        ' VS ',
-            gameOptionInfo.away || 'undefined',
-        '</label></div>'
-    ];
-    return $(gameOptionTemplate.join(''));
-}
-
-var GameOptions = $();
-var GameOptionID;
-let game_id;
-
-$('#refereeButton').click(function () {
-    let refereeOptions = [];
-    refereeOptions[0] = new Object();
-    refereeOptions[0].referee_id = email;
-    let SecureObj = new SecurityObj(email, "1000", "GameChoose", refereeOptions);
-    postSend("/Referee/getGamesByReferee", SecureObj).then(function (data) {
-        let Games = [];
-        $('#gameOptions').empty();
-        GameOptions = $();
-        data.forEach(game => {
-            GameOptions = (createGameOption(game));
-            $('#gameOptions').append(GameOptions);
+    optionsList.forEach(o => {
+        o.addEventListener("click", () => {
+            selected.innerHTML = o.querySelector("label").innerHTML;
+            GameOptionID = o.querySelector("label").htmlFor;
+            optionContainer.classList.remove("active");
         });
-    }).catch(function (data) {
-        console.log("request failed");
     });
-});
 
-$("#selectGame").click(function () {
-    let gameID = [];
-    gameID[0] = new Object();
-    // gameID[0].game_id = GameOptionID.substr(10);
-    let SecureObj = new SecurityObj(email, "1000", "startGame", gameID);
-    postSend("/Referee/getEventProperties", SecureObj).then(function (data) {
-        var eventType = document.getElementById("eventTypeSelectAddEvent");
-        for (let i = 0; i < data[0].length; i++) {
+    function createGameOption(gameOptionInfo) {
+        let gameOptionTemplate = [
+            '<div class="option">',
+            '<input type="radio" class="radio" id="gameOption',
+            gameOptionInfo.id || 'undefined',
+            '" name="GameOption">',
+            '<label for=gameOption',
+            gameOptionInfo.id || 'undefined',
+            '>',
+            gameOptionInfo.home || 'undefined',
+            ' VS ',
+            gameOptionInfo.away || 'undefined',
+            '</label></div>'
+        ];
+        return $(gameOptionTemplate.join(''));
+    }
+
+    var GameOptions = $();
+    var GameOptionID;
+    let game_id;
+
+    $('#refereeButton').click(function () {
+        let refereeOptions = [];
+        refereeOptions[0] = new Object();
+        refereeOptions[0].referee_id = email;
+        let SecureObj = new SecurityObj(email, "1000", "GameChoose", refereeOptions);
+        postSend("/Referee/getGamesByReferee", SecureObj).then(function (data) {
+            let Games = [];
+            $('#gameOptions').empty();
+            GameOptions = $();
+            data.forEach(game => {
+                GameOptions = (createGameOption(game));
+                $('#gameOptions').append(GameOptions);
+            });
+        }).catch(function (data) {
+            console.log("request failed");
+        });
+    });
+
+    $("#selectGame").click(function () {
+        let gameID = [];
+        gameID[0] = new Object();
+        // gameID[0].game_id = GameOptionID.substr(10);
+        let SecureObj = new SecurityObj(email, "1000", "startGame", gameID);
+        postSend("/Referee/getEventProperties", SecureObj).then(function (data) {
+            var eventType = document.getElementById("eventTypeSelectAddEvent");
+            for (let i = 0; i < data[0].length; i++) {
+                var option = document.createElement("option");
+                option.text = data[0][i];
+                eventType.add(option);
+            }
+            var teamSelector = document.getElementById("teamSelectAddEvent");
             var option = document.createElement("option");
-            option.text = data[0][i];
-            eventType.add(option);
-        }
-        var teamSelector = document.getElementById("teamSelectAddEvent");
-        var option = document.createElement("option");
-        option.text = data[1].home;
-        teamSelector.add(option);
-        var option = document.createElement("option");
-        option.text = data[1].away;
-        teamSelector.add(option);
-    }).catch(function (data) {
-        console.log(data);
+            option.text = data[1].home;
+            teamSelector.add(option);
+            var option = document.createElement("option");
+            option.text = data[1].away;
+            teamSelector.add(option);
+        }).catch(function (data) {
+            console.log(data);
+        });
+        $('#RefView').hide();
+        $('#RefereeView').removeAttr('hidden');
     });
-    $('#RefView').hide();
-    $('#RefereeView').removeAttr('hidden');
-});
 
-$("#addGameEvent").click(function () {
-    let minute = document.getElementById("GameMinute").value;
-    let team = document.getElementById("teamSelectAddEvent").value;
-    let eventType = document.getElementById("eventTypeSelectAddEvent").value;
-    let description = document.getElementById("description").value;
-    let eventProperties = [];
-    eventProperties[0] = new Object();
-    eventProperties[0].game_id = game_id;
-    eventProperties[0].minute = minute;
-    eventProperties[0].team = team;
-    eventProperties[0].eventType = eventType;
-    eventProperties[0].description = description;
+    $("#addGameEvent").click(function () {
+        let minute = document.getElementById("GameMinute").value;
+        let team = document.getElementById("teamSelectAddEvent").value;
+        let eventType = document.getElementById("eventTypeSelectAddEvent").value;
+        let description = document.getElementById("description").value;
+        let eventProperties = [];
+        eventProperties[0] = new Object();
+        eventProperties[0].game_id = game_id;
+        eventProperties[0].minute = minute;
+        eventProperties[0].team = team;
+        eventProperties[0].eventType = eventType;
+        eventProperties[0].description = description;
 
-    let SecureObj = new SecurityObj(email, "1000", "addGameEvent", eventProperties);
-    //postSendWithoutReturn("/app/Referee/addEventToGame", SecureObj);
-    stompClient.send("/app/chat", {}, JSON.stringify(SecureObj));
-    //console.log("done!!!");
+        let SecureObj = new SecurityObj(email, "1000", "addGameEvent", eventProperties);
+        //postSendWithoutReturn("/app/Referee/addEventToGame", SecureObj);
+        stompClient.send("/app/chat", {}, JSON.stringify(SecureObj));
+        //console.log("done!!!");
+    });
+// $(document).ready(function () {
+    $("#submitTeam").on('submit',function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        let newTeam = [];
+        newTeam[0] = new Object()
+        let league = new League(document.getElementById("leaguesType").value, null);
+        newTeam[0].Team = new Team(document.getElementById("inputTeamName").value,
+            document.getElementById("inputStadium").value,
+            league, null);
+
+        let SecureObj = new SecurityObj(email, "1000", "addTeam", newTeam);
+        postSend("/Representative/addTeam", SecureObj);
+    });
+// });
+//
+    function showAddingTeams() {
+        var x = document.getElementById("addNewTeam");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+
+    function showRanking() {
+        // var x = document.getElementById("addNewTeam");
+        // if (x.style.display === "none") {
+        //     x.style.display = "block";
+        // } else {
+        //     x.style.display = "none";
+        // }
+    }
+
+    function showAddSchedule() {
+        var x = document.getElementById("GamePolicy1");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+
+
+    var numberOfNeededDates = 0;
+    var numberOfTeamsInLeague = 0;
+    var numberOfGamePerTeam = 0;
+    var leagueType;
+    var cards = $();
+// $(document).ready(function () {
+    $("#submitGame").on('click', function (e) {
+        leagueType = document.getElementById("leagueTypeGame").value;
+        // leagueType = leagueType.substring(leagueType.indexOf("type:")+5);
+        numberOfGamePerTeam = document.getElementById("inputNumGames").value;
+        let url = "/Seasons/League/" + leagueType + "/numberGamesPerTeam/" + numberOfGamePerTeam;
+        // window.alert(url);
+          $.get(url, function (data, status) {
+            numberOfNeededDates = data.number_of_dates_needed;
+            numberOfTeamsInLeague = data.number_of_Teams;
+
+            cards = createdates(numberOfNeededDates);
+            $('#GamePolicy2').append(cards);
+
+            window.alert("teams:" + numberOfTeamsInLeague + " , number of dates:" + numberOfNeededDates);
+        });
+
+        // // )
+    });
+
+// });
+
+    async function getNumbeOfGames() {
+
+    }
+
+
+    function switchDivSchedual() {
+        var stage1 = document.getElementById("GamePolicy1");
+        stage1.style.display = "none";
+        var stage2 = document.getElementById("GamePolicy2");
+        stage2.style.display = "block";
+    }
+
+
+    function createdates(dateInfo) {
+        var gamesCardTemplate = [
+            '<div class="formDates"',
+            '<form>',
+            '<label id="dateInput">',
+            'Please enter ',
+            dateInfo, ' games dates and start and finish hours:', '</label>', '<br>'];
+        var index = 8;
+        for (var i = 0; i < dateInfo; i++) {
+            gamesCardTemplate[index] = '<input id="GameDates" type="date">';
+            index++;
+            gamesCardTemplate[index] = '<input id="GameDates" type="time">';
+            index++;
+            gamesCardTemplate[index] = '<input id="GameDates" type="time">';
+            index++;
+            gamesCardTemplate[index] = '<br>';
+            index++;
+        }
+        gamesCardTemplate[index] = '<button id="submitGame1" class="btn btn-primary"  ' +
+            'type="submit">Submit Games</button></form></div>';
+        return gamesCardTemplate;
+    }
+
+    $("#ScheduleGames").click(function () {
+        let newRequest = [];
+        newRequest[0] = new Object();
+        newRequest[0].league = leagueType;
+        let seasonSelection = document.getElementById("SeasonypeGame").value;
+        let start = seasonSelection.substring(seasonSelection.indexOf("start:") + 6, seasonSelection.indexOf(" ,end:"));
+        let end = seasonSelection.substring(seasonSelection.indexOf(",end:") + 5);
+        newRequest[0].start = start;
+        newRequest[0].end = end;
+        newRequest[0].numberOfGamesPerTeam = numberOfGamePerTeam;
+        let datesFromForm = document.getElementById("GameDates").value;
+        let dates = datesFromForm.split(" ");
+        newRequest[0].date = [];
+        let j = 0;
+        for (let i = 0; i < dates.length; i = i + 3) {
+            newRequest[0].date[j] = new Object();
+            newRequest[0].date[j].date = dates[i];
+            newRequest[0].date[j].start = dates[i + 1];
+            newRequest[0].date[j].end = dates[i + 2];
+
+            j = j + 1;
+        }
+
+        let SecureObj = new SecurityObj(email, "1000", "ScheduleGames", newRequest);
+
+        //    window.alert(JSON.stringify(SecureObj));
+        postSend("/Representative/scheduleGame", SecureObj).then(function (v) {
+            console.log("good:" + v);
+            printGames(v);
+        }).catch(function (v) {
+            console.log("failed:" + v);
+        });
+        // for(let i=0 ; i < games.length ; i++){
+        //     Games[i] = new Game(games[i].home.name , games[i].away.name , games[i].date , games[i].start , games[i].end);
+        //     console.log(Games[i].name + Game[i]);
+        // }
+        // window.alert(games) ;
+    });
 });
