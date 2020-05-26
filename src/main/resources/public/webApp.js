@@ -175,13 +175,13 @@ function changeLayout(fan, representative, referee) {
     document.getElementById('login').hidden = true;
     document.getElementById('mainLayout').hidden = false;
     if (fan == true) {
-        // Show Notifications
+        $('#notifications').removeAttr('hidden');
     }
     if (representative == true) {
-        // Show Rep Button
+        $('#representativeButton').removeAttr('hidden');
     }
     if (referee == true) {
-        // Show Referee Button
+        $('#refereeButton').removeAttr('hidden');
     }
 }
 
@@ -436,3 +436,4 @@ $("#addGameEvent").click(function () {
     stompClient.send("/app/chat", {}, JSON.stringify(SecureObj));
     //console.log("done!!!");
 });
+

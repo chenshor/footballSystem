@@ -554,3 +554,56 @@ input[type=radio] {
 }
 
 /* MY SELECT BOX */
+
+/* ALERTS */
+
+#NewAlertsContent {
+    display: grid;
+    margin-top: 40px;
+    max-height: 85% !important;
+    overflow-y: auto;
+    padding: 1%;
+}
+
+#NewAlertsContent::-webkit-scrollbar {
+    width: 8px;
+    background: darkgray;
+    /*border-radius: 0 8px 8px 0;*/
+}
+
+#NewAlertsContent::-webkit-scrollbar-thumb {
+    background: #292F35;
+    /*border-radius: 0 8px 8px 0;*/
+}
+
+.alertUpdate {
+    align-self: center;
+    text-align: center;
+    padding: 7px;
+    background: white;
+    width: 60%;
+    margin: 6px 6px 6px 20%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition-duration: 0.5s;
+}
+
+.alertUpdate:hover {
+    align-self: center;
+    text-align: center;
+    padding: 7px;
+    background: #292F35;
+    color: white;
+    width: 60%;
+    margin: 6px 6px 6px 20%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.alertUpdate h5 {
+    margin-bottom: 0;
+}
+
+#AlertsView {
+    height: 100%;
+}
+
+/* ALERTS */

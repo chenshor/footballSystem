@@ -82,14 +82,14 @@
                     Referee
                 </div>
             </button>
-            <button class="navButton" hidden>
+            <button class="navButton" id="representativeButton" hidden>
                 <div>
                     <i class="fas fa-user-tie"></i>
                     Operation
                 </div>
             </button>
         </div>
-        <div id="notifications">
+        <div id="notifications" hidden>
             <button class="navButton">
                 Updates
                 <span class="badge badge-pill badge-dark" id="notificationsNumber">3</span>
@@ -129,6 +129,7 @@
             </div>
         </div>
         <!-- REFEREE -->
+        <!-- Choose Game -->
         <div id="RefView" hidden>
             <div class="container" id="GameSelector">
                 <h3> Game Manager </h3>
@@ -144,6 +145,7 @@
                 <button id="selectGame">Start Manage</button>
             </div>
         </div>
+        <!-- Game Manager-->
         <div id="RefereeView" hidden>
             <div id="gameTime">
                 <button id="StartEnd"> START GAME</button>
@@ -157,7 +159,7 @@
             </div>
             <div id="EventTitle">
                 <h4 style="text-align: right; padding-right: 10px"> FC Barcelona </h4>
-                <h4> 1 : 1 </h4>
+                <h4 id="score"> 1 : 1 </h4>
                 <h4 style="text-align: left; padding-left: 10px"> Real Madrid CF </h4>
             </div>
             <div id="GameEvent">
@@ -203,6 +205,24 @@
             </div>
             <div id="SchedulePolicy">
                 <h1>SCHEDULE POLICY</h1>
+            </div>
+        </div>
+        <!-- ALERTS -->
+        <div id="AlertsView" hidden>
+            <h1>New Updates</h1>
+            <div id="NewAlertsContent">
+                <div class="alertUpdate">
+                    <h5>GOAL - FC BARCELONA - 19'</h5>
+                </div>
+                <div class="alertUpdate"><h5>GOAL - FC BARCELONA - 19'</h5></div>
+                <div class="alertUpdate"><h5>GOAL - FC BARCELONA - 19'</h5></div>
+                <div class="alertUpdate"><h5>GOAL - FC BARCELONA - 19'</h5></div>
+                <div class="alertUpdate"><h5>GOAL - FC BARCELONA - 19'</h5></div>
+                <div class="alertUpdate"><h5>GOAL - FC BARCELONA - 19'</h5></div>
+                <div class="alertUpdate"><h5>GOAL - FC BARCELONA - 19'</h5></div>
+                <div class="alertUpdate"><h5>GOAL - FC BARCELONA - 19'</h5></div>
+                <div class="alertUpdate"><h5>GOAL - FC BARCELONA - 19'</h5></div>
+                <div class="alertUpdate"><h5>GOAL - FC BARCELONA - 19'</h5></div>
             </div>
         </div>
     </div>
