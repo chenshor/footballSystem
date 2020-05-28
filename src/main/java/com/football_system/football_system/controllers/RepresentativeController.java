@@ -30,7 +30,10 @@ public class RepresentativeController {
     public boolean addTeam(@RequestBody SecurityObject securityObject)
             throws Exception {
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return false;
+        if (user == null) {
+            errorsLogger.error("Authorization Error - Team Creation Failed");
+            return false;
+        }
         RepresentativeService representativeService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof RepresentativeService) {
@@ -60,9 +63,10 @@ public class RepresentativeController {
 //            } else {
 //                newTeam.setStatus(Team.TeamStatus.activityClosed);
 //            }
-
+            eventsLogger.info(" - The User : " + user.getUserName() + " - created new team");
             return true;
         }
+        errorsLogger.error("General Error - Team Creation Failed");
         return false;
     }
 
