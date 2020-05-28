@@ -202,6 +202,13 @@ function changeLayout(fan, representative, referee) {
     }
     if (representative == true) {
         $('#representativeButton').removeAttr('hidden');
+        $.get("/Seasons", function (data) {
+            cards = $();
+            data.forEach(function (item) {
+                cards = (seasonSelect(item));
+                $('#SeasonypeGame').append(cards);
+            });
+        });
     }
     if (referee == true) {
         $('#refereeButton').removeAttr('hidden');
@@ -589,3 +596,171 @@ function setAlertsRead() {
     let SecureObj = new SecurityObj(email, "1000", "setAllAlertsReaded", gameID);
     postSend("/Fan/setUpdatesReaded", SecureObj);
 }
+
+
+
+
+
+$(document).ready(function () {
+$("#submitTeam").on('click',function (e) {
+    // e.preventDefault();
+    // e.stopPropagation();
+    let newTeam = [];
+    newTeam[0] = new Object()
+    let league = new League(document.getElementById("leaguesType").value, null);
+    newTeam[0].Team = new Team(document.getElementById("inputTeamName").value,
+        document.getElementById("inputStadium").value,
+        league, null);
+
+    let SecureObj = new SecurityObj(email, "1000", "addTeam", newTeam);
+    postSend("/Representative/addTeam", SecureObj);
+});
+// });
+//
+function showAddingTeams() {
+    var x = document.getElementById("addNewTeam");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+
+function showRanking() {
+    // var x = document.getElementById("addNewTeam");
+    // if (x.style.display === "none") {
+    //     x.style.display = "block";
+    // } else {
+    //     x.style.display = "none";
+    // }
+}
+
+
+var numberOfNeededDates = 0;
+var numberOfTeamsInLeague = 0;
+var numberOfGamePerTeam = 0;
+var leagueType;
+var cards = $();
+// $(document).ready(function () {
+$("#submitGame").on('click', function (e) {
+    leagueType = document.getElementById("leagueTypeGame").value;
+    // leagueType = leagueType.substring(leagueType.indexOf("type:")+5);
+    numberOfGamePerTeam = document.getElementById("inputNumGames").value;
+    let url = "/Seasons/League/" + leagueType + "/numberGamesPerTeam/" + numberOfGamePerTeam;
+    // window.alert(url);
+    $.get(url, function (data, status) {
+        numberOfNeededDates = data.number_of_dates_needed;
+        numberOfTeamsInLeague = data.number_of_Teams;
+
+        cards = createDates(numberOfNeededDates);
+        $('#GamePolicy2').prepend(cards);
+        var stage1 = document.getElementById("GamePolicy2");
+        stage1.style.display = "block";
+        // window.alert("teams:" + numberOfTeamsInLeague + " , number of dates:" + numberOfNeededDates);
+    });
+
+    // // )
+});
+
+
+
+
+function switchDivSchedual() {
+    var stage1 = document.getElementById("GamePolicy1");
+    stage1.style.display = "none";
+    var stage2 = document.getElementById("GamePolicy2");
+    stage2.style.display = "block";
+}
+
+
+function createDates(dateInfo) {
+    var gamesCardTemplate = [
+        '<div class="formDates">',
+        '<form>',
+        '<label id="dateInput">',
+        'Please enter ',
+        dateInfo, ' games dates and start and finish hours:', '</label>', '<br>'];
+    var index = 8;
+    for (var i = 0; i < dateInfo; i++) {
+        let id2="GameDates"+i;
+        gamesCardTemplate[index] = '<input id='+id2+' type="date">';
+        index++;
+        id2="startHour"+i;
+        gamesCardTemplate[index] = '<input id='+id2+' type="time">';
+        index++;
+        id2="endHour"+i;
+        gamesCardTemplate[index] = '<input id='+id2+' type="time">';
+        index++;
+        gamesCardTemplate[index] = '<br>';
+        index++;
+    }
+    gamesCardTemplate[index]='</form></div>';
+    // gamesCardTemplate[index] = '<button id="submitGame1" class="btn btn-primary"  ' +
+    //     'type="button">Submit Games</button></form></div>';
+    return gamesCardTemplate;
+}
+
+
+$("#submitGame1").click(function () {
+    let newRequest = [];
+    newRequest[0] = new Object();
+    newRequest[0].league = leagueType;
+    let seasonSelection = document.getElementById("SeasonypeGame").value;
+    let start = seasonSelection.substring(0,4);
+    let end = seasonSelection.substring(6,10);
+    newRequest[0].start = start;
+    newRequest[0].end = end;
+    newRequest[0].numberOfGamesPerTeam = numberOfGamePerTeam;
+    newRequest[0].date = [];
+    for( let i=0; i<numberOfNeededDates;i++){
+        let id1="GameDates"+i;
+        let datesFromForm = document.getElementById(id1).value;
+        id1="startHour"+i;
+        let start= document.getElementById(id1).value;
+        id1="endHour"+i;
+        let end= document.getElementById(id1).value;
+        newRequest[0].date[i]= new Object();
+        newRequest[0].date[i].date=datesFromForm;
+        newRequest[0].date[i].start=start;
+        newRequest[0].date[i].end=end;
+    }
+
+    let SecureObj = new SecurityObj(email, "1000", "submitGame1", newRequest);
+    console.log(SecureObj);
+    window.alert(JSON.stringify(SecureObj));
+    postSend("/Representative/scheduleGame", SecureObj).then(function (v) {
+        console.log("good:" + v);
+        printGames(v);
+    }).catch(function (v) {
+        console.log("failed:" + v);
+    });
+    // for(let i=0 ; i < games.length ; i++){
+    //     Games[i] = new Game(games[i].home.name , games[i].away.name , games[i].date , games[i].start , games[i].end);
+    //     console.log(Games[i].name + Game[i]);
+    // }
+    // window.alert(games) ;
+});
+
+function seasonSelect(cardInfo){
+    var leagueCardTemplate = [
+        '<option value='+
+        cardInfo.start.substr(0, 5)+ '-'+
+        cardInfo.end.substr(0, 4) + ">"+
+        cardInfo.start.substr(0, 5)+ '-'+
+        cardInfo.end.substr(0, 4)+
+        "</option>",
+
+    ];
+    return $(leagueCardTemplate.join(''));
+}
+function printGames(data){
+    let Games = [] ;
+    console.log("succsses");
+    for(let i=0 ; i < data.length ; i++){
+        Games[i] = new Game(data[i].id ,data[i].home.name , data[i].away.name , data[i].date , data[i].startTime , data[i].endTime);
+        console.log("game id:"+Games[i].id +", home: "+Games[i].home +", away:"+ Games[i].away+", date:"+Games[i].date+", start:"+Games[i].start +", end:"+Games[i].end);
+    }
+}
+
+
+});
