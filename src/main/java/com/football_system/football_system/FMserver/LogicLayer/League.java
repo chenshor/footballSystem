@@ -5,10 +5,7 @@ import com.football_system.football_system.FMserver.DataLayer.*;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class League implements Serializable {
 
@@ -28,13 +25,18 @@ public class League implements Serializable {
         this.refereeList = refereeList;
         this.seasonList = seasonList;
         this.policyList = policyList;
-        this.rankPolicyList = new HashMap<>();
+        if(this.rankPolicyList == null){
+            this.rankPolicyList = new LinkedHashMap<>();
+        }
     }
     public League( String type, List<Referee> refereeList, List<Season> seasonList, Map<Season, Policy> policyList) {
         if(isAType(type)){
             this.refereeList = refereeList;
             this.seasonList = seasonList;
             this.policyList = policyList;
+            if(this.rankPolicyList == null){
+                this.rankPolicyList = new LinkedHashMap<>();
+            }
             this.type=LeagueType.valueOf(type);
         }
 
@@ -74,12 +76,18 @@ public class League implements Serializable {
 
     public League(LeagueType leagueType){
         this.type = leagueType;
+        if(this.rankPolicyList == null){
+            this.rankPolicyList = new LinkedHashMap<>();
+        }
         data().addLeague(this);
     }
 
     public League(LeagueType leagueType ,String name){
         this.type = leagueType;
         this.name = name ;
+        if(this.rankPolicyList == null){
+            this.rankPolicyList = new LinkedHashMap<>();
+        }
         data().addLeague(this);
     }
     /**

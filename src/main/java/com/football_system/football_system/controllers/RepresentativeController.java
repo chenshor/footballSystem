@@ -6,7 +6,9 @@ import com.football_system.football_system.FMserver.ServiceLayer.IUserService;
 import com.football_system.football_system.FMserver.ServiceLayer.RepresentativeService;
 import com.football_system.football_system.FootballSystemApplication;
 import com.football_system.football_system.logicTest.SecurityObject;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.apache.log4j.Logger;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -120,7 +122,42 @@ public class RepresentativeController {
         return true;
     }
 
+    @RequestMapping(
+            value = "/rankPolicy",
+            method = RequestMethod.POST)
+    public ResponseEntity<Void> rankPolicy(@RequestBody SecurityObject securityObject)
+            throws Exception {
 
+        List<Game> games = null ;
+
+        User user = SecurityObject.Authorization(securityObject);
+        if (user == null) return ResponseEntity.badRequest().build();
+        RepresentativeService representativeService = null;
+        for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
+            if (iUserService instanceof RepresentativeService) {
+                representativeService = (RepresentativeService) iUserService;
+            }
+        }
+        if (representativeService != null) {
+            LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) securityObject.getObject().get(0);
+            String leagueType = objects.get("league").toString();
+            String SeasonStartDate = objects.get("start").toString();
+            String SeasonEndDate = objects.get("end").toString();
+            int win = Integer.parseInt(objects.get("win").toString());
+            int draw = Integer.parseInt(objects.get("draw").toString());
+            int lose = Integer.parseInt(objects.get("lose").toString());
+
+            League league = League.getLeagueByType(leagueType);
+            Season season = Season.getSeason(SeasonStartDate,SeasonEndDate);
+
+            if(representativeService.setRankPolicy(season , league,win  ,draw  ,lose )) {
+                System.out.println("rank policy been setted to win:"+win+", draw:"+draw+" , lose:"+lose);
+                return ResponseEntity.accepted().build();
+            }
+        }
+        return ResponseEntity.badRequest().build();
+
+    }
 
 
 }

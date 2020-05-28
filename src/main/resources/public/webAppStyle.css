@@ -570,6 +570,8 @@ input[type=radio] {
 
 #GamePolicy1 {
     display: block;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 /*#GamePolicy2{*/
