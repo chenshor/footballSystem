@@ -2,25 +2,19 @@ package com.football_system.football_system.controllers;
 
 
 import com.football_system.football_system.FMserver.LogicLayer.Alert;
-import com.football_system.football_system.FMserver.LogicLayer.Game;
 import com.football_system.football_system.FMserver.LogicLayer.User;
 import com.football_system.football_system.FMserver.ServiceLayer.FanService;
 import com.football_system.football_system.FMserver.ServiceLayer.IUserService;
-import com.football_system.football_system.FMserver.ServiceLayer.RefereeService;
 import com.football_system.football_system.FootballSystemApplication;
-import com.football_system.football_system.logicTest.SecurityObject;
+import com.football_system.football_system.serverObjects.SecurityObject;
 import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.ws.Response;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 @RestController

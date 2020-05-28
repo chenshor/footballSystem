@@ -3,7 +3,7 @@ package com.football_system.football_system;
 import com.football_system.football_system.FMserver.DataLayer.DataManager;
 import com.football_system.football_system.FMserver.LogicLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.*;
-import com.football_system.football_system.logicTest.SecurityObject;
+import com.football_system.football_system.serverObjects.SecurityObject;
 import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

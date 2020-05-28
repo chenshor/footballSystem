@@ -7,15 +7,13 @@ import com.football_system.football_system.FMserver.LogicLayer.User;
 import com.football_system.football_system.FMserver.ServiceLayer.IUserService;
 import com.football_system.football_system.FMserver.ServiceLayer.RefereeService;
 import com.football_system.football_system.FootballSystemApplication;
-import com.football_system.football_system.logicTest.SecurityObject;
+import com.football_system.football_system.serverObjects.SecurityObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

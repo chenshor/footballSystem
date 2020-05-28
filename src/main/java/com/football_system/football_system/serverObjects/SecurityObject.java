@@ -1,9 +1,8 @@
-package com.football_system.football_system.logicTest;
+package com.football_system.football_system.serverObjects;
 
 import com.football_system.football_system.FMserver.LogicLayer.User;
 
 import java.nio.charset.Charset;
-import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +39,6 @@ public class SecurityObject {
     public static boolean  addUserToSystem(User user){
         if(systemUsers.containsKey(user.getEmail())) return false ;
         systemUsers.put(user.getEmail(), user) ;
-        //Integer key= (int) (Math.random()*10000+3000);
-        //String key = "1000" ;
         return true;
     }
 
