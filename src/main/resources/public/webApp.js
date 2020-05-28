@@ -381,13 +381,13 @@ let following = new Array();
 
 function follow(game_id) {
     following[game_id] = true;
-    if(true){
-        gameID[0].Subscribe = true ;
-    }else{
+    if (true) {
+        gameID[0].Subscribe = true;
+    } else {
         gameID[0].Subscribe = false;
     }
-    let SecureObj  = new SecurityObj(email,"1000","SubscibeToGame", gameID) ;
-    postSend("/Fan/Subscribe",SecureObj).then(function (data) {
+    let SecureObj = new SecurityObj(email, "1000", "SubscibeToGame", gameID);
+    postSend("/Fan/Subscribe", SecureObj).then(function (data) {
         console.log(data);
     }).catch(function (data) {
         console.log(data);
@@ -636,8 +636,8 @@ $(document).ready(function () {
         let newTeam = [];
         newTeam[0] = new Object()
         let leagueType = document.getElementById("leaguesType").value
-        leagueType = leagueType.substring(leagueType.indexOf("type:")+5);
-        let league = new League( leagueType , null);
+        leagueType = leagueType.substring(leagueType.indexOf("type:") + 5);
+        let league = new League(leagueType, null);
         newTeam[0].Team = new Team(document.getElementById("inputTeamName").value,
             document.getElementById("inputStadium").value,
             league, null);
@@ -674,7 +674,7 @@ $(document).ready(function () {
 
     $("#submitGame").on('click', function (e) {
         leagueType = document.getElementById("leagueTypeGame").value;
-        leagueType = leagueType.substring(leagueType.indexOf("type:")+5);
+        leagueType = leagueType.substring(leagueType.indexOf("type:") + 5);
         numberOfGamePerTeam = document.getElementById("inputNumGames").value;
         let url = "/Seasons/League/" + leagueType + "/numberGamesPerTeam/" + numberOfGamePerTeam;
         // window.alert(url);
@@ -730,8 +730,8 @@ $(document).ready(function () {
         newRequest[0] = new Object();
         newRequest[0].league = leagueType;
         let seasonSelection = document.getElementById("SeasonypeGame").value;
-        let start = seasonSelection.substring(seasonSelection.indexOf("start:")+6 , seasonSelection.indexOf(" ,end:"));
-        let end = seasonSelection.substring(seasonSelection.indexOf(",end:")+5);
+        let start = seasonSelection.substring(seasonSelection.indexOf("start:") + 6, seasonSelection.indexOf(" ,end:"));
+        let end = seasonSelection.substring(seasonSelection.indexOf(",end:") + 5);
         newRequest[0].start = start;
         newRequest[0].end = end;
         newRequest[0].numberOfGamesPerTeam = numberOfGamePerTeam;
@@ -805,19 +805,19 @@ $('#representativeButton').click(function () {
     $('#RepView').show();
     $.get("/Leagues", function (data, status) {
 
-        let select  = document.getElementById("leaguesType");
+        let select = document.getElementById("leaguesType");
         let length = select.options.length;
-        for (let i = length-1; i >= 0; i--) {
+        for (let i = length - 1; i >= 0; i--) {
             select.options[i] = null;
         }
-        select  = document.getElementById("leagueTypeGame");
+        select = document.getElementById("leagueTypeGame");
         length = select.options.length;
-        for (let i = length-1; i >= 0; i--) {
+        for (let i = length - 1; i >= 0; i--) {
             select.options[i] = null;
         }
-        select  = document.getElementById("leagueTypeGameRankPolicy");
+        select = document.getElementById("leagueTypeGameRankPolicy");
         length = select.options.length;
-        for (let i = length-1; i >= 0; i--) {
+        for (let i = length - 1; i >= 0; i--) {
             select.options[i] = null;
         }
         for (let i = 0; i < data.length; i++) {
@@ -887,8 +887,8 @@ $(document).ready(function () {
         leagueType = leagueType.substring(leagueType.indexOf("type:") + 5);
         newRequest[0].league = leagueType;
         let seasonSelection = document.getElementById("SeasonypeGameRankPolicy").value;
-        let start = seasonSelection.substring(seasonSelection.indexOf("start:")+6 , seasonSelection.indexOf(" ,end:"));
-        let end = seasonSelection.substring(seasonSelection.indexOf(",end:")+5);
+        let start = seasonSelection.substring(seasonSelection.indexOf("start:") + 6, seasonSelection.indexOf(" ,end:"));
+        let end = seasonSelection.substring(seasonSelection.indexOf(",end:") + 5);
         newRequest[0].start = start;
         newRequest[0].end = end;
         newRequest[0].win = document.getElementById("inputWin").value;
