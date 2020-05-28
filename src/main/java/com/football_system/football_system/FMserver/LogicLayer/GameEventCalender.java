@@ -15,7 +15,7 @@ public class GameEventCalender implements Serializable {
     private int minute;
 
     public enum eventType{
-        goal, offside,offense, redCard, yellowCard, injury,playerReplacement
+        goal, offside, redCard, yellowCard, injury, playerReplacement
     }
 
     public GameEventCalender(Game game, String hour, String date, String type, String description, int minute) {

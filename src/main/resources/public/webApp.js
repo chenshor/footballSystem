@@ -108,8 +108,24 @@ function connectToChat(userName) {
         stompClient.subscribe("/topic/messages/" + userName, function (response) {
             console.log("updated!");
             let data = JSON.parse(response.body);
-            new Alert(data.description, data.date, data.read);
-            window.alert(data.description);
+            // new Alert(data.description, data.date, data.read);
+            window.alert(data.description + ' - ' + data.date);
+            let gameID = [];
+            gameID[0] = new Object();
+            let SecureObj = new SecurityObj(email, "1000", "getAlerts", gameID);
+            postSend("/Fan/getUpdates", SecureObj).then(function (data) {
+                // let alerts = [];
+                let content = "";
+                $('#NewAlertsContent').empty();
+                let number = 0;
+                for (let i = 0; i < data.length; i++) {
+                    if (!data[i].readed) {
+                        number += 1;
+                    }
+                }
+                $('#notificationsNumber').html(number);
+            }).catch(function (data) {
+            });
         });
     });
 }
@@ -370,23 +386,28 @@ function createGamesCard(cardInfo) {
         '<h6 class="card-subtitle mb-3 text-muted">Date: ',
         cardInfo.date || 'undefined', //
         '</h6>',
-        '<button class="moreInfoButton" onclick="follow(\'',
+        '<button class="moreInfoButton" id="button-',
+        cardInfo.id || "undefined",
+        '" onclick="follow(\'',
         cardInfo.id || "undefined",
         '\')">Follow</button></div></div></div></div>'
     ];
     return $(gamesCardTemplate.join(''));
 }
 
-let following = new Array();
-
 function follow(game_id) {
-    following[game_id] = true;
-    if (true) {
+    let gameID = [] ;
+    gameID[0] = new Object() ;
+    gameID[0].game_id = game_id ;
+    if ($('#button-' + game_id).html() == 'Follow') {
         gameID[0].Subscribe = true;
+        $('#button-' + game_id).html('UnFollow');
     } else {
         gameID[0].Subscribe = false;
+        $('#button-' + game_id).html('Follow');
     }
     let SecureObj = new SecurityObj(email, "1000", "SubscibeToGame", gameID);
+    window.alert(JSON.stringify(SecureObj));
     postSend("/Fan/Subscribe", SecureObj).then(function (data) {
         console.log(data);
     }).catch(function (data) {
@@ -493,10 +514,13 @@ $('#refereeButton').click(function () {
     });
 });
 
+let game_id_chosen;
+
 $("#selectGame").click(function () {
     let gameID = [];
     gameID[0] = new Object();
     gameID[0].game_id = GameOptionID.substr(10);
+    game_id_chosen = GameOptionID.substr(10);
     let SecureObj = new SecurityObj(email, "1000", "startGame", gameID);
     postSend("/Referee/getEventProperties", SecureObj).then(function (data) {
         var eventType = document.getElementById("eventTypeSelectAddEvent");
@@ -560,13 +584,14 @@ $("#addEvent").click(function (event) {
     let description = document.getElementById("description").value;
     let eventProperties = [];
     eventProperties[0] = new Object();
-    eventProperties[0].game_id = game_id;
+    eventProperties[0].game_id = game_id_chosen;
     eventProperties[0].minute = minute;
     eventProperties[0].team = team;
     eventProperties[0].eventType = eventType;
     eventProperties[0].description = description;
 
     let SecureObj = new SecurityObj(email, "1000", "addGameEvent", eventProperties);
+    window.alert(JSON.stringify(SecureObj));
     //postSendWithoutReturn("/app/Referee/addEventToGame", SecureObj);
     stompClient.send("/app/chat", {}, JSON.stringify(SecureObj));
     //console.log("done!!!");
@@ -604,16 +629,17 @@ function createAlert(alert) {
 $("#alertsButton").click(function () {
     hideAll();
     $('#AlertsView').show();
+    $('#notificationsNumber').html(0);
     let gameID = [];
     gameID[0] = new Object();
     let SecureObj = new SecurityObj(email, "1000", "getAlerts", gameID);
     postSend("/Fan/getUpdates", SecureObj).then(function (data) {
-        let alerts = [];
+        // let alerts = [];
         let content = "";
         $('#NewAlertsContent').empty();
         for (let i = 0; i < data.length; i++) {
-            alerts[i] = new Alert(data[0].description, data[0].date, data[0].readed);
-            $('#NewAlertsContent').append(createAlert(alerts[i]));
+            // alerts[i] = new Alert(data[0].description, data[0].date, data[0].readed);
+            $('#NewAlertsContent').append(createAlert(data[i]));
         }
         console.log(content);
         setAlertsRead();
@@ -781,23 +807,6 @@ $(document).ready(function () {
         }
     }
 
-});
-
-$(".SubscribeToGame").click(function () {
-    let gameID = [];
-    gameID[0] = new Object();
-    gameID[0].game_id = document.getElementById("gameIdSubscribe").value;
-    if (document.getElementById("followStatus").value == "true") {
-        gameID[0].Subscribe = true;
-    } else {
-        gameID[0].Subscribe = false;
-    }
-    let SecureObj = new SecurityObj(email, "1000", "SubscibeToGame", gameID);
-    postSend("/Fan/Subscribe", SecureObj).then(function (data) {
-        console.log(data);
-    }).catch(function (data) {
-        console.log(data);
-    });
 });
 
 $('#representativeButton').click(function () {
