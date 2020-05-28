@@ -142,7 +142,6 @@ $(document).ready(function () {
         postSend("/Login", SecureObj).then(function (data) {
             // data is 'null' when authentication fail
             if (data == null) {
-                changeLayout(false, false, false);
                 return;
             }
             for (let i = 0; i < data.object[0].length; i++) {
@@ -156,7 +155,13 @@ $(document).ready(function () {
             console.log("failed: " + err);
         });
     });
+
+    $('#guest-btn').click(function (event) {
+        event.preventDefault();
+        changeLayout(false, false, false);
+    })
 });
+
 
 
 //</editor-fold>
