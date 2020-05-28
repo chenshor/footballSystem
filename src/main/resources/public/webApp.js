@@ -6,6 +6,7 @@ var password;
 var fan = false;
 var referee = false;
 var representative = false;
+var secretKey;
 
 // Classes
 class SecurityObj {
@@ -112,7 +113,7 @@ function connectToChat(userName) {
             window.alert(data.description + ' - ' + data.date);
             let gameID = [];
             gameID[0] = new Object();
-            let SecureObj = new SecurityObj(email, "1000", "getAlerts", gameID);
+            let SecureObj = new SecurityObj(email, secretKey, "getAlerts", gameID);
             postSend("/Fan/getUpdates", SecureObj).then(function (data) {
                 // let alerts = [];
                 let content = "";
@@ -138,12 +139,13 @@ $(document).ready(function () {
         email = document.getElementById("userEmail").value;
         signIn[0].email = email;
         signIn[0].password = document.getElementById("userPassword").value;
-        let SecureObj = new SecurityObj(email, "1000", "Login", signIn);
+        let SecureObj = new SecurityObj(email, secretKey, "Login", signIn);
         postSend("/Login", SecureObj).then(function (data) {
             // data is 'null' when authentication fail
             if (data == null) {
                 return;
             }
+            secretKey = data.reqID;
             for (let i = 0; i < data.object[0].length; i++) {
                 if (data.object[0][i] == 'Fan') fan = true;
                 if (data.object[0][i] == 'Representative') representative = true;
@@ -151,6 +153,27 @@ $(document).ready(function () {
             }
             connectToChat(email);
             changeLayout(fan, representative, referee);
+
+            if(fan == true){
+                let gameID = [];
+                gameID[0] = new Object();
+                let SecureObj = new SecurityObj(email, secretKey, "getAlerts", gameID);
+                postSend("/Fan/getUpdates", SecureObj).then(function (response) {
+                    // let alerts = [];
+                    let content = "";
+                    $('#NewAlertsContent').empty();
+                    let number = 0;
+                    for (let i = 0; i < response.length; i++) {
+                        if (!response[i].readed) {
+                            number += 1;
+                        }
+                    }
+                    $('#notificationsNumber').html(number);
+                }).catch(function (data) {
+                });
+            }
+
+
         }).catch(function (err) {
             console.log("failed: " + err);
         });
@@ -411,8 +434,8 @@ function follow(game_id) {
         gameID[0].Subscribe = false;
         $('#button-' + game_id).html('Follow');
     }
-    let SecureObj = new SecurityObj(email, "1000", "SubscibeToGame", gameID);
-    window.alert(JSON.stringify(SecureObj));
+    let SecureObj = new SecurityObj(email, secretKey, "SubscibeToGame", gameID);
+  //  window.alert(JSON.stringify(SecureObj));
     postSend("/Fan/Subscribe", SecureObj).then(function (data) {
         console.log(data);
     }).catch(function (data) {
@@ -484,6 +507,7 @@ var GameOptionID;
 let game_id;
 
 $('#refereeButton').click(function () {
+    hideAll();
     $("#leaguesView").css("display", "none");
     $("#seasonsView").css("display", "none");
     $("#TeamsView").css("display", "none");
@@ -493,7 +517,7 @@ $('#refereeButton').click(function () {
     let refereeOptions = [];
     refereeOptions[0] = new Object();
     refereeOptions[0].referee_id = email;
-    let SecureObj = new SecurityObj(email, "1000", "GameChoose", refereeOptions);
+    let SecureObj = new SecurityObj(email, secretKey, "GameChoose", refereeOptions);
     postSend("/Referee/getGamesByReferee", SecureObj).then(function (data) {
         let Games = [];
         $('#gameOptions').empty();
@@ -526,8 +550,10 @@ $("#selectGame").click(function () {
     gameID[0] = new Object();
     gameID[0].game_id = GameOptionID.substr(10);
     game_id_chosen = GameOptionID.substr(10);
-    let SecureObj = new SecurityObj(email, "1000", "startGame", gameID);
+    let SecureObj = new SecurityObj(email, secretKey, "startGame", gameID);
     postSend("/Referee/getEventProperties", SecureObj).then(function (data) {
+        $('#eventTypeSelectAddEvent').empty();
+        $('#teamSelectAddEvent').empty();
         var eventType = document.getElementById("eventTypeSelectAddEvent");
         for (let i = 0; i < data[0].length; i++) {
             var option = document.createElement("option");
@@ -595,8 +621,8 @@ $("#addEvent").click(function (event) {
     eventProperties[0].eventType = eventType;
     eventProperties[0].description = description;
 
-    let SecureObj = new SecurityObj(email, "1000", "addGameEvent", eventProperties);
-    window.alert(JSON.stringify(SecureObj));
+    let SecureObj = new SecurityObj(email, secretKey, "addGameEvent", eventProperties);
+   // window.alert(JSON.stringify(SecureObj));
     //postSendWithoutReturn("/app/Referee/addEventToGame", SecureObj);
     stompClient.send("/app/chat", {}, JSON.stringify(SecureObj));
     //console.log("done!!!");
@@ -637,7 +663,7 @@ $("#alertsButton").click(function () {
     $('#notificationsNumber').html(0);
     let gameID = [];
     gameID[0] = new Object();
-    let SecureObj = new SecurityObj(email, "1000", "getAlerts", gameID);
+    let SecureObj = new SecurityObj(email, secretKey, "getAlerts", gameID);
     postSend("/Fan/getUpdates", SecureObj).then(function (data) {
         // let alerts = [];
         let content = "";
@@ -656,7 +682,7 @@ $("#alertsButton").click(function () {
 function setAlertsRead() {
     let gameID = [];
     gameID[0] = new Object();
-    let SecureObj = new SecurityObj(email, "1000", "setAllAlertsReaded", gameID);
+    let SecureObj = new SecurityObj(email, secretKey, "setAllAlertsReaded", gameID);
     postSend("/Fan/setUpdatesReaded", SecureObj);
 }
 
@@ -673,7 +699,7 @@ $(document).ready(function () {
             document.getElementById("inputStadium").value,
             league, null);
 
-        let SecureObj = new SecurityObj(email, "1000", "addTeam", newTeam);
+        let SecureObj = new SecurityObj(email, secretKey, "addTeam", newTeam);
         postSend("/Representative/addTeam", SecureObj);
         window.alert("Team added successfully!");
     });
@@ -780,11 +806,12 @@ $(document).ready(function () {
             newRequest[0].date[i].end = end;
         }
 
-        let SecureObj = new SecurityObj(email, "1000", "submitGame1", newRequest);
+        let SecureObj = new SecurityObj(email, secretKey, "submitGame1", newRequest);
         console.log(SecureObj);
-        window.alert(JSON.stringify(SecureObj));
+      //  window.alert(JSON.stringify(SecureObj));
         postSend("/Representative/scheduleGame", SecureObj).then(function (v) {
             console.log("good:" + v);
+            window.alert("game scheduling done!")
             printGames(v);
         }).catch(function (v) {
             console.log("failed:" + v);
@@ -908,10 +935,11 @@ $(document).ready(function () {
         newRequest[0].win = document.getElementById("inputWin").value;
         newRequest[0].draw = document.getElementById("inputTie").value;
         newRequest[0].lose = document.getElementById("inputLoose").value;
-        let SecureObj = new SecurityObj(email, "1000", "submitScore", newRequest);
+        let SecureObj = new SecurityObj(email, secretKey, "submitScore", newRequest);
         console.log(SecureObj);
-        window.alert(JSON.stringify(SecureObj));
+       // window.alert(JSON.stringify(SecureObj));
         postSend("/Representative/rankPolicy", SecureObj).then(function (v) {
+            window.alert("rank policy setted successfully!")
             console.log("good:" + v);
         }).catch(function (v) {
             console.log("failed:" + v);

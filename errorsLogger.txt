@@ -1,1 +1,23 @@
 
+2020-05-28 22:33:58 ERROR General Error - Can not login to user:rep@gmail.com
+2020-05-28 22:35:02 ERROR General Error - Can not login to user:rep@gmail.com
+2020-05-28 22:36:07 ERROR General Error - Can not login to user:rep@gmail.com
+2020-05-28 22:37:49 ERROR General Error - Can not login to user:rep@gmail.com
+2020-05-28 22:50:42 ERROR General Error - Can not login to user:rep@gmail.com
+2020-05-28 22:51:32 ERROR General Error - reject login to user:rep@gmail.com
+2020-05-28 22:51:34 ERROR General Error - reject login to user:rep@gmail.com
+2020-05-28 22:51:35 ERROR General Error - reject login to user:rep@gmail.com
+2020-05-28 22:51:37 ERROR General Error - reject login to user:rep@gmail.com
+2020-05-28 23:40:31 ERROR General Error - Subscribe to game: Failed
+2020-05-28 23:40:43 ERROR General Error - reject login to user:referee@walla.com
+2020-05-28 23:41:46 ERROR General Error - Subscribe to game: Failed
+2020-05-28 23:42:47 ERROR Authorization Error - Get game updates: Failed
+2020-05-28 23:42:56 ERROR Authorization Error - Get game updates: Failed
+2020-05-28 23:43:10 ERROR Authorization Error - Get game updates: Failed
+2020-05-28 23:43:14 ERROR Authorization Error - Get game updates: Failed
+2020-05-29 00:01:44 ERROR Authorization Error - Get game updates: Failed
+2020-05-29 00:01:45 ERROR Authorization Error - Get Games By Referee Failed
+2020-05-29 00:25:09 ERROR General Error - reject login to user:chen@gmail.com
+2020-05-29 00:25:44 ERROR Authorization Error - Get Games By Referee Failed
+2020-05-29 00:25:48 ERROR Authorization Error - Get Games By Referee Failed
+2020-05-29 00:25:54 ERROR Authorization Error - Get Games By Referee Failed

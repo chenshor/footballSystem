@@ -461,21 +461,26 @@ h4 span {
     background: white;
     border-top: #292F35 solid 6px !important;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    overflow-y: auto;
 }
 
 #addTeam {
     grid-column: 1/-1;
     padding: 1%;
+    overflow: auto;
 }
 
 #RankPolicy {
     grid-row: 2/-1;
     padding: 2%;
+    overflow: auto;
 }
 
 #SchedulePolicy {
     grid-row: 2/-1;
     padding: 2%;
+    overflow: auto;
+
 }
 
 /* REP */
@@ -570,8 +575,6 @@ input[type=radio] {
 
 #GamePolicy1 {
     display: block;
-    overflow-y: auto;
-    overflow-x: auto;
 }
 
 /*#GamePolicy2{*/
@@ -615,6 +618,7 @@ input {
 
 #GamePolicy2 {
     display: none;
+    width: 160%;
 }
 
 #RepView h3 {
@@ -623,6 +627,7 @@ input {
 
 #RepView .form-group{
     margin-bottom: 10px;
+    overflow: auto;
 }
 
 /* MY SELECT BOX */

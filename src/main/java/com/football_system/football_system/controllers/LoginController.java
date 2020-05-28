@@ -41,11 +41,12 @@ public class LoginController {
         LinkedHashMap<String,String> data = (LinkedHashMap<String,String> ) securityObject.getObject().get(0) ;
 
 
-        User reg =  guestService.register("da","s",data.get("email"), data.get("password")) ;
-        if(guestService.logIn(data.get("email") , data.get("password"))) {
-            User user = SecurityObject.Authorization(securityObject);
+        //User reg =  guestService.register("da","s",data.get("email"), data.get("password")) ;
+        User reg =guestService.signIn(data.get("email") , data.get("password"));
+        if(reg != null) {
+           // User user = SecurityObject.Authorization(securityObject);
             List<String> roles =new LinkedList<>();
-            for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
+            for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(reg)) {
                 if (iUserService instanceof RefereeService) {
                     roles.add("Referee");
                 }
@@ -58,11 +59,11 @@ public class LoginController {
             }
             List<Object> obj = new LinkedList<>();
             obj.add(roles);
-            SecurityObject so = new SecurityObject(data.get("email"), "key12344", "", obj);
-            eventsLogger.info(" - The User : " + user.getUserName() + " - Log in successfully");
+            SecurityObject so = new SecurityObject(data.get("email"), SecurityObject.logInToSystem(reg) , "", obj);
+            eventsLogger.info(" - The User : " + reg.getUserName() + " - Log in successfully");
             return so;
         }
-        errorsLogger.error("General Error - Can not login to user:"+data.get("email"));
+        errorsLogger.error("General Error - reject login to user:"+data.get("email"));
         return null ;
     }
 

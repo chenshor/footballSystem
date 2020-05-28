@@ -2,9 +2,12 @@ package com.football_system.football_system.logicTest;
 
 import com.football_system.football_system.FMserver.LogicLayer.User;
 
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class SecurityObject {
 
@@ -34,12 +37,20 @@ public class SecurityObject {
      * @param user
      * @return a security key
      */
-    public static String  addUserToSystem(User user){
-        if(systemUsers.containsKey(user.getEmail())) return null ;
+    public static boolean  addUserToSystem(User user){
+        if(systemUsers.containsKey(user.getEmail())) return false ;
         systemUsers.put(user.getEmail(), user) ;
         //Integer key= (int) (Math.random()*10000+3000);
-        String key = "1000" ;
-        String secKey  =  key.toString()  ;
+        //String key = "1000" ;
+        return true;
+    }
+
+    public static String  logInToSystem(User user) {
+        byte[] array = new byte[32]; // length is bounded by 32
+        new Random().nextBytes(array);
+        String generatedString = new String(array, Charset.forName("UTF-8"));
+        String secKey  =  generatedString.toString()  ;
+        System.out.println(secKey);
         SecurityAccessControl.put(user.getEmail() , secKey) ;
         return secKey ;
     }

@@ -27,6 +27,7 @@ public class FootballSystemApplication {
 		DataComp.setDataManager(new DataManager());
 		Administrator administrator = new Administrator("A", "B", "C");
 		user = new User("rep@gmail.com", "12345678", "Lior");
+		DataComp.getInstance().addNewUser(user);
 		representative = new Representative(user, "lama name"); // rep user
 		user.addRole(representative);
 		system = new Controller(representative, administrator);
@@ -81,7 +82,7 @@ public class FootballSystemApplication {
 			DataComp.getInstance().addTeam(realMadrid);
 			barcelona.setStatus(Team.TeamStatus.activityOpened);
 			realMadrid.setStatus(Team.TeamStatus.activityOpened);
-			DataComp.getInstance().addGame(new Game( Season.getSeason("2020","2021") , barcelona,realMadrid, Referee.getReferees().get(0) ,Referee.getReferees().get(0) ,"2021-09-08","8:00","9:30"));
+			new Game( Season.getSeason("2020","2021") , barcelona,realMadrid, Referee.getReferees().get(0) ,Referee.getReferees().get(0) ,"2021-09-08","8:00","9:30");
 		}catch (Exception e){}
 
 	}
