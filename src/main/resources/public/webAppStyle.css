@@ -556,37 +556,60 @@ input[type=radio] {
     display: none !important;
 }
 
-/*#addNewTeam{*/
-    /*display: none;*/
-/*}*/
 #GamePolicy1 {
     display: block;
 }
+
 /*#GamePolicy2{*/
-    /*display: none;*/
+/*display: none;*/
 /*}*/
+
 
 #submitGame,
 #submitGame1,
-#submitTeam,
-#submitScore{
-    margin-top: 20px;
+#submitScore,
+#submitTeam {
     border-radius: 0;
     font-size: 1.2rem;
-    padding-left: 24%;
-    padding-right: 24%;
-    background: #292F35;
-    width: 5%;
+    padding-left: 4%;
+    padding-right: 4%;
     text-align: center;
+    color: #292F35;
+    border: #292F35 solid 1px !important;
+    background: white;
+    margin-left: 40%;
 }
 
-input{
+#submitTeam {
+    margin-left: 42.5%;
+}
+
+#submitGame:hover,
+#submitGame1:hover,
+#submitScore:hover,
+#submitTeam:hover {
+    transition-duration: .4s;
+    color: white;
+    background: #292F35;
+}
+select {
+    padding: 3px;
+}
+input {
     width: 20%;
 }
-#GamePolicy2{
+
+#GamePolicy2 {
     display: none;
 }
 
+#RepView h3 {
+    padding-left: 30px;
+}
+
+#RepView .form-group{
+    margin-bottom: 10px;
+}
 
 /* MY SELECT BOX */
 

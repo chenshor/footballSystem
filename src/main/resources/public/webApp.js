@@ -213,8 +213,25 @@ function changeLayout(fan, representative, referee) {
     if (referee == true) {
         $('#refereeButton').removeAttr('hidden');
     }
+    hideAll();
 }
 
+function hideAll() {
+    $('#leaguesView').removeAttr('hidden');
+    $('#leaguesView').hide();
+    $('#seasonsView').removeAttr('hidden');
+    $('#seasonsView').hide();
+    $('#TeamsView').removeAttr('hidden');
+    $('#TeamsView').hide();
+    $('#GamesView').removeAttr('hidden');
+    $('#GamesView').hide();
+    $('#RefView').removeAttr('hidden');
+    $('#RefView').hide();
+    $('#RepView').removeAttr('hidden');
+    $('#RepView').hide();
+    $('#AlertsView').removeAttr('hidden');
+    $('#AlertsView').hide();
+}
 //</editor-fold>
 
 //<editor-fold desc="CONTENT GENERATOR">
@@ -224,9 +241,8 @@ var cards = $();
 // Create League View Content
 $(document).ready(function () {
     $('#leagueButton').click(function () {
-        $('#leaguesView').removeAttr('hidden');
+        hideAll();
         $('#leaguesView').show();
-        $('#seasonsView').hide();
         $('#leagueCards').empty();
         $.get("/Leagues", function (data) {
             cards = $();
@@ -258,7 +274,7 @@ function createLeagueCard(cardInfo) {
 // Create Season View Content
 $(document).ready(function () {
     $('#seasonButton').click(function () {
-        $('#leaguesView').hide();
+        hideAll();
         $('#seasonsView').show();
         $('#seasonCards').empty();
         $.get("/Seasons", function (data) {
@@ -286,21 +302,20 @@ function createSeasonCard(cardInfo) {
     return $(seasonCardTemplate.join(''));
 }
 
-function TeamsContent(event) {
-    event.preventDefault();
-    $("#leaguesView").css("display", "none");
-    $("#seasonsView").css("display", "none");
-    $("#GamesView").css("display", "none");
-    $("#TeamsView").css("display", "block");
-    $('#TeamCards').empty();
-    $.get("/Teams", function (data) {
-        data.forEach(function (item) {
-            cards = cards.add(createTeamsCard(item));
+$(document).ready(function () {
+    $('#teamsButton').click(function () {
+        hideAll();
+        $('#TeamsView').show();
+        $('#teamsCards').empty();
+        $.get("/Teams", function (data) {
+            cards = $();
+            data.forEach(function (item) {
+                cards = (createTeamsCard(item));
+                $('#TeamCards').append(cards);
+            });
         });
     });
-    $('#TeamCards').append(cards);
-    cards = $();
-}
+});
 
 function createTeamsCard(cardInfo) {
     var teamsCardTemplate = [
@@ -320,21 +335,20 @@ function createTeamsCard(cardInfo) {
     return $(teamsCardTemplate.join(''));
 }
 
-function GamesContent(event) {
-    event.preventDefault();
-    $('#GamesCards').empty();
-    $("#leaguesView").css("display", "none");
-    $("#seasonsView").css("display", "none");
-    $("#TeamsView").css("display", "none");
-    $("#GamesView").css("display", "block");
-    $.get("/Games", function (data) {
-        data.forEach(function (item) {
-            cards = cards.add(createGamesCard(item));
+$(document).ready(function () {
+    $('#gamesButton').click(function () {
+        hideAll();
+        $('#GamesView').show();
+        $('#gamesCards').empty();
+        $.get("/Games", function (data) {
+            cards = $();
+            data.forEach(function (item) {
+                cards = (createGamesCard(item));
+                $('#GamesCards').append(cards);
+            });
         });
     });
-    $('#GamesCards').append(cards);
-    cards = $();
-}
+});
 
 function createGamesCard(cardInfo) {
     var gamesCardTemplate = [
@@ -572,6 +586,8 @@ function createAlert(alert) {
 }
 
 $("#alertsButton").click(function () {
+    hideAll();
+    $('#AlertsView').show();
     let gameID = [];
     gameID[0] = new Object();
     let SecureObj = new SecurityObj(email, "1000", "getAlerts", gameID);
@@ -597,170 +613,174 @@ function setAlertsRead() {
     postSend("/Fan/setUpdatesReaded", SecureObj);
 }
 
-
-
-
-
 $(document).ready(function () {
-$("#submitTeam").on('click',function (e) {
-    // e.preventDefault();
-    // e.stopPropagation();
-    let newTeam = [];
-    newTeam[0] = new Object()
-    let league = new League(document.getElementById("leaguesType").value, null);
-    newTeam[0].Team = new Team(document.getElementById("inputTeamName").value,
-        document.getElementById("inputStadium").value,
-        league, null);
+    $("#submitTeam").on('click', function (e) {
+        // e.preventDefault();
+        // e.stopPropagation();
+        let newTeam = [];
+        newTeam[0] = new Object()
+        let league = new League(document.getElementById("leaguesType").value, null);
+        newTeam[0].Team = new Team(document.getElementById("inputTeamName").value,
+            document.getElementById("inputStadium").value,
+            league, null);
 
-    let SecureObj = new SecurityObj(email, "1000", "addTeam", newTeam);
-    postSend("/Representative/addTeam", SecureObj);
-});
-// });
-//
-function showAddingTeams() {
-    var x = document.getElementById("addNewTeam");
-    if (x.style.display === "none") {
-        x.style.display = "block";
-    } else {
-        x.style.display = "none";
-    }
-}
-
-function showRanking() {
-    // var x = document.getElementById("addNewTeam");
-    // if (x.style.display === "none") {
-    //     x.style.display = "block";
-    // } else {
-    //     x.style.display = "none";
-    // }
-}
-
-
-var numberOfNeededDates = 0;
-var numberOfTeamsInLeague = 0;
-var numberOfGamePerTeam = 0;
-var leagueType;
-var cards = $();
-// $(document).ready(function () {
-$("#submitGame").on('click', function (e) {
-    leagueType = document.getElementById("leagueTypeGame").value;
-    // leagueType = leagueType.substring(leagueType.indexOf("type:")+5);
-    numberOfGamePerTeam = document.getElementById("inputNumGames").value;
-    let url = "/Seasons/League/" + leagueType + "/numberGamesPerTeam/" + numberOfGamePerTeam;
-    // window.alert(url);
-    $.get(url, function (data, status) {
-        numberOfNeededDates = data.number_of_dates_needed;
-        numberOfTeamsInLeague = data.number_of_Teams;
-
-        cards = createDates(numberOfNeededDates);
-        $('#GamePolicy2').prepend(cards);
-        var stage1 = document.getElementById("GamePolicy2");
-        stage1.style.display = "block";
-        // window.alert("teams:" + numberOfTeamsInLeague + " , number of dates:" + numberOfNeededDates);
+        let SecureObj = new SecurityObj(email, "1000", "addTeam", newTeam);
+        postSend("/Representative/addTeam", SecureObj);
     });
 
-    // // )
-});
-
-
-
-
-function switchDivSchedual() {
-    var stage1 = document.getElementById("GamePolicy1");
-    stage1.style.display = "none";
-    var stage2 = document.getElementById("GamePolicy2");
-    stage2.style.display = "block";
-}
-
-
-function createDates(dateInfo) {
-    var gamesCardTemplate = [
-        '<div class="formDates">',
-        '<form>',
-        '<label id="dateInput">',
-        'Please enter ',
-        dateInfo, ' games dates and start and finish hours:', '</label>', '<br>'];
-    var index = 8;
-    for (var i = 0; i < dateInfo; i++) {
-        let id2="GameDates"+i;
-        gamesCardTemplate[index] = '<input id='+id2+' type="date">';
-        index++;
-        id2="startHour"+i;
-        gamesCardTemplate[index] = '<input id='+id2+' type="time">';
-        index++;
-        id2="endHour"+i;
-        gamesCardTemplate[index] = '<input id='+id2+' type="time">';
-        index++;
-        gamesCardTemplate[index] = '<br>';
-        index++;
-    }
-    gamesCardTemplate[index]='</form></div>';
-    // gamesCardTemplate[index] = '<button id="submitGame1" class="btn btn-primary"  ' +
-    //     'type="button">Submit Games</button></form></div>';
-    return gamesCardTemplate;
-}
-
-
-$("#submitGame1").click(function () {
-    let newRequest = [];
-    newRequest[0] = new Object();
-    newRequest[0].league = leagueType;
-    let seasonSelection = document.getElementById("SeasonypeGame").value;
-    let start = seasonSelection.substring(0,4);
-    let end = seasonSelection.substring(6,10);
-    newRequest[0].start = start;
-    newRequest[0].end = end;
-    newRequest[0].numberOfGamesPerTeam = numberOfGamePerTeam;
-    newRequest[0].date = [];
-    for( let i=0; i<numberOfNeededDates;i++){
-        let id1="GameDates"+i;
-        let datesFromForm = document.getElementById(id1).value;
-        id1="startHour"+i;
-        let start= document.getElementById(id1).value;
-        id1="endHour"+i;
-        let end= document.getElementById(id1).value;
-        newRequest[0].date[i]= new Object();
-        newRequest[0].date[i].date=datesFromForm;
-        newRequest[0].date[i].start=start;
-        newRequest[0].date[i].end=end;
+    function showAddingTeams() {
+        var x = document.getElementById("addNewTeam");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
     }
 
-    let SecureObj = new SecurityObj(email, "1000", "submitGame1", newRequest);
-    console.log(SecureObj);
-    window.alert(JSON.stringify(SecureObj));
-    postSend("/Representative/scheduleGame", SecureObj).then(function (v) {
-        console.log("good:" + v);
-        printGames(v);
-    }).catch(function (v) {
-        console.log("failed:" + v);
+    function showRanking() {
+        // var x = document.getElementById("addNewTeam");
+        // if (x.style.display === "none") {
+        //     x.style.display = "block";
+        // } else {
+        //     x.style.display = "none";
+        // }
+    }
+
+
+    var numberOfNeededDates = 0;
+    var numberOfTeamsInLeague = 0;
+    var numberOfGamePerTeam = 0;
+    var leagueType;
+    var cards = $();
+
+    $("#submitGame").on('click', function (e) {
+        leagueType = document.getElementById("leagueTypeGame").value;
+        // leagueType = leagueType.substring(leagueType.indexOf("type:")+5);
+        numberOfGamePerTeam = document.getElementById("inputNumGames").value;
+        let url = "/Seasons/League/" + leagueType + "/numberGamesPerTeam/" + numberOfGamePerTeam;
+        // window.alert(url);
+        $.get(url, function (data, status) {
+            numberOfNeededDates = data.number_of_dates_needed;
+            numberOfTeamsInLeague = data.number_of_Teams;
+
+            cards = createDates(numberOfNeededDates);
+            $('#GamePolicy2').prepend(cards);
+            var stage1 = document.getElementById("GamePolicy2");
+            stage1.style.display = "block";
+            // window.alert("teams:" + numberOfTeamsInLeague + " , number of dates:" + numberOfNeededDates);
+        });
     });
-    // for(let i=0 ; i < games.length ; i++){
-    //     Games[i] = new Game(games[i].home.name , games[i].away.name , games[i].date , games[i].start , games[i].end);
-    //     console.log(Games[i].name + Game[i]);
-    // }
-    // window.alert(games) ;
+
+    function switchDivSchedual() {
+        var stage1 = document.getElementById("GamePolicy1");
+        stage1.style.display = "none";
+        var stage2 = document.getElementById("GamePolicy2");
+        stage2.style.display = "block";
+    }
+
+    function createDates(dateInfo) {
+        var gamesCardTemplate = [
+            '<div class="formDates">',
+            '<form>',
+            '<label id="dateInput">',
+            'Please enter ',
+            dateInfo, ' games dates and start and finish hours:', '</label>', '<br>'];
+        var index = 8;
+        for (var i = 0; i < dateInfo; i++) {
+            let id2 = "GameDates" + i;
+            gamesCardTemplate[index] = '<input id=' + id2 + ' type="date">';
+            index++;
+            id2 = "startHour" + i;
+            gamesCardTemplate[index] = '<input id=' + id2 + ' type="time">';
+            index++;
+            id2 = "endHour" + i;
+            gamesCardTemplate[index] = '<input id=' + id2 + ' type="time">';
+            index++;
+            gamesCardTemplate[index] = '<br>';
+            index++;
+        }
+        gamesCardTemplate[index] = '</form></div>';
+        // gamesCardTemplate[index] = '<button id="submitGame1" class="btn btn-primary"  ' +
+        //     'type="button">Submit Games</button></form></div>';
+        return gamesCardTemplate;
+    }
+
+    $("#submitGame1").click(function () {
+        let newRequest = [];
+        newRequest[0] = new Object();
+        newRequest[0].league = leagueType;
+        let seasonSelection = document.getElementById("SeasonypeGame").value;
+        let start = seasonSelection.substring(0, 4);
+        let end = seasonSelection.substring(6, 10);
+        newRequest[0].start = start;
+        newRequest[0].end = end;
+        newRequest[0].numberOfGamesPerTeam = numberOfGamePerTeam;
+        newRequest[0].date = [];
+        for (let i = 0; i < numberOfNeededDates; i++) {
+            let id1 = "GameDates" + i;
+            let datesFromForm = document.getElementById(id1).value;
+            id1 = "startHour" + i;
+            let start = document.getElementById(id1).value;
+            id1 = "endHour" + i;
+            let end = document.getElementById(id1).value;
+            newRequest[0].date[i] = new Object();
+            newRequest[0].date[i].date = datesFromForm;
+            newRequest[0].date[i].start = start;
+            newRequest[0].date[i].end = end;
+        }
+
+        let SecureObj = new SecurityObj(email, "1000", "submitGame1", newRequest);
+        console.log(SecureObj);
+        window.alert(JSON.stringify(SecureObj));
+        postSend("/Representative/scheduleGame", SecureObj).then(function (v) {
+            console.log("good:" + v);
+            printGames(v);
+        }).catch(function (v) {
+            console.log("failed:" + v);
+        });
+    });
+
+    function seasonSelect(cardInfo) {
+        var leagueCardTemplate = [
+            '<option value=' +
+            cardInfo.start.substr(0, 5) + '-' +
+            cardInfo.end.substr(0, 4) + ">" +
+            cardInfo.start.substr(0, 5) + '-' +
+            cardInfo.end.substr(0, 4) +
+            "</option>",
+        ];
+        return $(leagueCardTemplate.join(''));
+    }
+
+    function printGames(data) {
+        let Games = [];
+        console.log("succsses");
+        for (let i = 0; i < data.length; i++) {
+            Games[i] = new Game(data[i].id, data[i].home.name, data[i].away.name, data[i].date, data[i].startTime, data[i].endTime);
+            console.log("game id:" + Games[i].id + ", home: " + Games[i].home + ", away:" + Games[i].away + ", date:" + Games[i].date + ", start:" + Games[i].start + ", end:" + Games[i].end);
+        }
+    }
+
 });
 
-function seasonSelect(cardInfo){
-    var leagueCardTemplate = [
-        '<option value='+
-        cardInfo.start.substr(0, 5)+ '-'+
-        cardInfo.end.substr(0, 4) + ">"+
-        cardInfo.start.substr(0, 5)+ '-'+
-        cardInfo.end.substr(0, 4)+
-        "</option>",
-
-    ];
-    return $(leagueCardTemplate.join(''));
-}
-function printGames(data){
-    let Games = [] ;
-    console.log("succsses");
-    for(let i=0 ; i < data.length ; i++){
-        Games[i] = new Game(data[i].id ,data[i].home.name , data[i].away.name , data[i].date , data[i].startTime , data[i].endTime);
-        console.log("game id:"+Games[i].id +", home: "+Games[i].home +", away:"+ Games[i].away+", date:"+Games[i].date+", start:"+Games[i].start +", end:"+Games[i].end);
+$(".SubscribeToGame").click(function () {
+    let gameID = [] ;
+    gameID[0] = new Object() ;
+    gameID[0].game_id =  document.getElementById("gameIdSubscribe").value;
+    if(document.getElementById("followStatus").value=="true"){
+        gameID[0].Subscribe = true ;
+    }else{
+        gameID[0].Subscribe = false;
     }
-}
+    let SecureObj  = new SecurityObj(email,"1000","SubscibeToGame", gameID) ;
+    postSend("/Fan/Subscribe",SecureObj).then(function (data) {
+        console.log(data);
+    }).catch(function (data) {
+        console.log(data);
+    });
+});
 
-
+$('#representativeButton').click(function () {
+    hideAll();
+    $('#RepView').show();
 });

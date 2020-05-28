@@ -26,7 +26,7 @@
 <body>
 
 <!-- Login -->
-<div class="page-div" id="login">
+<div class="page-div" id="login" >
     <div id="sign-in" class="container">
         <h1> SIGN IN </h1>
         <br>
@@ -66,13 +66,13 @@
                     Seasons
                 </div>
             </button>
-            <button class="navButton" onclick="TeamsContent(event)">
+            <button class="navButton" id="teamsButton">
                 <div>
                     <i class="fas fa-users"></i>
                     Teams
                 </div>
             </button>
-            <button class="navButton" onclick="GamesContent(event)">
+            <button class="navButton" id="gamesButton">
                 <div>
                     <i class="far fa-futbol"></i>
                     Games
@@ -117,7 +117,7 @@
             </div>
         </div>
         <!-- TEAMS -->
-        <div id="TeamsView" hidden  >
+        <div id="TeamsView" hidden>
             <h1> Teams </h1>
             <div id="TeamCards" class="cardContent">
 
@@ -153,7 +153,8 @@
                 <button id="StartEnd">START GAME</button>
                 <br>
                 <div class="progress" style="height: 30px; width: 80%; margin-left: 10%">
-                    <div id="minutePB" class="progress-bar progress-bar-striped bg-dark" role="progressbar" style="width: 10%"
+                    <div id="minutePB" class="progress-bar progress-bar-striped bg-dark" role="progressbar"
+                         style="width: 10%"
                          aria-valuenow="50" aria-valuemin="10" aria-valuemax="100">
                         <h4 id="minute">0'</h4>
                     </div>
@@ -193,40 +194,43 @@
             </div>
         </div>
         <!-- REPRESENTATIVE -->
-        <div id="RepView">
-            <div id="addTeam"  >
-                <h1 >ADD TEAM</h1>
+        <div id="RepView" hidden >
+            <div id="addTeam">
+                <h3>New Team</h3>
                 <div id="addNewTeam">
-                <form>
-                    <div class="form-group">
-                        <label id="teamName">Team's Name:</label>
-                        <input type="text" class="form-control" id="inputTeamName">
-                    </div>
-                    <div class="form-group">
-                        <label id="teamStadium">Team's Stadium:</label>
-                        <input type="text" class="form-control" id="inputStadium">
-                    </div>
-                    <div class="form-group">
-                        <label>League Type:</label>
-                        <div class="form-group">
-                            <select name="Leagues" id="leaguesType">
-                                <option value="MAJOR_LEAGUE">MAJOR_LEAGUE</option>
-                                <option value="SECOND_LEAGUE">SECOND_LEAGUE</option>
-                                <option value="LEAGUE_A">LEAGUE_A</option>
-                                <option value="LEAGUE_B">LEAGUE_B</option>
-                                <option value="LEAGUE_C">LEAGUE_C</option>
-                            </select>
+                    <form>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label id="teamName">Team's Name:</label>
+                                <input type="text" class="form-control" id="inputTeamName">
+                            </div>
+                            <div class="form-group col">
+                                <label id="teamStadium">Team's Stadium:</label>
+                                <input type="text" class="form-control" id="inputStadium">
+                            </div>
+                            <div class="form-group col">
+                                <label>League:</label>
+                                <div class="form-group">
+                                    <select name="Leagues" id="leaguesType" style="width: 90%">
+                                        <option value="MAJOR_LEAGUE">MAJOR_LEAGUE</option>
+                                        <option value="SECOND_LEAGUE">SECOND_LEAGUE</option>
+                                        <option value="LEAGUE_A">LEAGUE_A</option>
+                                        <option value="LEAGUE_B">LEAGUE_B</option>
+                                        <option value="LEAGUE_C">LEAGUE_C</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <button id="submitTeam"   type="button" class="btn btn-primary">Add Team</button>
-                </form>
+                        <button id="submitTeam" type="button" class="btn btn-primary">Add Team</button>
+                    </form>
                 </div>
             </div>
-            <div id="SchedulePolicy"  >
-                <h1>SCHEDULE POLICY</h1>
+            <div id="SchedulePolicy">
+                <h3>New Schedule Policy</h3>
+                <br>
                 <div id="GamePolicy1">
                     <form>
-                        <label>League Type:</label>
+                        <label> League Type:</label>
                         <div class="form-group">
                             <select name="Leagues" id="leagueTypeGame">
                                 <option value="MAJOR_LEAGUE">MAJOR_LEAGUE</option>
@@ -236,7 +240,7 @@
                                 <option value="LEAGUE_C">LEAGUE_C</option>
                             </select>
                         </div>
-                        <label>Season:</label>
+                        <label> Season:</label>
                         <div class="form-group">
                             <select name="Leagues" id="SeasonypeGame">
                                 <!--<option value="MAJOR_LEAGUE">MAJOR_LEAGUE</option>-->
@@ -247,41 +251,41 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label id="numOfGames">Number Of Games Per Team:</label>
+                            <label id="numOfGames"> Number Of Games Per Team:</label>
                             <input type="text" class="form-control" id="inputNumGames">
                         </div>
                         <button id="submitGame" type="button" class="btn btn-primary">Continue</button>
                     </form>
                 </div>
                 <br>
-
-                <div id="GamePolicy2" >
+                <div id="GamePolicy2">
                     <button id="submitGame1" class="btn btn-primary" type="button">Submit Games</button>
                 </div>
             </div>
-            <div id="RankPolicy" >
-            <h1>RANK POLICY</h1>
-            <div>
-                <form>
-                    <div class="form-group">
-                        <label id="winScore">Win Score::</label>
-                        <input type="number" min="1" class="form-control" id="inputWin">
-                    </div>
-                    <div class="form-group">
-                        <label id="tieScore">Tie Score:</label>
-                        <input type="number" min="0" class="form-control" id="inputTie">
-                    </div>
-                    <div class="form-group">
-                        <label id="looseScore">Loose Score:</label>
-                        <input type="text" min="0" class="form-control" id="inputLoose">
-                    </div>
+            <div id="RankPolicy">
+                <h3>New Rank Policy</h3>
+                <br>
+                <div>
+                    <form class="row">
+                        <div class="form-group col">
+                            <label id="winScore"> Win Score:</label>
+                            <input type="number" min="1" class="form-control" id="inputWin">
+                        </div>
+                        <div class="form-group col">
+                            <label id="tieScore"> Tie Score:</label>
+                            <input type="number" min="0" class="form-control" id="inputTie">
+                        </div>
+                        <div class="form-group col">
+                            <label id="looseScore"> Loose Score:</label>
+                            <input type="number" min="0" class="form-control" id="inputLoose">
+                        </div>
+                    </form>
                     <button id="submitScore" type="button" class="btn btn-primary">Continue</button>
-                </form>
-            </div>
+                </div>
             </div>
         </div>
         <!-- ALERTS -->
-        <div id="AlertsView">
+        <div id="AlertsView" hidden>
             <h1>New Updates</h1>
             <div id="NewAlertsContent">
                 <div class="alertUpdate">
