@@ -11,6 +11,7 @@ import com.football_system.football_system.FMserver.ServiceLayer.RefereeService;
 import com.football_system.football_system.FMserver.ServiceLayer.RepresentativeService;
 import com.football_system.football_system.FootballSystemApplication;
 import com.football_system.football_system.logicTest.SecurityObject;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -30,7 +31,8 @@ import java.util.List;
 @RequestMapping("/Referee")
 public class RefereeController {
 
-
+    private static Logger errorsLogger = Logger.getLogger("errors");
+    private static Logger eventsLogger = Logger.getLogger("events");
 
 
     @RequestMapping(
@@ -40,7 +42,10 @@ public class RefereeController {
             throws Exception {
         User user = SecurityObject.Authorization(securityObject);
         List<Object> returnList = new LinkedList<>() ;
-        if (user == null) return null;
+        if (user == null){
+            errorsLogger.error("Authorization Error - Get Event Properties Failed");
+            return null;
+        }
         RefereeService refereeService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof RefereeService) {
@@ -52,8 +57,10 @@ public class RefereeController {
             Integer game_id = Integer.parseInt(objects.get("game_id").toString());
             returnList.add(refereeService.getEventTypes())  ;
             returnList.add(refereeService.getPlayingTeamsInTheGame(game_id))  ;
+            eventsLogger.info(" - The User : " + user.getUserName() + " -  Get Event Properties");
             return returnList;
         }
+        errorsLogger.error("General Error - Get Event Properties");
         return null;
     }
 
@@ -64,7 +71,10 @@ public class RefereeController {
     public List<Game> getGamesByReferee(@RequestBody SecurityObject securityObject)
             throws Exception {
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return null;
+        if (user == null){
+            errorsLogger.error("Authorization Error - Get Games By Referee Failed");
+            return null;
+        }
         RefereeService refereeService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof RefereeService) {
@@ -74,8 +84,10 @@ public class RefereeController {
         if (refereeService != null) {
             LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) securityObject.getObject().get(0);
             String referee_id = (String) objects.get("referee_id");
+            eventsLogger.info(" - The User : " + user.getUserName() + " - Get Games By Referee");
             return refereeService.getGamesByRefereeID(referee_id) ;
         }
+        errorsLogger.error("General Error - Get Games By Referee ");
         return null;
     }
 
@@ -88,7 +100,10 @@ public class RefereeController {
             throws Exception {
         User user = SecurityObject.Authorization(securityObject);
         List<Object> returnList = new LinkedList<>() ;
-        if (user == null) return ResponseEntity.badRequest().build();
+        if (user == null) {
+            errorsLogger.error("Authorization Error - Create Report Failed");
+            return ResponseEntity.badRequest().build();
+        }
         RefereeService refereeService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof RefereeService) {
@@ -100,8 +115,10 @@ public class RefereeController {
             Integer game_id = Integer.parseInt(objects.get("game_id").toString());
             String description = objects.get("description").toString();
             refereeService.createGameReport(game_id , description);
+            eventsLogger.info(" - The User : " + user.getUserName() + " - Report been created");
             return ResponseEntity.ok().build();
         }
+        errorsLogger.error("General Error - Create Report Failed");
         return ResponseEntity.badRequest().build();
     }
 }

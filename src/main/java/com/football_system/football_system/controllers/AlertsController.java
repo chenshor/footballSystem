@@ -8,6 +8,7 @@ import com.football_system.football_system.FMserver.ServiceLayer.IUserService;
 import com.football_system.football_system.FMserver.ServiceLayer.RefereeService;
 import com.football_system.football_system.FootballSystemApplication;
 import com.football_system.football_system.logicTest.SecurityObject;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -26,11 +27,17 @@ public class AlertsController {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    private static Logger errorsLogger = Logger.getLogger("errors");
+    private static Logger eventsLogger = Logger.getLogger("events");
+
     @MessageMapping("/chat")
     public void addEventToGame(@RequestBody SecurityObject securityObject)
             throws Exception {
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return ;
+        if (user == null){
+            errorsLogger.error("Authorization Error - Add game event Failed");
+            return ;
+        }
         RefereeService refereeService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof RefereeService) {
@@ -46,6 +53,7 @@ public class AlertsController {
             Integer minute = Integer.parseInt(objects.get("minute").toString());
             HashMap<User , Alert> userAlertHashMap = refereeService.addEventGame(home , game_id , description ,eventType,minute );
 
+            eventsLogger.info(" - The User : " + user.getUserName() + " - game event created successfully");
             //sent to observers
             for(User user_toSend :userAlertHashMap.keySet()){
                 try {
@@ -54,9 +62,9 @@ public class AlertsController {
                 }catch (Exception e){
 
                 }
-
-
             }
+        }else{
+            errorsLogger.error("Authorization Error - Add game event Failed");
         }
         return ;
     }

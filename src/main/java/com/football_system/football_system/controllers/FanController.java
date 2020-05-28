@@ -9,6 +9,7 @@ import com.football_system.football_system.FMserver.ServiceLayer.IUserService;
 import com.football_system.football_system.FMserver.ServiceLayer.RefereeService;
 import com.football_system.football_system.FootballSystemApplication;
 import com.football_system.football_system.logicTest.SecurityObject;
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -26,6 +27,8 @@ import java.util.List;
 @RequestMapping("/Fan")
 public class FanController {
 
+    private static Logger errorsLogger = Logger.getLogger("errors");
+    private static Logger eventsLogger = Logger.getLogger("events");
 
 
     @RequestMapping(
@@ -34,7 +37,10 @@ public class FanController {
     public ResponseEntity<Void> Subscribe(@RequestBody SecurityObject securityObject)
             throws Exception {
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return ResponseEntity.badRequest().build();
+        if (user == null){
+            errorsLogger.error("Authorization Error - Subscribe to game: Failed");
+            return ResponseEntity.badRequest().build();
+        }
         FanService fanService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof FanService) {
@@ -50,9 +56,11 @@ public class FanController {
             }else {
                 fanService.removeFollowOnGame(game_id);
             }
+            eventsLogger.info(" - The User : " + user.getUserName() + " - Subscribe to game successfully");
             return ResponseEntity.ok().build();
 
         }
+        errorsLogger.error("General Error - Subscribe to game: Failed");
         return ResponseEntity.badRequest().build();
 
     }
@@ -63,7 +71,10 @@ public class FanController {
     public List<Alert> getUpdates(@RequestBody SecurityObject securityObject)
             throws Exception {
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return null;
+        if (user == null){
+            errorsLogger.error("Authorization Error - Get game updates: Failed");
+            return null;
+        }
         FanService fanService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof FanService) {
@@ -71,9 +82,11 @@ public class FanController {
             }
         }
         if (fanService != null) {
+            eventsLogger.info(" - The User : " + user.getUserName() + " - get game updates successfully");
             return user.getAlerts() ;
 
         }
+        errorsLogger.error("General Error - Get game updates: Failed");
         return null;
 
     }
@@ -84,7 +97,10 @@ public class FanController {
     public  ResponseEntity<Void> setUpdatesReaded(@RequestBody SecurityObject securityObject)
             throws Exception {
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return ResponseEntity.badRequest().build() ;
+        if (user == null){
+            errorsLogger.error("Authorization Error - Set updates to be read: Failed");
+            return ResponseEntity.badRequest().build() ;
+        }
         FanService fanService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof FanService) {
@@ -96,9 +112,10 @@ public class FanController {
             for ( Alert alert: user.getAlerts()) {
                 alert.setReaded(true);
             }
+            eventsLogger.info(" - The User : " + user.getUserName() + " - Set updates to be read successfully");
             return ResponseEntity.ok().build();
         }
-
+        errorsLogger.error("General Error - Set updates to be read: Failed");
         return ResponseEntity.badRequest().build();
 
     }

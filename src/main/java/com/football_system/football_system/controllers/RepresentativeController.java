@@ -52,7 +52,10 @@ public class RepresentativeController {
             }
 
             League league  = League.checkIfLeagueExist(leagueType) ;
-            if(league == null) return false ;
+            if(league == null){
+                errorsLogger.error("General Error - Team Creation Failed: League type not valid");
+                return false ;
+            }
 
             Team newTeam = new Team(TeamDetails.get("name").toString(), TeamDetails.get("stadium").toString(), null);
            // league.setName(leagueDetails.get("name").toString());
@@ -80,7 +83,10 @@ public class RepresentativeController {
         List<Game> games = null ;
 
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return games;
+        if (user == null){
+            errorsLogger.error("Authorization Error - Game Scheduling Failed");
+            return games;
+        }
         RepresentativeService representativeService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof RepresentativeService) {
@@ -107,24 +113,18 @@ public class RepresentativeController {
 
             games = representativeService.scheduleGame(league, GamesPerTeam , season ,possiableTimes);
            // securityObject.setObject(games);
+
+        }
+        if(games==null){
+            errorsLogger.error("General Error - Game Scheduling Failed");
+        }else{
+            eventsLogger.info(" - The User : " + user.getUserName() + " - Game Scheduling done successfully");
         }
         return games;
         //return "hi there!" ;
     //    return securityObject;
     }
 
-    /**
-     * Set Rank Policy
-     *
-     * @param securityObject
-     * @return true if function completed with no errors
-     * @throws Exception
-     */
-    @RequestMapping(value = "/setRankPolicy", method = RequestMethod.POST)
-    public boolean setRankPolicy(@RequestBody SecurityObject securityObject) throws Exception {
-
-        return true;
-    }
 
     @RequestMapping(
             value = "/rankPolicy",
@@ -135,7 +135,10 @@ public class RepresentativeController {
         List<Game> games = null ;
 
         User user = SecurityObject.Authorization(securityObject);
-        if (user == null) return ResponseEntity.badRequest().build();
+        if (user == null)  {
+            errorsLogger.error("Authorization Error - Rank Policy set Failed");
+            return ResponseEntity.badRequest().build();
+        }
         RepresentativeService representativeService = null;
         for (IUserService iUserService : FootballSystemApplication.system.getUserServices().get(user)) {
             if (iUserService instanceof RepresentativeService) {
@@ -156,9 +159,11 @@ public class RepresentativeController {
 
             if(representativeService.setRankPolicy(season , league,win  ,draw  ,lose )) {
                 System.out.println("rank policy been setted to win:"+win+", draw:"+draw+" , lose:"+lose);
+                eventsLogger.info(" - The User : " + user.getUserName() + " - Rank Policy set successfully");
                 return ResponseEntity.accepted().build();
             }
         }
+        errorsLogger.error("General Error - Rank Policy set Failed");
         return ResponseEntity.badRequest().build();
 
     }

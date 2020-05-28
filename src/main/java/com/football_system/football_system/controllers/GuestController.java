@@ -3,6 +3,7 @@ package com.football_system.football_system.controllers;
 import com.football_system.football_system.FMserver.LogicLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.GuestService;
 import com.football_system.football_system.FootballSystemApplication;
+import org.apache.log4j.Logger;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,9 @@ import java.util.Map;
 public class GuestController {
 
     private static GuestService guestService;
+    private static Logger errorsLogger = Logger.getLogger("errors");
+    private static Logger eventsLogger = Logger.getLogger("events");
+
     public  GuestController(){
         Guest guest = new Guest() ;
         guestService = new GuestService(guest , FootballSystemApplication.system) ;
@@ -26,8 +30,10 @@ public class GuestController {
     @RequestMapping("/Teams")
     public List<Team> getTeam() {
         try {
+            eventsLogger.info(" - The Guest : get Teams");
             return guestService.getTeams();
         }catch (Exception e){
+            errorsLogger.error("General Error - can not get teams");
             return null;
         }
     }
@@ -35,9 +41,12 @@ public class GuestController {
     @RequestMapping("/Teams/{name}")
     public Team getTeam(@PathVariable String name) {
         try {
-            return guestService.getTeams().stream().filter(team -> team.getName().equals(name))
+            Team res_team= guestService.getTeams().stream().filter(team -> team.getName().equals(name))
                     .findFirst().get();
+            eventsLogger.info(" - The Guest : get Team");
+            return res_team;
         }catch (Exception exception){
+            errorsLogger.error("General Error - can not get team");
             return null;
         }
     }
@@ -45,18 +54,24 @@ public class GuestController {
     @RequestMapping("/Leagues")
     public List<League> getLeagues() {
         try {
-            return guestService.getLeagues();
+            List<League> getLeagues = guestService.getLeagues();
+            eventsLogger.info(" - The Guest : get Leagues");
+            return getLeagues;
         }catch (Exception e){
+            errorsLogger.error("General Error - can not get Leagues");
             return null;
         }
     }
 
     @RequestMapping("/Leagues/{type}")
-    public League getLeagues(@PathVariable String type) {
+    public League getLeague(@PathVariable String type) {
         try {
-            return guestService.getLeagues().stream().filter(league -> league.getType().equals(type))
+             League res_league = guestService.getLeagues().stream().filter(league -> league.getType().equals(type))
                     .findFirst().get();
+            eventsLogger.info(" - The Guest : get League");
+            return res_league;
         }catch (Exception exception){
+            errorsLogger.error("General Error - can not get League");
             return null;
         }
     }
@@ -64,8 +79,11 @@ public class GuestController {
     @RequestMapping("/Seasons")
     public List<Season> getSeason() {
         try {
-            return guestService.getSesons();
+            List<Season> seasons =  guestService.getSesons();
+            eventsLogger.info(" - The Guest : get Seasons");
+            return seasons;
         }catch (Exception exception){
+            errorsLogger.error("General Error - can not get Seasons");
             return null;
         }
     }
@@ -80,8 +98,10 @@ public class GuestController {
                     seasons.add(season);
                 }
             }
+            eventsLogger.info(" - The Guest : get Seasons by league type");
             return seasons;
         }catch (Exception exception){
+            errorsLogger.error("General Error - can not get Seasons by league type");
             return null;
         }
     }
@@ -95,8 +115,10 @@ public class GuestController {
                     .findFirst().get()).size();
             hashMap.put("number_of_Teams",numberOfTeams);
             hashMap.put("number_of_dates_needed",League.numberOfNeededDates(Integer.parseInt(numberOfGamesPerTeam),numberOfTeams ));
+            eventsLogger.info(" - The Guest : get number Of teams in season");
             return hashMap;
         }catch (Exception e){
+            errorsLogger.error("General Error - get number Of teams in season");
             return null;
         }
     }
@@ -104,8 +126,11 @@ public class GuestController {
     @RequestMapping("/Games")
     public List<Game> getGames() {
         try {
-            return DataComp.getInstance().getGameList();
+            List<Game> games =DataComp.getInstance().getGameList();
+            eventsLogger.info(" - The Guest : get Games");
+            return games;
         }catch (Exception exception){
+            errorsLogger.error("General Error - can not get Games");
             return null;
         }
     }
@@ -115,8 +140,10 @@ public class GuestController {
         try {
             Integer gameID = Integer.parseInt(game_id);
             Object obj = GuestService.getEvents(gameID);
+            eventsLogger.info(" - The Guest : get updates");
             return obj;
         }catch (Exception exception){
+            errorsLogger.error("General Error - can not get updates");
             return null;
         }
     }

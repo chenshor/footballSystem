@@ -59,8 +59,10 @@ public class LoginController {
             List<Object> obj = new LinkedList<>();
             obj.add(roles);
             SecurityObject so = new SecurityObject(data.get("email"), "key12344", "", obj);
+            eventsLogger.info(" - The User : " + user.getUserName() + " - Log in successfully");
             return so;
         }
+        errorsLogger.error("General Error - Can not login to user:"+data.get("email"));
         return null ;
     }
 
