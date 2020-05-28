@@ -619,13 +619,16 @@ $(document).ready(function () {
         // e.stopPropagation();
         let newTeam = [];
         newTeam[0] = new Object()
-        let league = new League(document.getElementById("leaguesType").value, null);
+        let leagueType = document.getElementById("leaguesType").value
+        leagueType = leagueType.substring(leagueType.indexOf("type:")+5);
+        let league = new League( leagueType , null);
         newTeam[0].Team = new Team(document.getElementById("inputTeamName").value,
             document.getElementById("inputStadium").value,
             league, null);
 
         let SecureObj = new SecurityObj(email, "1000", "addTeam", newTeam);
         postSend("/Representative/addTeam", SecureObj);
+        window.alert("Team added successfully!");
     });
 
     function showAddingTeams() {
@@ -655,7 +658,7 @@ $(document).ready(function () {
 
     $("#submitGame").on('click', function (e) {
         leagueType = document.getElementById("leagueTypeGame").value;
-        // leagueType = leagueType.substring(leagueType.indexOf("type:")+5);
+        leagueType = leagueType.substring(leagueType.indexOf("type:")+5);
         numberOfGamePerTeam = document.getElementById("inputNumGames").value;
         let url = "/Seasons/League/" + leagueType + "/numberGamesPerTeam/" + numberOfGamePerTeam;
         // window.alert(url);
@@ -664,10 +667,11 @@ $(document).ready(function () {
             numberOfTeamsInLeague = data.number_of_Teams;
 
             cards = createDates(numberOfNeededDates);
-            $('#GamePolicy2').prepend(cards);
+            $('#GameDates').empty();
+            $('#GameDates').append(cards);
             var stage1 = document.getElementById("GamePolicy2");
             stage1.style.display = "block";
-            // window.alert("teams:" + numberOfTeamsInLeague + " , number of dates:" + numberOfNeededDates);
+
         });
     });
 
@@ -710,8 +714,8 @@ $(document).ready(function () {
         newRequest[0] = new Object();
         newRequest[0].league = leagueType;
         let seasonSelection = document.getElementById("SeasonypeGame").value;
-        let start = seasonSelection.substring(0, 4);
-        let end = seasonSelection.substring(6, 10);
+        let start = seasonSelection.substring(seasonSelection.indexOf("start:")+6 , seasonSelection.indexOf(" ,end:"));
+        let end = seasonSelection.substring(seasonSelection.indexOf(",end:")+5);
         newRequest[0].start = start;
         newRequest[0].end = end;
         newRequest[0].numberOfGamesPerTeam = numberOfGamePerTeam;
@@ -783,4 +787,104 @@ $(".SubscribeToGame").click(function () {
 $('#representativeButton').click(function () {
     hideAll();
     $('#RepView').show();
+    $.get("/Leagues", function (data, status) {
+
+        let select  = document.getElementById("leaguesType");
+        let length = select.options.length;
+        for (let i = length-1; i >= 0; i--) {
+            select.options[i] = null;
+        }
+        select  = document.getElementById("leagueTypeGame");
+        length = select.options.length;
+        for (let i = length-1; i >= 0; i--) {
+            select.options[i] = null;
+        }
+        select  = document.getElementById("leagueTypeGameRankPolicy");
+        length = select.options.length;
+        for (let i = length-1; i >= 0; i--) {
+            select.options[i] = null;
+        }
+        for (let i = 0; i < data.length; i++) {
+            let x = document.getElementById("leaguesType");
+            let option = document.createElement("option");
+            option.text = data[i].name + " , type:" + data[i].type;
+            x.add(option);
+            let y = document.getElementById("leagueTypeGame");
+            let option2 = document.createElement("option");
+            option2.text = data[i].name + " , type:" + data[i].type;
+            y.add(option2);
+            let z = document.getElementById("leagueTypeGameRankPolicy");
+            let option3 = document.createElement("option");
+            option3.text = data[i].name + " , type:" + data[i].type;
+            z.add(option3);
+        }
+    });
+});
+
+$(document).ready(function () {
+    let myLink = document.getElementById('leagueTypeGame');
+    myLink.onclick = function () {
+        let leagueType = document.getElementById("leagueTypeGame").value;
+        leagueType = leagueType.substring(leagueType.indexOf("type:") + 5);
+        let url = "/Seasons/ByLeague/" + leagueType;
+        $.get(url, function (data, status) {
+            let select = document.getElementById("SeasonypeGame");
+            let length = select.options.length;
+            for (let i = length - 1; i >= 0; i--) {
+                select.options[i] = null;
+            }
+
+            for (let i = 0; i < data.length; i++) {
+                var x = document.getElementById("SeasonypeGame");
+                var option = document.createElement("option");
+                option.text = "start:" + data[i].start + " ,end:" + data[i].end;
+                x.add(option);
+            }
+        });
+    }
+
+    let myLink2 = document.getElementById('leagueTypeGameRankPolicy');
+    myLink2.onclick = function () {
+        let leagueType = document.getElementById("leagueTypeGameRankPolicy").value;
+        leagueType = leagueType.substring(leagueType.indexOf("type:") + 5);
+        let url = "/Seasons/ByLeague/" + leagueType;
+        $.get(url, function (data, status) {
+            let select = document.getElementById("SeasonypeGameRankPolicy");
+            let length = select.options.length;
+            for (let i = length - 1; i >= 0; i--) {
+                select.options[i] = null;
+            }
+
+            for (let i = 0; i < data.length; i++) {
+                var x = document.getElementById("SeasonypeGameRankPolicy");
+                var option = document.createElement("option");
+                option.text = "start:" + data[i].start + " ,end:" + data[i].end;
+                x.add(option);
+            }
+        });
+    }
+
+    $('#submitScore').click(function () {
+        let newRequest = [];
+        newRequest[0] = new Object();
+        let leagueType = document.getElementById("leagueTypeGameRankPolicy").value;
+        leagueType = leagueType.substring(leagueType.indexOf("type:") + 5);
+        newRequest[0].league = leagueType;
+        let seasonSelection = document.getElementById("SeasonypeGameRankPolicy").value;
+        let start = seasonSelection.substring(seasonSelection.indexOf("start:")+6 , seasonSelection.indexOf(" ,end:"));
+        let end = seasonSelection.substring(seasonSelection.indexOf(",end:")+5);
+        newRequest[0].start = start;
+        newRequest[0].end = end;
+        newRequest[0].win = document.getElementById("inputWin").value;
+        newRequest[0].draw = document.getElementById("inputTie").value;
+        newRequest[0].lose = document.getElementById("inputLoose").value;
+        let SecureObj = new SecurityObj(email, "1000", "submitScore", newRequest);
+        console.log(SecureObj);
+        window.alert(JSON.stringify(SecureObj));
+        postSend("/Representative/rankPolicy", SecureObj).then(function (v) {
+            console.log("good:" + v);
+        }).catch(function (v) {
+            console.log("failed:" + v);
+        });
+    });
 });

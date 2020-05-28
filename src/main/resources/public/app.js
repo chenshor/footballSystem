@@ -186,7 +186,8 @@ $( document ).ready(function() {
 
         let SecureObj  = new SecurityObj(email,"1000","ScheduleGames", newRequest) ;
 
-        //    window.alert(JSON.stringify(SecureObj));
+        window.alert(JSON.stringify(SecureObj));
+        console.log(SecureObj);
         postSend("/Representative/scheduleGame" , SecureObj ).then(function (v) {
             console.log("good:"+v);
             printGames(v);

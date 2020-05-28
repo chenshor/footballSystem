@@ -160,8 +160,14 @@ public class RepresentativeService extends AUserService {
     public boolean setRankPolicy(Season season, League league, int win, int draw, int lose) {
         RankPolicy newRankPolicy = createRank(season, league, win, draw, lose);
         if (newRankPolicy == null) return false;
-        league.getRankPolicyList().remove(season);
-        league.getRankPolicyList().put(season, newRankPolicy);
+     //   try {
+        //    league.getRankPolicyList().remove(season);
+            if( league.getRankPolicyList() != null) {
+                league.getRankPolicyList().put(season, newRankPolicy);
+            }
+//        }catch (Exception exception){
+//
+//        }
         return true;
     }
 
