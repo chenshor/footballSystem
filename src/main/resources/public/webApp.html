@@ -8,6 +8,8 @@
 
     <!-- My JavaScript -->
     <script src="./jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -90,7 +92,7 @@
             </button>
         </div>
         <div id="notifications" hidden>
-            <button class="navButton">
+            <button class="navButton" id="alertsButton">
                 Updates
                 <span class="badge badge-pill badge-dark" id="notificationsNumber">3</span>
             </button>
@@ -148,31 +150,26 @@
         <!-- Game Manager-->
         <div id="RefereeView" hidden>
             <div id="gameTime">
-                <button id="StartEnd"> START GAME</button>
+                <button id="StartEnd">START GAME</button>
                 <br>
                 <div class="progress" style="height: 30px; width: 80%; margin-left: 10%">
-                    <div class="progress-bar progress-bar-striped bg-dark" role="progressbar" style="width: 27%"
+                    <div id="minutePB" class="progress-bar progress-bar-striped bg-dark" role="progressbar" style="width: 10%"
                          aria-valuenow="50" aria-valuemin="10" aria-valuemax="100">
-                        <h4>17'</h4>
+                        <h4 id="minute">0'</h4>
                     </div>
                 </div>
             </div>
             <div id="EventTitle">
-                <h4 style="text-align: right; padding-right: 10px"> FC Barcelona </h4>
-                <h4 id="score"> 1 : 1 </h4>
-                <h4 style="text-align: left; padding-left: 10px"> Real Madrid CF </h4>
+                <h4 style="text-align: right; padding-right: 10px" id="homeTeam"></h4>
+                <h4 id="score">0 : 0</h4>
+                <h4 style="text-align: left; padding-left: 10px" id="awayTeam"></h4>
             </div>
             <div id="GameEvent">
                 <div id="HomeEvents">
-                    <div>7' - Yellow Card - Pique</div>
-                    <div><br></div>
-                    <div>20' - Goal - Messi</div>
-                    <div>26' - Red Card - Pique</div>
+
                 </div>
                 <div id="AwayEvents">
-                    <div><br></div>
-                    <div>Goal - Asensio - 19'</div>
-                    <div><br></div>
+
                 </div>
             </div>
             <div id="RefController">
@@ -189,14 +186,14 @@
                             <input type="text" class="form-control" placeholder="details" id="description">
                         </div>
                         <div class="col-2">
-                            <button id="addEvent">ADD</button>
+                            <button id="addEvent" disabled>ADD</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
         <!-- REPRESENTATIVE -->
-        <div id="RepView" >
+        <div id="RepView" hidden>
             <div id="addTeam">
                 <h1>ADD TEAM</h1>
             </div>
@@ -208,7 +205,7 @@
             </div>
         </div>
         <!-- ALERTS -->
-        <div id="AlertsView" hidden>
+        <div id="AlertsView">
             <h1>New Updates</h1>
             <div id="NewAlertsContent">
                 <div class="alertUpdate">
