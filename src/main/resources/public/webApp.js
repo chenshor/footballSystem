@@ -226,12 +226,15 @@ function hideAll() {
     $('#GamesView').removeAttr('hidden');
     $('#GamesView').hide();
     $('#RefView').removeAttr('hidden');
+    $('#RefereeView').removeAttr('hidden');
+    $('#RefereeView').hide();
     $('#RefView').hide();
     $('#RepView').removeAttr('hidden');
     $('#RepView').hide();
     $('#AlertsView').removeAttr('hidden');
     $('#AlertsView').hide();
 }
+
 //</editor-fold>
 
 //<editor-fold desc="CONTENT GENERATOR">
@@ -294,7 +297,8 @@ function createSeasonCard(cardInfo) {
         '<div class="card-body">',
         '<h5 class="card-title">Season</h5>',
         '<h6 class="card-subtitle mb-2 text-muted">',
-        cardInfo.start.substr(0, 5) || 'undefined',
+        cardInfo.start.substr(0, 4) || 'undefined',
+        ' - ',
         cardInfo.end.substr(0, 4) || 'undefined',
         '</h6>',
         '<button class="moreInfoButton">More Info</button></div></div></div></div>'
@@ -306,7 +310,7 @@ $(document).ready(function () {
     $('#teamsButton').click(function () {
         hideAll();
         $('#TeamsView').show();
-        $('#teamsCards').empty();
+        $('#TeamCards').empty();
         $.get("/Teams", function (data) {
             cards = $();
             data.forEach(function (item) {
@@ -339,7 +343,7 @@ $(document).ready(function () {
     $('#gamesButton').click(function () {
         hideAll();
         $('#GamesView').show();
-        $('#gamesCards').empty();
+        $('#GamesCards').empty();
         $.get("/Games", function (data) {
             cards = $();
             data.forEach(function (item) {
@@ -360,22 +364,34 @@ function createGamesCard(cardInfo) {
         cardInfo.away.name,
         '</h5>',
         '<hr>',
-        '<h6 class="card-subtitle mb-3 text-muted">Home: ',
-        cardInfo.home.name || 'undefined', //
-        '</h6>',
-        '<h6 class="card-subtitle mb-3 text-muted">Away: ',
-        cardInfo.away.name || 'undefined', //
-        '</h6>',
         '<h6 class="card-subtitle mb-3 text-muted">Stadium: ',
         cardInfo.home.stadium || 'undefined', //
         '</h6>',
         '<h6 class="card-subtitle mb-3 text-muted">Date: ',
         cardInfo.date || 'undefined', //
         '</h6>',
-
-        '<button class="moreInfoButton">More Info</button></div></div></div></div>'
+        '<button class="moreInfoButton" onclick="follow(\'',
+        cardInfo.id || "undefined",
+        '\')">Follow</button></div></div></div></div>'
     ];
     return $(gamesCardTemplate.join(''));
+}
+
+let following = new Array();
+
+function follow(game_id) {
+    following[game_id] = true;
+    if(true){
+        gameID[0].Subscribe = true ;
+    }else{
+        gameID[0].Subscribe = false;
+    }
+    let SecureObj  = new SecurityObj(email,"1000","SubscibeToGame", gameID) ;
+    postSend("/Fan/Subscribe",SecureObj).then(function (data) {
+        console.log(data);
+    }).catch(function (data) {
+        console.log(data);
+    });
 }
 
 //</editor-fold>
@@ -764,16 +780,16 @@ $(document).ready(function () {
 });
 
 $(".SubscribeToGame").click(function () {
-    let gameID = [] ;
-    gameID[0] = new Object() ;
-    gameID[0].game_id =  document.getElementById("gameIdSubscribe").value;
-    if(document.getElementById("followStatus").value=="true"){
-        gameID[0].Subscribe = true ;
-    }else{
+    let gameID = [];
+    gameID[0] = new Object();
+    gameID[0].game_id = document.getElementById("gameIdSubscribe").value;
+    if (document.getElementById("followStatus").value == "true") {
+        gameID[0].Subscribe = true;
+    } else {
         gameID[0].Subscribe = false;
     }
-    let SecureObj  = new SecurityObj(email,"1000","SubscibeToGame", gameID) ;
-    postSend("/Fan/Subscribe",SecureObj).then(function (data) {
+    let SecureObj = new SecurityObj(email, "1000", "SubscibeToGame", gameID);
+    postSend("/Fan/Subscribe", SecureObj).then(function (data) {
         console.log(data);
     }).catch(function (data) {
         console.log(data);

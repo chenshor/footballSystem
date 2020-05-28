@@ -150,6 +150,7 @@ h4 span {
     background: transparent;
     height: 100%;
     padding: 4%;
+    overflow: hidden;
 }
 
 #sideNavBar h5 {
@@ -223,9 +224,20 @@ h4 span {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.cardContent {
+#changeableContent .cardContent {
     display: grid;
     grid-template-columns: repeat(4, minmax(200px, 33%));
+    max-height: 80% !important;
+    overflow-y: auto !important;
+}
+
+.cardContent::-webkit-scrollbar {
+    width: 8px;
+    background: darkgray;
+}
+
+.cardContent::-webkit-scrollbar-thumb {
+    background: #292F35;
 }
 
 .moreInfoButton {
