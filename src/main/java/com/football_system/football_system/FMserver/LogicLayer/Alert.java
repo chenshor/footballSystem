@@ -2,14 +2,23 @@ package com.football_system.football_system.FMserver.LogicLayer;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
-
+@Entity
+@EnableAutoConfiguration
 public class Alert implements Serializable {
-
+    @Id
+    private int A_id;
     @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "U_id")
     private User user;
     private String description;
     String date;
@@ -38,6 +47,8 @@ public class Alert implements Serializable {
         this.date = date;
         this.readed = readed;
     }
+
+    public Alert(){}
 
     public User getUser() {
         return user;

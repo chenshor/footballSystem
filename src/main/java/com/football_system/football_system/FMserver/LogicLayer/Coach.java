@@ -1,12 +1,21 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
-import java.io.Serializable;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import java.io.Serializable;
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Coaches")
 public class Coach extends RoleHolder implements Serializable {
 
     private String name;
     String qualification;
     private String job;
+    @OneToOne(cascade = CascadeType.REMOVE)
     private Page page;
 
     public Coach(User user, String name, String qualification, String job, Page page, Team team) {

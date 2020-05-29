@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://db.cia1m2bpvigf.eu-west-1.rds.amazonaws.com:3306/DB
+    username: root
+    password: Eitan1121
+  jpa:
+    hibernate:
+      ddl-auto: update
+      generate-ddl: true
+      show-sql: true

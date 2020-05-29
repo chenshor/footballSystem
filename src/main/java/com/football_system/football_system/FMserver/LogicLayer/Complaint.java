@@ -1,16 +1,26 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+
+import javax.persistence.*;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
-
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Complaints")
 public class Complaint implements Serializable {
-
+    @Id
+    private int Complaint_Id;
+    @OneToOne
     private User user;
     private String description;
     private String commentAdmin;
     private String date; // format: "2010-12-12"
     private boolean answered;
+    @Transient
+    private static int Id_Generator = 3;
 
 
     public Complaint(User user,  String description, String date) {
@@ -19,6 +29,8 @@ public class Complaint implements Serializable {
         this.date = date;
         this.answered=false;
     }
+
+    public Complaint(){}
 
     public User getUser() {
         int i =2;

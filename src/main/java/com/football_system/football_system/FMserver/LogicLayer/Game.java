@@ -2,39 +2,61 @@ package com.football_system.football_system.FMserver.LogicLayer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.football_system.football_system.FMserver.DataLayer.IDataManager;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.annotation.Generated;
+import javax.persistence.*;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Games")
+public class Game  implements Serializable{
 
-public class Game  implements Serializable {
-
-
-    private Integer id;
+    @Id
+    private int id;
+    @OneToOne
+    @JoinColumn(name = "Season_id")
     private Season season;
-
+    @OneToOne
+    @JoinColumn(name = "home_team_id")
     private Team home;
-
+    @OneToOne
+    @JoinColumn(name = "away_team_id")
     private Team away;
+    @OneToOne
     @JsonIgnore
     private Referee line;
     @JsonIgnore
+    @OneToOne
     private Referee main;
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JsonIgnore
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<GameEventCalender> gameEventCalenderHome;
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JsonIgnore
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<GameEventCalender> gameEventCalenderAway;
     private String date; // format "2019-04-09"
     private String startTime; // format "13:50"
     private String endTime;
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JsonIgnore
     private Result result;
+    @OneToOne(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     private GameReport gameReport;
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JsonIgnore
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Fan> subscribers;
 
     public static boolean checkIfHomeTeam(String teamName , Integer game_id){
@@ -66,7 +88,6 @@ public class Game  implements Serializable {
         this.endTime=end;
         this.gameReport=new GameReport(this);
         this.subscribers = new LinkedList<>();
-        this.id = data().getGameList().size()+1; // remove it later
         data().addGame(this);
     }
 
@@ -109,7 +130,6 @@ public class Game  implements Serializable {
         this.endTime=end;
         this.gameReport=new GameReport(this);
         this.subscribers = new LinkedList<>();
-        this.id = data().getGameList().size()+1; // remove it later
         data().addGame(this);
     }
 

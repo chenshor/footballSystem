@@ -1,12 +1,21 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
-
+@Entity
+@EnableAutoConfiguration
+@Table(name = "game_events")
 public class GameEventCalender implements Serializable {
-
+    @Id
+    private int GameEvent_Id;
     @JsonIgnore
+    @ManyToOne
     private Game game;
     private String hour; // format (13:50)
     private String date; // format "2019-04-09"
@@ -33,6 +42,7 @@ public class GameEventCalender implements Serializable {
         this.game = game;
     }
 
+    public GameEventCalender(){}
     /**
      * ID: GameEventCalender@1
      * displays the event's details

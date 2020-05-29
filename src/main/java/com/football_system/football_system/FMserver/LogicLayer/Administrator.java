@@ -3,14 +3,19 @@ import com.football_system.football_system.FMserver.DataLayer.*;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Administrators")
 public class Administrator extends User {
 
     private static final Logger systemLoger = Logger.getLogger(DataManager.class);
@@ -18,6 +23,8 @@ public class Administrator extends User {
     public Administrator(String email, String password, String userName) {
         super(email, password, userName);
     }
+
+    public Administrator(){}
 
     private static IDataManager dataManager(){
         return DataComp.getInstance();

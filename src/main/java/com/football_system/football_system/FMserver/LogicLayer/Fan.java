@@ -3,15 +3,26 @@ package com.football_system.football_system.FMserver.LogicLayer;
 import java.io.Serializable;
 import com.football_system.football_system.FMserver.DataLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Fans")
 public class Fan extends Role implements Serializable {
-
+    @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Page> pages;
+    @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Game> games;
     private String name;
 
@@ -22,6 +33,9 @@ public class Fan extends Role implements Serializable {
         pages = new ArrayList<>();
         games = new ArrayList<>();
     }
+
+
+    public Fan(){}
 
     /**
      * returns fan followed pages

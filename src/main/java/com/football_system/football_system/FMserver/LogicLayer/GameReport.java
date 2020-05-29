@@ -1,8 +1,19 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
-import java.io.Serializable;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import java.io.Serializable;
+@Entity
+@EnableAutoConfiguration
+@Table(name = "game_reports")
 public class GameReport implements Serializable {
+    @Id
+    private int gamerReportId;
+    @OneToOne
     private Game game;
     private String description;
     private int homeScore;
@@ -17,6 +28,8 @@ public class GameReport implements Serializable {
         this.game = game;
         description="no Game report";
     }
+
+    public GameReport(){}
 
     public Game getGame() {
         return game;
