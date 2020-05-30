@@ -105,8 +105,8 @@ public class AdministratorAcceptanceTest {
         assertTrue(administratorService.showComplaints().size()==0); // prints that there isn't a complaint in the system
         Complaint complaint1 = new Complaint(user1, "bad", "2012-12-12");
         Complaint complaint2 = new Complaint(temp, "good", "2018-12-13");
-        DataComp.getInstance().addComplaint(complaint1, user1);
-        DataComp.getInstance().addComplaint(complaint2, temp);
+        DataComp.getInstance().addComplaint(complaint1);
+        DataComp.getInstance().addComplaint(complaint2);
         assertTrue(administratorService.showComplaints().size()==2);
     }
 
@@ -119,8 +119,8 @@ public class AdministratorAcceptanceTest {
     public void respondComplaint(){
         Complaint complaint1 = new Complaint(user1, "bad", "2012-12-12");
         Complaint complaint2 = new Complaint(user2, "good", "2018-12-13");
-        DataComp.getInstance().addComplaint(complaint1, user1);
-        DataComp.getInstance().addComplaint(complaint2, user2);
+        DataComp.getInstance().addComplaint(complaint1);
+        DataComp.getInstance().addComplaint(complaint2);
         assertFalse(complaint1.isAnswered());
         assertFalse(complaint2.isAnswered());
 

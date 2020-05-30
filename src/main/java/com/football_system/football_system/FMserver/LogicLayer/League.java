@@ -2,21 +2,34 @@ package com.football_system.football_system.FMserver.LogicLayer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.football_system.football_system.FMserver.DataLayer.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.*;
+import javax.persistence.Table;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
-
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Leagues")
 public class League implements Serializable {
 
     public enum LeagueType{
         MAJOR_LEAGUE, SECOND_LEAGUE, LEAGUE_A,LEAGUE_B, LEAGUE_C
     }
-
+    @Id
     private LeagueType type;
+    @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore private List<Referee> refereeList;
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore private List<Season> seasonList;
+    @Transient
     @JsonIgnore private Map<Season,Policy> policyList;
+    @Transient
     @JsonIgnore private Map<Season,RankPolicy> rankPolicyList;
     private String name;
 
@@ -25,22 +38,20 @@ public class League implements Serializable {
         this.refereeList = refereeList;
         this.seasonList = seasonList;
         this.policyList = policyList;
-        if(this.rankPolicyList == null){
-            this.rankPolicyList = new LinkedHashMap<>();
-        }
+        this.rankPolicyList = new HashMap<>();
     }
     public League( String type, List<Referee> refereeList, List<Season> seasonList, Map<Season, Policy> policyList) {
         if(isAType(type)){
             this.refereeList = refereeList;
             this.seasonList = seasonList;
             this.policyList = policyList;
-            if(this.rankPolicyList == null){
-                this.rankPolicyList = new LinkedHashMap<>();
-            }
+            this.rankPolicyList = new HashMap<>();
             this.type=LeagueType.valueOf(type);
         }
 
     }
+
+    public League(){}
 
     public Map<Season, RankPolicy> getRankPolicyList() {
         return rankPolicyList;
@@ -60,6 +71,7 @@ public class League implements Serializable {
 
     public void setName(String name){
         this.name = name;
+        data().addLeague(this);
     }
 
     @Override
@@ -76,19 +88,13 @@ public class League implements Serializable {
 
     public League(LeagueType leagueType){
         this.type = leagueType;
-        if(this.rankPolicyList == null){
-            this.rankPolicyList = new LinkedHashMap<>();
-        }
-        data().addLeague(this);
+        this.rankPolicyList = new HashMap<>();
     }
 
     public League(LeagueType leagueType ,String name){
         this.type = leagueType;
         this.name = name ;
-        if(this.rankPolicyList == null){
-            this.rankPolicyList = new LinkedHashMap<>();
-        }
-        data().addLeague(this);
+        this.rankPolicyList = new HashMap<>();
     }
     /**
      * id: League@1
@@ -173,9 +179,14 @@ public class League implements Serializable {
                         a = j;
                         b = i;
                     }
-                    Game game = new Game(season, teamsArray[a], teamsArray[b], null, refereesArray[refereeSchecule%(refereesArray.length)], null,
+                    Referee game_referee = null;
+                    if(refereesArray!=null && refereesArray.length>0){
+                        game_referee =refereesArray[refereeSchecule%(refereesArray.length)];
+                    }
+                    Game game = new Game(season, teamsArray[a], teamsArray[b], null, game_referee, null,
                             allPossiableTimes.get(nextTime)[0], allPossiableTimes.get(nextTime)[1], allPossiableTimes.get(nextTime)[2]);
                     gamesList.add(game);
+                    data().addGame(game);
                     nextTime++;
                     refereeSchecule++;
                     teamsArray[a].addHomeGame(game);
@@ -197,6 +208,7 @@ public class League implements Serializable {
 
     public void setType(LeagueType type) {
         this.type = type;
+        data().addLeague(this);
     }
 
     public List<Referee> getRefereeList() {
@@ -205,6 +217,7 @@ public class League implements Serializable {
 
     public void setRefereeList(List<Referee> refereeList) {
         this.refereeList = refereeList;
+        data().addLeague(this);
     }
 
     public List<Season> getSeasonList() {
@@ -213,6 +226,7 @@ public class League implements Serializable {
 
     public void setSeasonList(List<Season> seasonList) {
         this.seasonList = seasonList;
+        data().addLeague(this);
     }
 
     public Map<Season, Policy> getPolicyList() {
@@ -221,6 +235,7 @@ public class League implements Serializable {
 
     public void setPolicyList(Map<Season, Policy> policyList) {
         this.policyList = policyList;
+        data().addLeague(this);
     }
 
 
@@ -238,6 +253,7 @@ public class League implements Serializable {
             System.out.println(" The input is not a valid league type");
             return false;
         }
-
     }
+
+
 }

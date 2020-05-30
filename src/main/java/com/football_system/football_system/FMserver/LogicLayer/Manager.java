@@ -1,11 +1,18 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 import com.football_system.football_system.FMserver.DataLayer.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 
+import javax.persistence.*;
+import javax.persistence.Table;
 import java.io.IOException;
 import java.util.*;
 import java.io.Serializable;
-
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Managers")
 public class Manager extends RoleHolder implements Serializable {
 
     public enum Permission {
@@ -13,9 +20,14 @@ public class Manager extends RoleHolder implements Serializable {
     }
 
     private String name;
+    @OneToOne
     private Team team;
+    @OneToOne
     private Owner nominatedBy;
+    @Transient
     private Map<Permission, Boolean> permissionBooleanMap;
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Alert> alerts;
 
     private IDataManager data(){
@@ -30,6 +42,8 @@ public class Manager extends RoleHolder implements Serializable {
         this.permissionBooleanMap = new HashMap<>();
         this.alerts = new LinkedList<>();
     }
+
+    public Manager(){}
 
     @Override
     public boolean equals(Object o) {
@@ -47,6 +61,7 @@ public class Manager extends RoleHolder implements Serializable {
 
     public void setAlerts(List<Alert> alerts) {
         this.alerts = alerts;
+        data().addManager(this);
     }
     /**
      * ID: Manager@1
@@ -55,6 +70,7 @@ public class Manager extends RoleHolder implements Serializable {
      */
     public void addAlert(Alert alert){
         getAlerts().add(alert);
+        data().addManager(this);
     }
 
     /**
@@ -161,6 +177,7 @@ public class Manager extends RoleHolder implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+        data().addManager(this);
     }
 
     public Owner getNominatedBy() {
@@ -169,6 +186,7 @@ public class Manager extends RoleHolder implements Serializable {
 
     public void setNominatedBy(Owner nominatedBy) {
         this.nominatedBy = nominatedBy;
+        data().addManager(this);
     }
 
     public Team getTeam() {
@@ -177,6 +195,7 @@ public class Manager extends RoleHolder implements Serializable {
 
     public void setTeam(Team team) {
         this.team = team;
+        data().addManager(this);
     }
 
     public Map<Permission, Boolean> getPermissionBooleanMap() {

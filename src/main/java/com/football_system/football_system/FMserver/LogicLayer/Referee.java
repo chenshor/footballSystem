@@ -6,27 +6,39 @@ import com.football_system.football_system.FMserver.ServiceLayer.*;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 
-
+@EnableAutoConfiguration
+@Entity
 public class Referee extends Role implements Serializable {
 
     @JsonIgnore
     private String qualification;
     private String name;
+    @ManyToOne
     private League league;
     @JsonIgnore
+    @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Game> main;
+    @OneToMany
     @JsonIgnore
+    @LazyCollection(LazyCollectionOption.FALSE)
     private  List<Game> line;
+    @OneToMany(fetch = FetchType.EAGER)
     @JsonIgnore
-    private List<JudgmentApproval> judgmentApproval ;
+    private List<JudgmentApproval> judgmentApproval;
+    @Transient
     @JsonIgnore
     private static final Logger testLogger = Logger.getLogger(RefereeService.class);
 
@@ -39,6 +51,8 @@ public class Referee extends Role implements Serializable {
         this.line = new LinkedList<>();
         judgmentApproval = new LinkedList<>();
     }
+
+    public Referee(){}
 
     private static IDataManager data(){
         return DataComp.getInstance();
@@ -64,10 +78,12 @@ public class Referee extends Role implements Serializable {
      * @return true if added successfully, else if already exists
      */
     public static boolean MakeUserReferee(User user, String qualification, String name){
-           Referee referee = new Referee( user,  qualification,  name);
-           boolean res =  user.addRole(referee);
-           if(res) res = data().addReferee(referee) ;
-           return res;
+        Referee referee = new Referee( user,  qualification,  name);
+        boolean res =  user.addRole(referee);
+        if(res){
+            data().addNewUser(user);
+        }
+        return res;
     }
 
     /**
@@ -101,11 +117,16 @@ public class Referee extends Role implements Serializable {
      * @return Referee list
      */
     public static List<Referee> legalRefereesForLeague(League league , Season season){
-        JudgmentApproval neededApproval  = new JudgmentApproval(league , season);
         List<Referee> referees = new LinkedList<>();
+        List<Referee> referees1 =  data().getRefereeList();
         for(Referee referee : data().getRefereeList()){
-            if(referee.judgmentApproval.contains(neededApproval)){
-                referees.add(referee);
+            List<JudgmentApproval>judgmentApprovals = DataComp.getInstance().getJudge();
+            for (JudgmentApproval judgmentApproval : judgmentApprovals ) {
+                if(judgmentApproval.getReferees_Email().equals(referee.getUser().getEmail())) {
+                    if (judgmentApproval.getLeague().getTypeString().equals(league.getTypeString()) && season.getStart().equals(judgmentApproval.getSeason().getStart())) {
+                        referees.add(referee);
+                    }
+                }
             }
         }
         return referees;
@@ -117,6 +138,7 @@ public class Referee extends Role implements Serializable {
 
     public void setQualification(String qualification) {
         this.qualification = qualification;
+        data().addReferee(this);
     }
 
     public String getName() {
@@ -126,12 +148,14 @@ public class Referee extends Role implements Serializable {
     public boolean setName(String name) {
         if(name.matches("[a-zA-Z]+")){
             this.name=name;
+            data().addReferee(this);
             return true;
         }
         else{
             System.out.println("the name must contain only letters");
             return false;
         }
+
 
     }
 
@@ -141,6 +165,7 @@ public class Referee extends Role implements Serializable {
 
     public void setLeague(League league) {
         this.league = league;
+        data().addReferee(this);
     }
 
     public List<Game> getMain() {
@@ -149,6 +174,7 @@ public class Referee extends Role implements Serializable {
 
     public void setMain(List<Game> main) {
         this.main = main;
+        data().addReferee(this);
     }
 
     public List<Game> getLine() {
@@ -157,6 +183,7 @@ public class Referee extends Role implements Serializable {
 
     public void setLine(List<Game> line) {
         this.line = line;
+        data().addReferee(this);
     }
 
     @Override
@@ -177,6 +204,8 @@ public class Referee extends Role implements Serializable {
     public boolean addJudgmentApproval(JudgmentApproval approval){
         if(judgmentApproval.contains(approval)) return false ;
         judgmentApproval.add(approval);
+        data().addJudgementApproval(approval);
+        data().addReferee(this);
         return true ;
     }
     /**
@@ -188,6 +217,8 @@ public class Referee extends Role implements Serializable {
     public boolean removeJudgmentApproval(JudgmentApproval approval){
         if( ! judgmentApproval.contains(approval)) return false;
         judgmentApproval.remove(approval);
+        data().addReferee(this);
+        data().deleteJudgmentApproval(approval);
         return true ;
     }
     /**
@@ -216,6 +247,7 @@ public class Referee extends Role implements Serializable {
      */
     public void addAGameMain(Game game){
         getMain().add(game);
+        data().addReferee(this);
     }
 
     /**
@@ -225,6 +257,7 @@ public class Referee extends Role implements Serializable {
      */
     public void addAGameLine(Game game){
         getLine().add(game);
+        data().addReferee(this);
     }
 
 
@@ -285,6 +318,8 @@ public class Referee extends Role implements Serializable {
                         System.out.println("no such type of events");
                     }else {
                         game.addEventGame(event);
+                        data().addGameEvent(event);
+                        data().addGame(game);
                         String propertiesPath = "log4j.properties";
                         PropertyConfigurator.configure(propertiesPath);
                         testLogger.info("Added new game event");
@@ -320,6 +355,8 @@ public class Referee extends Role implements Serializable {
                         System.out.println("no such type of events");
                     } else {
                         game.addEventGame(event);
+                        data().addGameEvent(event);
+                        data().addGame(game);
                         String propertiesPath = "log4j.properties";
                         PropertyConfigurator.configure(propertiesPath);
                         testLogger.info("Added new game event");
@@ -348,6 +385,8 @@ public class Referee extends Role implements Serializable {
             if((date.isAfter(LocalDate.parse(game.getDate()))|| date.isEqual(LocalDate.parse(game.getDate())))&& now.isAfter(LocalTime.parse(game.getEndTime()))) {
                 GameReport gameReport = new GameReport(game, description);
                 game.setGameReport(gameReport);
+                data().addGameReport(gameReport);
+                data().addGame(game);
                 String propertiesPath = "log4j.properties";
                 PropertyConfigurator.configure(propertiesPath);
                 testLogger.info("Added new game report");

@@ -3,27 +3,40 @@ package com.football_system.football_system.FMserver.LogicLayer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.football_system.football_system.FMserver.DataLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+@Entity
+@EnableAutoConfiguration
+@javax.persistence.Table(name = "Seasons")
 public class Season implements Serializable {
 
     @JsonIgnore
+    @Transient
     private IController system;
-
+    @Id
     private String start;
     private String end;
+    @OneToMany
     @JsonIgnore
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Game> gameList;
-
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn
     private List<League> leagueList;
-
+    @Transient
     @JsonIgnore
     private Map<League, Table> leagueTables;
+
+    public Season(){}
 
     public Table getTable(League league){
         return getLeagueTables().get(league);
@@ -88,6 +101,9 @@ public class Season implements Serializable {
         }else {
             season.leagueList.add(league);
         }
+        if(season!=null){
+            data().addSeason(season);
+        }
         return season;
     }
 
@@ -113,6 +129,7 @@ public class Season implements Serializable {
 
     public void setStart(String start) {
         this.start = start;
+        data().addSeason(this);
     }
 
     public String getEnd() {
@@ -121,6 +138,7 @@ public class Season implements Serializable {
 
     public void setEnd(String end) {
         this.end = end;
+        data().addSeason(this);
     }
 
     public List<Game> getGameList() {
@@ -129,6 +147,7 @@ public class Season implements Serializable {
 
     public void setGameList(List<Game> gameList) {
         this.gameList = gameList;
+        data().addSeason(this);
     }
 
     public List<League> getLeagueList() {
@@ -137,6 +156,7 @@ public class Season implements Serializable {
 
     public void setLeagueList(List<League> leagueList) {
         this.leagueList = leagueList;
+        data().addSeason(this);
     }
 
     @Override

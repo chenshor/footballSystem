@@ -1,19 +1,30 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
 import com.football_system.football_system.FMserver.DataLayer.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.*;
+import javax.persistence.Table;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Owners")
 public class Owner extends RoleHolder implements Serializable {
 
     private String name;
+    @OneToMany
     private List<Team> teamList;
+    @OneToOne(cascade = CascadeType.REMOVE)
     private Owner nominatedBy;
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Alert> alerts;
 
     public Owner(User user, String name) {
@@ -23,6 +34,8 @@ public class Owner extends RoleHolder implements Serializable {
         alerts =new LinkedList<>();
 
     }
+
+    public Owner(){}
 
     @Override
     public boolean equals(Object o) {
@@ -64,6 +77,9 @@ public class Owner extends RoleHolder implements Serializable {
                     team.setManager(manager);
                     manager.setTeam(team);
                     user.setRole(manager);
+                    data().addManager(manager);
+                    data().addNewUser(user);
+                    data().addTeam(team);
                     team.getRoleHolders().add(manager);
                     assignManagerPremissions(manager, permissionBooleanMap);
                     return manager;
@@ -100,6 +116,9 @@ public class Owner extends RoleHolder implements Serializable {
             coach.setTeam(team);
             team.setCoach(coach);
             user.setRole(coach);
+            data().addCoach(coach);
+            data().addNewUser(user);
+            data().addTeam(team);
             team.getRoleHolders().add(coach);
             return coach;
         }
@@ -134,6 +153,9 @@ public class Owner extends RoleHolder implements Serializable {
             player.setTeam(team);
             team.setPlayer(player);
             user.setRole(player);
+            data().addPlayer(player);
+            data().addNewUser(user);
+            data().addTeam(team);
             team.getRoleHolders().add(player);
             return player;
         }
@@ -150,6 +172,7 @@ public class Owner extends RoleHolder implements Serializable {
     public void insertNewStadium(String teamName, String stadium) throws IOException { //tested
         validateExistingAssetType(teamName,"X","X");
         getTeam(teamName).setStadium(stadium);
+        data().addTeam(team);
     }
 
     /**
@@ -175,6 +198,9 @@ public class Owner extends RoleHolder implements Serializable {
                             team.getPlayerList().remove(player);
                             team.getRoleHolders().remove(player);
                             user.removeRole(player);
+                            data().deletePlayer(player);
+                            data().addNewUser(user);
+                            data().addTeam(team);
                             break;
                         }
                     }
@@ -209,6 +235,9 @@ public class Owner extends RoleHolder implements Serializable {
                                 team.getRoleHolders().remove(coach);
                                 team.getCoachList().remove(coach);
                                 user.removeRole(coach);
+                                data().deleteCoach(coach);
+                                data().addNewUser(user);
+                                data().addTeam(team);
                                 break;
                             }
                         }
@@ -251,6 +280,9 @@ public class Owner extends RoleHolder implements Serializable {
                                     team.getManagerList().remove(manager);
                                     team.getRoleHolders().remove(manager);
                                     user.removeRole(role);
+                                    data().deleteManager(manager);
+                                    data().addNewUser(user);
+                                    data().addTeam(team);
                                     break;
                                 } else
                                     throw new IOException("The selected manager was not nominated by you");
@@ -320,6 +352,7 @@ public class Owner extends RoleHolder implements Serializable {
             if (team.getStadium().toLowerCase().equals(stadium.toLowerCase()))
                 team.setStadium("NO_STADIUM");
         }
+        data().addTeam(team);
     }
     /**
      * id: Owner@13
@@ -327,8 +360,14 @@ public class Owner extends RoleHolder implements Serializable {
      * @param team
      */
     public void addTeam(Team team) {
-        if (!teamList.contains(team))
+        if (!teamList.contains(team)){
             this.teamList.add(team);
+            team.addOwner(this);
+            data().addTeam(team);
+            data().addOwner(this);
+        }
+
+
     }
 
     /////////////////////////////////////////////////////////////////////////////////// uc2
@@ -387,6 +426,8 @@ public class Owner extends RoleHolder implements Serializable {
         team.addOwner(newOwner);
         team.getRoleHolders().add(newOwner);
         newOwner.setNominatedBy(this);
+        data().addOwner(newOwner);
+        data().addTeam(team);
     }
 
     public String getName() {
@@ -395,6 +436,7 @@ public class Owner extends RoleHolder implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+        data().addOwner(this);
     }
 
     public List<Team> getTeamList() {
@@ -403,6 +445,7 @@ public class Owner extends RoleHolder implements Serializable {
 
     public void setTeamList(List<Team> teamList) {
         this.teamList = teamList;
+        data().addOwner(this);
     }
 
     ////////////////////////////////////// 6.1.3 uc
@@ -466,6 +509,7 @@ public class Owner extends RoleHolder implements Serializable {
                             default:
                                 throw new IOException("Invalid attribute selected: " + attribute);
                         }
+                        data().addPlayer(player);
                         break;
                     case "coach":
                         Coach coach = (Coach)roleHolder;
@@ -478,6 +522,7 @@ public class Owner extends RoleHolder implements Serializable {
                                 break;
                             default: throw new IOException("Invalid attribute selected: " + attribute);
                         }
+                        data().addCoach(coach);
                         break;
                     case "manager":
                         throw new IOException("Owner can not update a manager details");
@@ -488,6 +533,7 @@ public class Owner extends RoleHolder implements Serializable {
 
     public void setNominatedBy(Owner nominatedBy) {
         this.nominatedBy = nominatedBy;
+        data().addOwner(this);
     }
 
     public Owner getNominatedBy() {
@@ -521,10 +567,14 @@ public class Owner extends RoleHolder implements Serializable {
                      else {// OWNER
                          team.getOwnerList().remove(nominated);
                          team.getRoleHolders().remove(nominated);
+                         data().addTeam(team);
+                         data().deleteOwner(nominated);
+                         data().deleteOwner(nominated);
                      }
                  }
                 User u = nominated.getUser();
                 u.removeRole(nominated);
+                data().addNewUser(u);
                 //CHECK THIS WHOLE PART
                 /*
                 User user = new User(nominated.getUser());
@@ -561,6 +611,7 @@ public class Owner extends RoleHolder implements Serializable {
         if (!getTeamList().contains(team))
             throw new IOException("Selected team is not owned by the owner");
         team.changeTeamActivity(this, Team.TeamStatus.activityClosed);
+        data().addTeam(team);
     }
 
     /**
@@ -573,6 +624,7 @@ public class Owner extends RoleHolder implements Serializable {
         if (!getTeamList().contains(team))
             throw new IOException("Selected team is not owned by the owner");
         team.changeTeamActivity(this, Team.TeamStatus.activityOpened);
+        data().addTeam(team);
     }
 
     /**
@@ -626,6 +678,7 @@ public class Owner extends RoleHolder implements Serializable {
 
     public void setAlerts(List<Alert> alerts) {
         this.alerts = alerts;
+        data().addOwner(this);
     }
 
     /**
@@ -635,6 +688,7 @@ public class Owner extends RoleHolder implements Serializable {
      */
     public void addAlert(Alert alert){
         getAlerts().add(alert);
+        data().addOwner(this);
     }
 
 

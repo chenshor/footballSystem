@@ -18,7 +18,6 @@ import java.util.Observable;
 @EnableAutoConfiguration
 @Table(name = "Games")
 public class Game  implements Serializable{
-
     @Id
     private int id;
     @OneToOne
@@ -54,10 +53,12 @@ public class Game  implements Serializable{
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     private GameReport gameReport;
-    @OneToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Fan> subscribers;
+    @Transient
+    private static int Id_Generator = 4;
 
     public static boolean checkIfHomeTeam(String teamName , Integer game_id){
         return Game.getGameById(game_id).getHome().getName().equals(teamName) ;
@@ -66,7 +67,6 @@ public class Game  implements Serializable{
         return DataComp.getInstance();
     }
     public Game() {
-
     }
 
     public Game(Season season, Team home, Team away, Referee line, Referee main, List<GameEventCalender> gameEventCalender, String date, String start, String end) {
@@ -88,6 +88,8 @@ public class Game  implements Serializable{
         this.endTime=end;
         this.gameReport=new GameReport(this);
         this.subscribers = new LinkedList<>();
+        id = Id_Generator;
+        Id_Generator = Id_Generator + 10;
         data().addGame(this);
     }
 
@@ -95,9 +97,11 @@ public class Game  implements Serializable{
         List<Game> games = data().getGameList();
         List<Game> refereeGames = new LinkedList<>();
         for( Game game : games){
-            if(game.getMain().getUser().getEmail().equals(refereeID)){
-                refereeGames.add(game);
-            }
+            try{
+                if(game.getMain().getUser().getEmail().equals(refereeID)){
+                    refereeGames.add(game);
+                }
+            }catch (Exception e){ }
         }
         return refereeGames ;
     }
@@ -111,6 +115,7 @@ public class Game  implements Serializable{
 
     public void setResult(Result result) {
         this.result = result;
+        data().addGame(this);
     }
 
     public Game(Season season, Team home, Team away, Referee line, Referee main, String date, String start, String end) {
@@ -130,6 +135,8 @@ public class Game  implements Serializable{
         this.endTime=end;
         this.gameReport=new GameReport(this);
         this.subscribers = new LinkedList<>();
+        id = Id_Generator;
+        Id_Generator = Id_Generator + 10;
         data().addGame(this);
     }
 
@@ -139,6 +146,7 @@ public class Game  implements Serializable{
 
     public void setSeason(Season season) {
         this.season = season;
+        data().addGame(this);
     }
 
     public Team getHome() {
@@ -147,6 +155,7 @@ public class Game  implements Serializable{
 
     public void setHome(Team home) {
         this.home = home;
+        data().addGame(this);
     }
 
     public Team getAway() {
@@ -155,6 +164,7 @@ public class Game  implements Serializable{
 
     public void setAway(Team away) {
         this.away = away;
+        data().addGame(this);
     }
 
     public Referee getLine() {
@@ -163,6 +173,7 @@ public class Game  implements Serializable{
 
     public void setLine(Referee line) {
         this.line = line;
+        data().addGame(this);
     }
 
     public Referee getMain() {
@@ -171,6 +182,7 @@ public class Game  implements Serializable{
 
     public void setMain(Referee main) {
         this.main = main;
+        data().addGame(this);
     }
 
     public List<GameEventCalender> getGameEventCalender() {
@@ -179,6 +191,7 @@ public class Game  implements Serializable{
 
     public void setGameEventCalender(List<GameEventCalender> gameEventCalender) {
         this.gameEventCalenderHome = gameEventCalender;
+        data().addGame(this);
     }
 
     public String getDate() {
@@ -187,6 +200,7 @@ public class Game  implements Serializable{
 
     public void setDate(String date) {
         this.date = date;
+        data().addGame(this);
     }
 
     public String getStartTime() {
@@ -195,6 +209,7 @@ public class Game  implements Serializable{
 
     public void setStartTime(String startTime) {
         this.startTime = startTime;
+        data().addGame(this);
     }
 
     public String getEndTime() {
@@ -203,6 +218,7 @@ public class Game  implements Serializable{
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+        data().addGame(this);
     }
 
     /**
@@ -221,23 +237,21 @@ public class Game  implements Serializable{
 
     public void setGameReport(GameReport gameReport) {
         this.gameReport = gameReport;
+        data().addGame(this);
     }
 
 
     /**
      * id: Game@2
      * compare two games
-     * @param game2 game we wanyt to compare
+     * @param obj game we wanyt to compare
      * @return return true if the two games are equal
      */
-    public boolean equals(Game game2){
-        if(this.getDate().equals(game2.getDate())&& this.getHome().equals(game2.getHome())&&
-        this.getAway().equals(game2.getAway())){
+    @Override
+    public boolean equals(Object obj) {
+        if (this.id == ((Game)obj).id)
             return true;
-        }
-        else{
-            return false;
-        }
+        return false;
     }
 
     /**
@@ -246,6 +260,7 @@ public class Game  implements Serializable{
      */
     public void addEventGame(GameEventCalender event){
         gameEventCalenderHome.add(event);
+        data().addGame(this);
     }
 
     public HashMap<User , Alert> addEventGame(boolean home , GameEventCalender event){
@@ -290,6 +305,7 @@ public class Game  implements Serializable{
 
     public void setGameEventCalenderAway(List<GameEventCalender> gameEventCalenderAway) {
         this.gameEventCalenderAway = gameEventCalenderAway;
+        data().addGame(this);
     }
 
     public List<Fan> getSubscribers() {
@@ -304,6 +320,7 @@ public class Game  implements Serializable{
         if(! fan.getGames().contains(this)){
             fan.addGameToSubscribe(this);
         }
+        data().addGame(this);
     }
 
     public void removeSubscriber(Fan fan){
@@ -313,5 +330,10 @@ public class Game  implements Serializable{
         if(fan.getGames().contains(this)){
             fan.removeGameFromSubscribe(this);
         }
+        data().addGame(this);
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

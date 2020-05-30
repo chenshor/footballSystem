@@ -1,5 +1,6 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
+import com.football_system.football_system.FMserver.DataLayer.IDataManager;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.CascadeType;
@@ -29,12 +30,17 @@ public class Coach extends RoleHolder implements Serializable {
 
     public Coach() {}
 
+    private static IDataManager data(){
+        return DataComp.getInstance();
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+        data().addCoach(this);
     }
 
     public String getQualification() {
@@ -43,6 +49,7 @@ public class Coach extends RoleHolder implements Serializable {
 
     public void setQualification(String qualification) {
         this.qualification = qualification;
+        data().addCoach(this);
     }
 
     public String getJob() {
@@ -51,6 +58,7 @@ public class Coach extends RoleHolder implements Serializable {
 
     public void setJob(String job) {
         this.job = job;
+        data().addCoach(this);
     }
 
     public Page getPage() {
@@ -59,6 +67,7 @@ public class Coach extends RoleHolder implements Serializable {
 
     public void setPage(Page page) {
         this.page = page;
+        data().addCoach(this);
     }
 
     public Team getTeam() {
@@ -67,6 +76,7 @@ public class Coach extends RoleHolder implements Serializable {
 
     public void setTeam(Team team) {
         this.team = team;
+        data().addCoach(this);
     }
 
     /**
@@ -77,4 +87,5 @@ public class Coach extends RoleHolder implements Serializable {
     public void addUpdateToPage(String update) {
         page.addUpdate(update);
     }
+
 }

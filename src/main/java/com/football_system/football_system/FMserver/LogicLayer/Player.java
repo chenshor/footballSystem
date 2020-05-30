@@ -1,14 +1,24 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
+import com.football_system.football_system.FMserver.DataLayer.IDataManager;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Objects;
-
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Players")
 public class Player extends RoleHolder implements Serializable {
 
     private String position;
     private String name;
     String birthDate;
+    @OneToOne(cascade = CascadeType.REMOVE)
     private Page page;
 
     public Player(User user, String position, Team team, String name, String birthDate, Page page) {
@@ -29,6 +39,10 @@ public class Player extends RoleHolder implements Serializable {
     }
 
     public Player() {}
+
+    private static IDataManager data(){
+        return DataComp.getInstance();
+    }
 
     /**
      * id: player@1
@@ -60,6 +74,7 @@ public class Player extends RoleHolder implements Serializable {
 
     public void setPosition(String position) {
         this.position = position;
+        data().addPlayer(this);
     }
 
     public Team getTeam() {
@@ -68,6 +83,7 @@ public class Player extends RoleHolder implements Serializable {
 
     public void setTeam(Team team) {
         this.team = team;
+        data().addPlayer(this);
     }
 
     public String getName() {
@@ -76,6 +92,7 @@ public class Player extends RoleHolder implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+        data().addPlayer(this);
     }
 
     public String getBirthDate() {
@@ -84,6 +101,7 @@ public class Player extends RoleHolder implements Serializable {
 
     public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
+        data().addPlayer(this);
     }
 
     public Page getPage() {
@@ -92,6 +110,7 @@ public class Player extends RoleHolder implements Serializable {
 
     public void setPage(Page page) {
         this.page = page;
+        data().addPlayer(this);
     }
 
     /**

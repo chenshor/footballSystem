@@ -93,6 +93,7 @@ public class GuestController {
     public List<Season> getSeason(@PathVariable String leagueType) {
         try {
             List<Season> seasons = new LinkedList<>();
+            List<Season>seasonList = guestService.getSesons();
             for (Season season : guestService.getSesons()) {
                 if (season.seasonContainsLeague(leagueType)) {
                     seasons.add(season);

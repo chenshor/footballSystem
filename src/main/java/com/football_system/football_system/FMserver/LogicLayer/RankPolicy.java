@@ -1,6 +1,13 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
+import com.football_system.football_system.FMserver.DataLayer.IDataManager;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.Entity;
+
+@Entity
+@EnableAutoConfiguration
+@javax.persistence.Table(name = "rank_policies")
 public class RankPolicy extends Policy{
     private final int WIN;
     private final int DRAW;
@@ -20,6 +27,17 @@ public class RankPolicy extends Policy{
         LOSE = lose;
     }
 
+    public RankPolicy(){
+        WIN = 3;
+        DRAW = 1;
+        LOSE = 0;
+    }
+
+    private IDataManager data(){
+        return DataComp.getInstance();
+    }
+
+
     @Override
     public League getLeague() {
         return super.getLeague();
@@ -28,6 +46,7 @@ public class RankPolicy extends Policy{
     @Override
     public void setLeague(League league) {
         super.setLeague(league);
+        data().addRankedPolicy(this);
     }
 
     @Override
@@ -38,6 +57,7 @@ public class RankPolicy extends Policy{
     @Override
     public void setSeason(Season season) {
         super.setSeason(season);
+        data().addRankedPolicy(this);
     }
 
     /**

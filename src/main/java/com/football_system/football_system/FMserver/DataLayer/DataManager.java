@@ -1,99 +1,194 @@
 package com.football_system.football_system.FMserver.DataLayer;
-
-
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import com.football_system.football_system.FMserver.DataLayer.Repositories.*;
 import com.football_system.football_system.FMserver.LogicLayer.*;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.Map;
-
-public class DataManager implements IDataManager, Serializable {
-
+//@RestController
+//@RequestMapping(value = "/rest/user")
+@Service
+public class DataManager implements IDataManager {
     private HashMap<Fan,List<String>>fanSearchNameHistory;
     private HashMap<Fan,List<String>>fanSearchCategoryHistory;
     private HashMap<Fan,List<String>>fanSearchKeyWordHistory;
-    private List<Guest> guestsList;
-    private List<User> userList;
-    private Map<User, List<Alert>> alerts;
     private Map<User, List<Complaint>> complaints;
-    private List<League> leagueList;
-    private List<Season> seasonList;
-    private List<Team> teamList;
     private List<Page> pageList;
-    private List<Game> gameList;
-    private LinkedList<Referee> RefereeList;
     private List<Administrator> administrators;
-//    TO DO : set new Loggers
     private static final Logger systemLogger = Logger.getLogger(DataManager.class);
+    private List<Guest> guestsList;
 
-    public DataManager() {
-        guestsList = new ArrayList<>();
-        userList = new ArrayList<>();
-        alerts = new HashMap<>();
-        complaints = new HashMap<>();
-        leagueList = new ArrayList<>();
-        seasonList = new ArrayList<>();
-        teamList = new ArrayList<>();
-        pageList = new ArrayList<>();
-        gameList = new ArrayList<>();
-        RefereeList = new LinkedList<>();
-        String propertiesPath = "log4j.properties";
-        fanSearchNameHistory = new HashMap<>();
-        fanSearchKeyWordHistory = new HashMap<>();
-        fanSearchCategoryHistory = new HashMap<>();
-        PropertyConfigurator.configure(propertiesPath);
+    @Autowired
+    public IUserRepository IUR;
+//    private List<User> userList;
+
+    @Autowired
+    private IAlertRepository IAR;
+//    private Map<User, List<Alert>> alerts;
+
+    @Autowired
+    private ILeagueRepository ILR;
+//    private List<League> leagueList;
+
+    @Autowired
+    private ISeasonRepository ISR;
+//    private List<Season> seasonList;
+
+    @Autowired
+    private ITeamRepository ITR;
+//    private List<Team> teamList;
+
+    @Autowired
+    private IGameRepository IGR;
+//    private List<Game> gameList;
+
+    @Autowired
+    private IRefereeRepository IFR;
+//    private LinkedList<Referee> RefereeList;
+
+    @Autowired
+    private IFanRepository IFanR;
+
+    @Autowired
+    private IManagerRepository IMR;
+
+    @Autowired
+    private IAdministratorRepository IAdminRepo;
+
+    @Autowired
+    private ICoachRepository ICR;
+
+    @Autowired
+    private IComplaintRepository IComplaintRepo;
+
+    @Autowired
+    private IFanRepository IfanRepo;
+
+    @Autowired
+    private IGameEventRepository IGER;
+
+    @Autowired
+    private IJudgementApproverl IJAR;
+
+    @Autowired
+    private IOwnerRepositor IOR;
+
+    @Autowired
+    private IPageRepository IPR;
+
+    @Autowired
+    private IPlayerRepository IPlayerRepo;
+
+    @Autowired
+    private IPolicyRepository IPolicyRepo;
+
+    @Autowired
+    private IRankPolicyRepository IRPR;
+
+    @Autowired
+    private IRepresentitiveRepository IRepRepo;
+
+    @Autowired
+    private  IResultRepository IResRepo;
+
+    @Autowired
+    private IGameEventRepository iGameEventRepository;
+
+    @Autowired
+    private IGameReportRepository IGRR;
+
+    @Autowired
+    private IRepresentitiveRepository iRepresentitiveRepository;
+
+
+//    public DataManager() {
+//        guestsList = new ArrayList<>();
+////        userList = new ArrayList<>();
+////        alerts = new HashMap<>();
+//        complaints = new HashMap<>();
+////        leagueList = new ArrayList<>();
+////        seasonList = new ArrayList<>();
+////        teamList = new ArrayList<>();
+//        pageList = new ArrayList<>();
+////        gameList = new ArrayList<>();
+////        RefereeList = new LinkedList<>();
+//        String propertiesPath = "log4j.properties";
+//        fanSearchNameHistory = new HashMap<>();
+//        fanSearchKeyWordHistory = new HashMap<>();
+//        fanSearchCategoryHistory = new HashMap<>();
+//        PropertyConfigurator.configure(propertiesPath);
+//    }
+
+    /**
+     * clears all data repositories
+     */
+    public void resetDataBase() {
+        this.ILR.deleteAll();
+        this.IUR.deleteAll();
+        this.IFR.deleteAll();
+        this.IAR.deleteAll();
+        this.IGR.deleteAll();
+        this.ITR.deleteAll();
+        this.ISR.deleteAll();
+    }
+
+    @Override
+    public void addFan(Fan fan){
+        IFanR.save(fan);
+    }
+
+    @Override
+    public Fan getFan(int r_id) {
+        if (IFanR.findById(r_id).isPresent())
+            return IFanR.findById(r_id).get();
+        else
+            return null;
+    }
+
+    @Override
+    public void deleteFan(int r_id) {
+        IfanRepo.deleteById(r_id);
     }
 
     public boolean checkIfEmailExists(String email) {
-        for (User user : userList) {
-            if (user.getEmail().equals(email)) {
-                return true;
-            }
-        }
-        return false;
+        return IUR.findById(email).isPresent();
     }
 
     public void addNewUser(User newUser) {
-        userList.add(newUser);
+        //userList.add(newUser);
+        if (newUser!=null)
+            IUR.save(newUser);
     }
 
-    public User getUser(String email, String password) {
-        for (User user : userList) {
-            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    public User getUserByPassword(String userName, String password) {
-        for (User user : userList) {
-            if (user.getUserName().equals(userName) && user.getPassword().equals(password)) {
-                return user;
-            }
-        }
-        return null;
-    }
 
     public User getUserByMail(String userName, String email) {
-        for (User user : userList) {
-            if (user.getEmail().equals(email)) {
-                return user;
-            }
-        }
-        return null;
+        if (IUR.findById(email).isPresent())
+            return IUR.findById(email).get();
+        else
+            return null;
     }
 
 
     public void addUser(User user) {
-        if (!userList.contains(user))
-            userList.add(user);
+        if (user != null){
+            IUR.save(user);
+        }
     }
 
     public List<Guest> getGuestsList() {
@@ -105,23 +200,26 @@ public class DataManager implements IDataManager, Serializable {
     }
 
     public List<User> getUserList() {
-        return userList;
+        return IUR.findAll();
     }
 
     public void setUserList(List<User> userList) {
-        this.userList = userList;
+        this.IUR.saveAll(userList);
     }
 
+    /*
+    deleted temporarily
     public Map<User, List<Alert>> getAlerts() {
-        return alerts;
+        return IAR.findAll();
     }
 
     public void setAlerts(Map<User, List<Alert>> alerts) {
         this.alerts = alerts;
     }
+*/
 
-    public Map<User, List<Complaint>> getComplaint() {
-        return complaints;
+    public List<Complaint> getComplaint() {
+        return IComplaintRepo.findAll();
     }
 
     public void setComplaint(Map<User, List<Complaint>> complaints) {
@@ -129,7 +227,7 @@ public class DataManager implements IDataManager, Serializable {
     }
 
     public List<League> getLeagueList() {
-        return leagueList;
+        return ILR.findAll();
     }
 
     public HashMap<Fan, List<String>> getFanSearchNameHistory() {
@@ -152,8 +250,8 @@ public class DataManager implements IDataManager, Serializable {
      * @return League if existing
      */
     public League SearchLeagueByType(League.LeagueType leagueType) {
-        for (League league :
-                leagueList) {
+        List<League> leagueList = ILR.findAll();
+        for (League league : leagueList) {
             if (league.getType() == leagueType) {
                 return league;
             }
@@ -168,8 +266,8 @@ public class DataManager implements IDataManager, Serializable {
      * @param league to add
      */
     public void addLeague(League league) {
-        if (SearchLeagueByType(league.getType()) == null) {
-            leagueList.add(league);
+        if (!ILR.findById(league.getType()).isPresent()) {
+            ILR.save(league);
             systemLogger.info("league been added , type:" + league.getType());
         }
     }
@@ -183,13 +281,11 @@ public class DataManager implements IDataManager, Serializable {
      * @return Season if found, else null
      */
     public Season SearchSeason(String start, String End) {
-        for (Season season : seasonList) {
-            if (season.getEnd().equals(End) && season.getStart().equals(start)) {
-                return season;
-            }
-        }
+        if (ISR.findById(start).isPresent())
+            return ISR.findById(start).get();
         return null;
     }
+
 
     /**
      * id: dataManager@4
@@ -198,8 +294,9 @@ public class DataManager implements IDataManager, Serializable {
      * @param season season to add
      */
     public void addSeason(Season season) {
-        if (SearchSeason(season.getStart(), season.getEnd()) == null) {
-            seasonList.add(season);
+        //rewrite this func
+        if (true) {
+            ISR.save(season);
             systemLogger.info("Season been added , linked to League:" + " , Start date:" + season.getStart() +
                     " , End date:" + season.getEnd());
         } else if (SearchSeason(season.getStart(), season.getEnd()).getLeagueList().contains(season.getLeagueList())) {
@@ -216,8 +313,8 @@ public class DataManager implements IDataManager, Serializable {
      * @return if added successfully, if not -> already contains the element
      */
     public boolean addReferee(Referee referee) {
-        if (!RefereeList.contains(referee)) {
-            RefereeList.add(referee);
+        if (!IFR.findById(referee.getR_id()).isPresent()) {
+            IFR.save(referee);
             systemLogger.info("new Referee been added , belong to user : " + referee.getUser().getUserName());
             return true;
         }
@@ -231,9 +328,10 @@ public class DataManager implements IDataManager, Serializable {
      * @param referee
      * @return
      */
+
     public boolean removeReferee(Referee referee) {
-        if (RefereeList.contains(referee)) {
-            RefereeList.remove(referee);
+        if (IFR.findById(referee.getR_id()) != null) {
+            IFR.deleteById(referee.getR_id());
             systemLogger.info("Referee been removed , belong to user : " + referee.getUser().getUserName());
             return true;
         }
@@ -242,43 +340,28 @@ public class DataManager implements IDataManager, Serializable {
 
 
     public void setLeagueList(List<League> leagueList) {
-        this.leagueList = leagueList;
+        this.ILR.saveAll(leagueList);
     }
 
     public List<Season> getSeasonList() {
-        return seasonList;
+        return ISR.findAll();
     }
 
     public void setSeasonList(List<Season> seasonList) {
-        this.seasonList = seasonList;
+        this.ISR.saveAll(seasonList);
     }
 
     public List<Team> getTeamList() {
-        return teamList;
+        return this.ITR.findAll();
     }
 
     public void setTeamList(List<Team> teamList) {
-        this.teamList = teamList;
+        this.ITR.saveAll(teamList);
     }
 
     public List<Referee> getRefereeList() {
-        return RefereeList;
+        return IFR.findAll();
     }
-
-//    /**
-//     * id: dataManager@10
-//     *
-//     * @param user
-//     * @param alert
-//     */
-//    public void addAlert(User user, Alert alert) {
-//        if (!lerts.containsKey(user)) {
-//            List<Alert> alerts = new LinkedList<>();
-//            alerts.add(alert);
-//            Alerts.put(user, alerts);
-//        } else
-//            Alerts.get(user).add(alert);
-//    }
 
 
     public static void writeData(IDataManager data, File file) {
@@ -313,7 +396,7 @@ public class DataManager implements IDataManager, Serializable {
     }
 
     public List<Page> getPageList() {
-        return pageList;
+        return IPR.findAll();
     }
 
     /**
@@ -322,34 +405,29 @@ public class DataManager implements IDataManager, Serializable {
      * @param team the new team we want to add
      */
     public void addTeam(Team team){
-        if(!getTeamList().contains(team)){
-            teamList.add(team);
-        }
+        if (team != null)
+            this.ITR.save(team);
     }
 
     /**
      * ID: dataManager@9
      * adds a new complaint to the complaints map
      * @param complaint the new complaint we want to add
-     * @param user the user we add the complaint to
      */
-    public void addComplaint(Complaint complaint,User user){
-        if(!complaints.containsValue(complaint)){
-            List<Complaint> list = complaints.get(user);
-            if(list==null){
-                list = new LinkedList<>();
-            }
-            list.add(complaint);
-            complaints.put(user,list);
-        }
+    public void addComplaint(Complaint complaint){
+        IComplaintRepo.save(complaint);
     }
 
     public List<Owner> getOwners() {
         List<Owner> owners = new ArrayList<Owner>();
-        for (User user : userList) {
+        for (User user : IUR.findAll()) {
+            if (user.getEmail().equals("aona@qn"))
+            {
+                System.out.println();
+            }
             List<Role> userRoles = user.getRoles();
             for (Role role : userRoles) {
-                if (role instanceof Coach) {
+                if (role instanceof Owner) {
                     owners.add((Owner) role);
                 }
             }
@@ -359,10 +437,10 @@ public class DataManager implements IDataManager, Serializable {
 
     public List<Manager> getManagers() {
         List<Manager> managers = new ArrayList<Manager>();
-        for (User user : userList) {
+        for (User user : IUR.findAll()) {
             List<Role> userRoles = user.getRoles();
             for (Role role : userRoles) {
-                if (role instanceof Coach) {
+                if (role instanceof Manager) {
                     managers.add((Manager) role);
                 }
             }
@@ -372,10 +450,10 @@ public class DataManager implements IDataManager, Serializable {
 
     public List<Player> getPlayers() {
         List<Player> players = new ArrayList<Player>();
-        for (User user : userList) {
+        for (User user : IUR.findAll()) {
             List<Role> userRoles = user.getRoles();
             for (Role role : userRoles) {
-                if (role instanceof Coach) {
+                if (role instanceof Player) {
                     players.add((Player) role);
                 }
             }
@@ -387,14 +465,14 @@ public class DataManager implements IDataManager, Serializable {
         List<User> retrievedUsers = new ArrayList<>();
         String[] splitted = name.split(" ");
         if (splitted.length == 1){
-            for (User user : userList) {
-                if (user.getFirstName().equals(splitted[0])) {
+            for (User user : IUR.findAll()) {
+                if (user.getFirstName() != null && user.getFirstName().equals(splitted[0])) {
                     retrievedUsers.add(user);
                 }
             }
         }else{
-            for (User user : userList) {
-                if (user.getFirstName().equals(splitted[0]) && user.getLastName().equals(splitted[1])) {
+            for (User user : IUR.findAll()) {
+                if (user.getFirstName() != null && user.getLastName() != null && user.getFirstName().equals(splitted[0]) && user.getLastName().equals(splitted[1])) {
                     retrievedUsers.add(user);
                 }
             }
@@ -402,22 +480,12 @@ public class DataManager implements IDataManager, Serializable {
         return retrievedUsers;
     }
 
-    @Override
-    public void addComplaint(User user, Complaint newComplaint) {
-        if (complaints.containsKey(user)){
-            complaints.get(user).add(newComplaint);
-        }else{
-            List<Complaint>userComplaints = new ArrayList<>();
-            userComplaints.add(newComplaint);
-            complaints.put(user,userComplaints);
-        }
-    }
 
     @Override
     public List<League> searchLeagueByName(String leagueName) {
         List<League> retrievedLeagues = new ArrayList<>();
-        for (League league : leagueList) {
-            if (league.getName().toLowerCase().equals(leagueName.toLowerCase())) {
+        for (League league : ILR.findAll()) {
+            if (league.getName() != null && league.getName().toLowerCase().equals(leagueName.toLowerCase())) {
                 retrievedLeagues.add(league);
             }
         }
@@ -427,8 +495,8 @@ public class DataManager implements IDataManager, Serializable {
     @Override
     public List<Team> searchTeamByName(String teamName) {
         List<Team> retrievedTeams = new ArrayList<>();
-        for (Team team : teamList) {
-            if (team.getName().toLowerCase().equals(teamName.toLowerCase())) {
+        for (Team team : ITR.findAll()) {
+            if (team.getName() != null && team.getName().toLowerCase().equals(teamName.toLowerCase())) {
                 retrievedTeams.add(team);
             }
         }
@@ -486,16 +554,16 @@ public class DataManager implements IDataManager, Serializable {
 
     @Override
     public List<Game> getGameList() {
-        return gameList;
+        return IGR.findAll();
     }
     @Override
     public void addGame(Game game) {
-         gameList.add(game);
+         IGR.save(game);
     }
 
     public List<Coach> getCoaches() {
         List<Coach> coaches = new ArrayList<Coach>();
-        for (User user : userList) {
+        for (User user : IUR.findAll()) {
             List<Role> userRoles = user.getRoles();
             for (Role role : userRoles) {
                 if (role instanceof Coach) {
@@ -511,20 +579,21 @@ public class DataManager implements IDataManager, Serializable {
      * ID: dataManager@10
      * adds new alert to the alerts map
      * @param alert the new alert we want to add
-     * @param user the user we add the alert to
      */
-    public void addAlert(Alert alert,User user){
-        if(!complaints.containsValue(alert)){
-            List<Alert> list = getAlerts().get(user);
-            if(list==null){
-                list = new LinkedList<>();
-            }
-            list.add(alert);
-            alerts.put(user,list);
-        }
+    public void addAlert(Alert alert){
+        IAR.save(alert);
     }
-    public void addAlert(User user,Alert alert){
-        addAlert(alert,user);
+
+    @Override
+    public void addGameReport(GameReport gameReport) {
+        if (gameReport!=null)
+            IGRR.save(gameReport);
+    }
+
+    @Override
+    public void addJudgementApproval(JudgmentApproval judgmentApproval) {
+        if (judgmentApproval != null)
+            IJAR.save(judgmentApproval);
     }
 
     /**
@@ -533,12 +602,104 @@ public class DataManager implements IDataManager, Serializable {
      * @param user the user we want to delete
      */
     public void deleteUser(User user){
-        if(userList.contains(user)) {
-            userList.remove(user);
-        }
+        IUR.delete(user);
     }
 
+    @Override
+    public List<Alert> getAlerts() {
+        return IAR.findAll();
+    }
 
+    @Override
+    public void addManager(Manager manager) {
+        IMR.save(manager);
+    }
+
+    @Override
+    public void deleteManager(Manager manager) {
+        IMR.delete(manager);
+    }
+
+    @Override
+    public void addPlayer(Player player) {
+        IPlayerRepo.save(player);
+    }
+
+    @Override
+    public void deletePlayer(Player player) {
+        IPlayerRepo.delete(player);
+    }
+
+    @Override
+    public void deleteCoach(Coach coach) {
+        ICR.delete(coach);
+    }
+
+    @Override
+    public void addCoach(Coach coach) {
+        ICR.save(coach);
+    }
+
+    @Override
+    public void addOwner(Owner owner) {
+        IOR.save(owner);
+    }
+
+    @Override
+    public void deleteOwner(Owner owner) {
+        IOR.delete(owner);
+    }
+
+    @Override
+    public void addPage(Page page) {
+        IPR.save(page);
+    }
+
+    @Override
+    public void addPolicy(Policy policy) {
+        IPolicyRepo.save(policy);
+    }
+
+    @Override
+    public void addRankedPolicy(RankPolicy rankPolicy) {
+        IRPR.save(rankPolicy);
+    }
+
+    @Override
+    public void addResult(Result result) {
+        IResRepo.save(result);
+    }
+
+    @Override
+    public void addGameEvent(GameEventCalender event) {
+        iGameEventRepository.save(event);
+    }
+
+    @Override
+    public User getUser(String userName) {
+        return null;
+    }
+
+    @Override
+    public void addRepresentetive(Representative representative) {
+        iRepresentitiveRepository.save(representative);
+    }
+
+    @Override
+    public void deleteJudgmentApproval(JudgmentApproval approval) {
+        IJAR.deleteById(approval.getJudgement_Id());
+    }
+
+    @Override
+    public void addAdministrator(Administrator administrator) {
+        if (administrator != null)
+            IAdminRepo.save(administrator);
+    }
+
+    @Override
+    public List<JudgmentApproval> getJudge() {
+        return IJAR.findAll();
+    }
 }
 
 

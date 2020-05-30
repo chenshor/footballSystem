@@ -1,11 +1,10 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.football_system.football_system.FMserver.DataLayer.IDataManager;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.persistence.Table;
 import java.io.Serializable;
 @Entity
@@ -22,6 +21,8 @@ public class GameEventCalender implements Serializable {
     private eventType type;
     private String description;
     private int minute;
+    @Transient
+    private static int Id_Generator = 4;
 
     public enum eventType{
         goal, offside, redCard, yellowCard, injury, playerReplacement
@@ -36,13 +37,24 @@ public class GameEventCalender implements Serializable {
             this.minute = minute;
             this.type=eventType.valueOf(type);
         }
+        GameEvent_Id = Id_Generator;
+        Id_Generator = Id_Generator + 10;
+        data().addGameEvent(this);
+        data().addGame(game);
     }
 
     public GameEventCalender(Game game) {
         this.game = game;
+        GameEvent_Id = Id_Generator;
+        Id_Generator = Id_Generator + 10;
     }
 
     public GameEventCalender(){}
+
+    private static IDataManager data(){
+        return DataComp.getInstance();
+    }
+
     /**
      * ID: GameEventCalender@1
      * displays the event's details
@@ -78,6 +90,7 @@ public class GameEventCalender implements Serializable {
 
     public void setGame(Game game) {
         this.game = game;
+        data().addGameEvent(this);
     }
 
     public String getHour() {
@@ -86,6 +99,7 @@ public class GameEventCalender implements Serializable {
 
     public void setHour(String hour) {
         this.hour = hour;
+        data().addGameEvent(this);
     }
 
     public String getDate() {
@@ -94,6 +108,7 @@ public class GameEventCalender implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+        data().addGameEvent(this);
     }
 
     public eventType getType() {
@@ -102,6 +117,7 @@ public class GameEventCalender implements Serializable {
 
     public void setType(eventType type) {
         this.type = type;
+        data().addGameEvent(this);
     }
 
     public String getDescription() {
@@ -110,6 +126,7 @@ public class GameEventCalender implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+        data().addGameEvent(this);
     }
 
     public int getMinute() {
@@ -118,5 +135,22 @@ public class GameEventCalender implements Serializable {
 
     public void setMinute(int minute) {
         this.minute = minute;
+        data().addGameEvent(this);
+    }
+
+    public int getGameEvent_Id() {
+        return GameEvent_Id;
+    }
+
+    public void setGameEvent_Id(int gameEvent_Id) {
+        GameEvent_Id = gameEvent_Id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this.GameEvent_Id == ((GameEventCalender)obj).GameEvent_Id){
+            return true;
+        }
+        return false;
     }
 }

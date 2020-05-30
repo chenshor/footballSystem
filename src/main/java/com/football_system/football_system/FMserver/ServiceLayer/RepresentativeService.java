@@ -103,7 +103,7 @@ public class RepresentativeService extends AUserService {
      */
     public boolean addJudgmentApproval(Referee referee , League league, Season season ) throws IOException{
         if(league == null || season == null || referee == null) return false;
-        return referee.addJudgmentApproval(new JudgmentApproval(league,season));
+        return referee.addJudgmentApproval(new JudgmentApproval(league,season,referee));
     }
 
     /**
@@ -164,7 +164,10 @@ public class RepresentativeService extends AUserService {
         //    league.getRankPolicyList().remove(season);
             if( league.getRankPolicyList() != null) {
                 league.getRankPolicyList().put(season, newRankPolicy);
+                DataComp.getInstance().addLeague(league);
             }
+        DataComp.getInstance().addRankedPolicy(newRankPolicy);
+
 //        }catch (Exception exception){
 //
 //        }

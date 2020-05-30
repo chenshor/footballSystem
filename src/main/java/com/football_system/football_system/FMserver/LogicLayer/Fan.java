@@ -8,6 +8,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.*;
@@ -21,7 +22,7 @@ public class Fan extends Role implements Serializable {
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Page> pages;
-    @OneToMany
+    @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Game> games;
     private String name;
@@ -36,6 +37,7 @@ public class Fan extends Role implements Serializable {
 
 
     public Fan(){}
+
 
     /**
      * returns fan followed pages
@@ -67,6 +69,7 @@ public class Fan extends Role implements Serializable {
      */
     public void setName(String name) {
         this.name = name;
+       getDataManager().addFan(this);
     }
 
     /**
@@ -78,6 +81,7 @@ public class Fan extends Role implements Serializable {
         for(Page page: newPages){
             pages.add(page);
         }
+        getDataManager().addFan(this);
     }
 
     /**
@@ -109,7 +113,7 @@ public class Fan extends Role implements Serializable {
      */
     public void addComplaintToDataManager(String description) {
         Complaint complaint = new Complaint(this.getUser(),description, LocalDate.now().toString());
-        getDataManager().addComplaint(this.getUser(),complaint);
+        getDataManager().addComplaint(complaint);
     }
 
     /**
@@ -199,6 +203,7 @@ public class Fan extends Role implements Serializable {
 
     public void addGameToSubscribe(Game game){
         games.add(game);
+        getDataManager().addFan(this);
     }
 
     public void removeGameFromSubscribe(Game game){

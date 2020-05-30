@@ -1,6 +1,9 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 import com.football_system.football_system.FMserver.DataLayer.*;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class Guest implements Serializable {
@@ -36,8 +39,23 @@ public class Guest implements Serializable {
      * @return User
      */
     public User signIn(String email, String password){
-        User signedInUser = data().getUser(email, password);
-        return signedInUser;
+        User signedInUser = data().getUserByMail(password,email);
+        if (signedInUser == null){
+            return null;
+        }
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedhash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            String en_pass =  new String(encodedhash, StandardCharsets.UTF_8);
+            String us_pass = signedInUser.getPassword();
+            if (en_pass.equals(us_pass))
+                return signedInUser;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**

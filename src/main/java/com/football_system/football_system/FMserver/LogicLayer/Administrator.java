@@ -52,12 +52,14 @@ public class Administrator extends User {
         for (Owner owner : team.getOwnerList()) {
             Alert alert = new Alert(owner.getUser(), "The team: " + team.getName() + " is close for good", date);
             owner.addAlert(alert);
-            dataManager().addAlert(alert, owner.getUser());
+            dataManager().addOwner(owner);
+            dataManager().addAlert(alert);
         }
         for (Manager manager : team.getManagerList()) {
             Alert alert = new Alert(manager.getUser(), "The team: " + team.getName() + " is close for good", date);
             manager.addAlert(alert);
-            dataManager().addAlert(alert, manager.getUser());
+            dataManager().addManager(manager);
+            dataManager().addAlert(alert);
         }
     }
 
@@ -67,22 +69,22 @@ public class Administrator extends User {
      * UC: 8.3.1
      * display all the complaints's details
      */
-    public Collection<List<Complaint>> showComplaints() {
-        Collection<List<Complaint>> complaints = dataManager().getComplaint().values();
-        if(complaints==null || complaints.size()==0){
-            System.out.println("no complaints in the system");
-            Collection<List<Complaint>> ans = new ArrayList<>();
-            return  ans;
-        }else {
-            for (List<Complaint> list : complaints) {
-                for (Complaint com : list) {
-                    System.out.println(com.getFullComplaint());
-                }
-            }
-            return complaints;
-        }
-
-    }
+//    public Collection<List<Complaint>> showComplaints() {
+//        Collection<List<Complaint>> complaints = dataManager().getComplaint().values();
+//        if(complaints==null || complaints.size()==0){
+//            System.out.println("no complaints in the system");
+//            Collection<List<Complaint>> ans = new ArrayList<>();
+//            return  ans;
+//        }else {
+//            for (List<Complaint> list : complaints) {
+//                for (Complaint com : list) {
+//                    System.out.println(com.getFullComplaint());
+//                }
+//            }
+//            return complaints;
+//        }
+//
+//    }
 
 
     /**
@@ -93,25 +95,25 @@ public class Administrator extends User {
      * @param complaint the complaint
      * @param commend   the commend the admin wants to add
      */
-    public void commentComplaint(Complaint complaint, String commend) {
-        if (complaint.isAnswered()) {
-            System.out.println("You already responded to this complaint");
-        } else {
-            for (List<Complaint> list : dataManager().getComplaint().values()) {
-                for (Complaint com : list) {
-                    if (complaint.equals(com)) {
-                        com.setCommentAdmin(commend);
-                        com.setAnswered(true);
-                        complaint.setAnswered(true);
-                        Alert alert = new Alert(com.getUser(), "the admin commened your complaint", LocalDate.now().toString());
-                        com.getUser().addAlerts(alert);
-                        dataManager().addAlert(alert, com.getUser());
-                        break;
-                    }
-                }
-            }
-        }
-    }
+//    public void commentComplaint(Complaint complaint, String commend) {
+//        if (complaint.isAnswered()) {
+//            System.out.println("You already responded to this complaint");
+//        } else {
+//            for (List<Complaint> list : dataManager().getComplaint().values()) {
+//                for (Complaint com : list) {
+//                    if (complaint.equals(com)) {
+//                        com.setCommentAdmin(commend);
+//                        com.setAnswered(true);
+//                        complaint.setAnswered(true);
+//                        Alert alert = new Alert(com.getUser(), "the admin commened your complaint", LocalDate.now().toString());
+//                        com.getUser().addAlerts(alert);
+//                        dataManager().addAlert(alert, com.getUser());
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 
     /**

@@ -1,27 +1,40 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.football_system.football_system.FMserver.DataLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
-public class User implements Serializable {
+import javax.persistence.*;
+import javax.persistence.Table;
 
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Users")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class  User implements Serializable {
+    @Id
     private String email;
     private String password;
     private String firstName;
     private String lastName;
     private String userName;
+    @OneToMany(targetEntity = Role.class, cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     private List<Role> roles;
-
-    public List<Alert> getAlerts() {
-        return alerts;
-    }
-
+    @OneToMany(targetEntity = Alert.class, cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Alert> alerts;
 
     private static IDataManager data(){
@@ -39,22 +52,36 @@ public class User implements Serializable {
 
     public User(String email, String password, String firstName, String lastName) {
         this.email = email;
-        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.roles = new ArrayList<Role>();
         this.userName = firstName+"@"+getLastName();
 
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedhash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            this.password = new String(encodedhash, StandardCharsets.UTF_8);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
     public User(String email, String password, String userName) {
         this.email = email;
-        this.password = password;
         this.userName = userName;
         this.roles = new LinkedList<>();
         this.alerts = new LinkedList<>();
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedhash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            this.password = new String(encodedhash, StandardCharsets.UTF_8);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
+
+    public User(){}
 
     /**
      * id: User@1
@@ -67,9 +94,7 @@ public class User implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return email.equals(user.email) &&
-                password.equals(user.password) &&
-                firstName.equals(user.firstName) ;
+        return email.equals(user.email);
     }
 
     @Override
@@ -87,6 +112,7 @@ public class User implements Serializable {
         if (role != null){
             if(!roles.contains(role)) {
                 roles.add(role);
+                data().addNewUser(this);
                 return true;
             }
         }
@@ -105,6 +131,7 @@ public class User implements Serializable {
                 return roles.remove(role);
             }
         }
+        data().addNewUser(this);
         return false ;
     }
 
@@ -134,7 +161,7 @@ public class User implements Serializable {
         }else{
             this.alerts.add(alert);
         }
-
+        data().addNewUser(this);
     }
 
 
@@ -156,6 +183,7 @@ public class User implements Serializable {
      */
     public void setEmail(String email) {
         this.email = email;
+        data().addNewUser(this);
     }
 
     /**
@@ -172,6 +200,7 @@ public class User implements Serializable {
      */
     public void setPassword(String password) {
         this.password = password;
+        data().addNewUser(this);
     }
 
     /**
@@ -188,6 +217,7 @@ public class User implements Serializable {
      */
     public void setUserName(String userName) {
         this.userName = userName;
+        data().addNewUser(this);
     }
 
     /**
@@ -205,6 +235,7 @@ public class User implements Serializable {
     public void setRole(Role role){
         //if (!roles.contains(role))
             this.roles.add(role);
+        data().addNewUser(this);
     }
 
     /**
@@ -237,6 +268,7 @@ public class User implements Serializable {
      */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+        data().addNewUser(this);
     }
 
     /**
@@ -245,6 +277,7 @@ public class User implements Serializable {
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
+        data().addNewUser(this);
     }
 
     /**
@@ -261,6 +294,7 @@ public class User implements Serializable {
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;
+            data().addNewUser(this);
             return true;
         }
         return false;
@@ -279,4 +313,7 @@ public class User implements Serializable {
         return personalDetails;
     }
 
+    public List<Alert> getAlerts() {
+        return alerts;
+    }
 }

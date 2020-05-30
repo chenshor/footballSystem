@@ -87,10 +87,10 @@ public class AdministratorTest {
     public void showComplaints(){
         Complaint complaint1 = new Complaint(user1,"bad","2012-12-12");
         Complaint complaint2 = new Complaint(user2,"good","2018-12-13");
-        DataComp.getInstance().addComplaint(complaint1,user1);
-        DataComp.getInstance().addComplaint(complaint2,user2);
+        DataComp.getInstance().addComplaint(complaint1);
+        DataComp.getInstance().addComplaint(complaint2);
 
-        administrator.showComplaints();
+//        administrator.showComplaints();
 
     }
 
@@ -101,14 +101,14 @@ public class AdministratorTest {
     public void CommentComplaint(){
         Complaint complaint1 = new Complaint(user1,"bad","2012-12-12");
         Complaint complaint2 = new Complaint(user2,"good","2018-12-13");
-        DataComp.getInstance().addComplaint(complaint1,user1);
-        DataComp.getInstance().addComplaint(complaint2,user2);
+        DataComp.getInstance().addComplaint(complaint1);
+        DataComp.getInstance().addComplaint(complaint2);
 
-        administrator.showComplaints();
+//        administrator.showComplaints();
 
         System.out.println();
-        administrator.commentComplaint(complaint1,"very good complaint");
-        administrator.showComplaints();
+//        administrator.commentComplaint(complaint1,"very good complaint");
+//        administrator.showComplaints();
 
     }
 

@@ -44,8 +44,8 @@ public class AdministratorIntegrationTest {
         owner2.addTeam(team2);
         manager1 = new Manager(user1, "haim", team1);
         manager2 = new Manager(user3, "yossi", team2);
-        DataComp.getInstance().addUser(user1);
-        DataComp.getInstance().addUser(user2);
+        DataComp.getInstance().addNewUser(user1);
+        DataComp.getInstance().addNewUser(user2);
 
         team1.addOwner(owner1);
         team2.addOwner(owner2);
@@ -73,8 +73,8 @@ public class AdministratorIntegrationTest {
         assertTrue(adminService.showComplaints().size()==0);
         Complaint complaint1 = new Complaint(user1, "bad", "2012-12-12");
         Complaint complaint2 = new Complaint(user2, "good", "2018-12-13");
-        DataComp.getInstance().addComplaint(complaint1, user1);
-        DataComp.getInstance().addComplaint(complaint2, user2);
+        DataComp.getInstance().addComplaint(complaint1);
+        DataComp.getInstance().addComplaint(complaint2);
         adminService.showComplaints();
         assertTrue(adminService.showComplaints().size()==2);
     }
@@ -87,8 +87,8 @@ public class AdministratorIntegrationTest {
     public void commentComplaint() {
         Complaint complaint1 = new Complaint(user1, "bad", "2012-12-12");
         Complaint complaint2 = new Complaint(user2, "good", "2018-12-13");
-        DataComp.getInstance().addComplaint(complaint1, user1);
-        DataComp.getInstance().addComplaint(complaint2, user2);
+        DataComp.getInstance().addComplaint(complaint1);
+        DataComp.getInstance().addComplaint(complaint2);
 
         adminService.showComplaints();
         System.out.println();

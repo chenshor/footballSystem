@@ -1,6 +1,7 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
 
+import com.football_system.football_system.FMserver.DataLayer.IDataManager;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.*;
@@ -28,6 +29,8 @@ public class Complaint implements Serializable {
         this.description = description;
         this.date = date;
         this.answered=false;
+        Complaint_Id = Id_Generator;
+        Id_Generator = Id_Generator + 10;
     }
 
     public Complaint(){}
@@ -37,16 +40,22 @@ public class Complaint implements Serializable {
         return user;
     }
 
+    private static IDataManager data(){
+        return DataComp.getInstance();
+    }
+
     public boolean isAnswered() {
         return answered;
     }
 
     public void setAnswered(boolean answered) {
         this.answered = answered;
+        data().addComplaint(this);
     }
 
     public void setUser(User user) {
         this.user = user;
+        data().addComplaint(this);
     }
 
     public String getDescription() {
@@ -55,6 +64,7 @@ public class Complaint implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+        data().addComplaint(this);
     }
 
     public String  getDate() {
@@ -63,10 +73,12 @@ public class Complaint implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+        data().addComplaint(this);
     }
 
     public void setCommentAdmin(String commentAdmin) {
         this.commentAdmin = commentAdmin;
+        data().addComplaint(this);
     }
 
     public String getCommentAdmin()
@@ -88,19 +100,27 @@ public class Complaint implements Serializable {
     }
 
 
+
+
     /**
      * ID: Complaint@2
-     * @param complaint the complaint we want to compare
+     * @param obj the complaint we want to compare
      * @return true if the two complaint are equal
      */
-    public boolean equals(Complaint complaint){
-        if(this.getUser().equals(complaint.getUser())&&
-                this.getDescription().equals(complaint.getDescription())&&
-                this.getDate().equals(complaint.getDate())){
+    @Override
+    public boolean equals(Object obj) {
+        if (this.Complaint_Id == (((Complaint)obj).Complaint_Id))
             return true;
-        }
-        else {
-            return false;
-        }
+        return false;
     }
+
+    public int getComplaint_Id() {
+        return Complaint_Id;
+    }
+
+    public void setComplaint_Id(int complaint_Id) {
+        Complaint_Id = complaint_Id;
+    }
+
+
 }

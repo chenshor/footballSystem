@@ -1,5 +1,6 @@
 package com.football_system.football_system.serverObjects;
 
+import com.football_system.football_system.FMserver.LogicLayer.DataComp;
 import com.football_system.football_system.FMserver.LogicLayer.User;
 
 import java.nio.charset.Charset;
@@ -16,7 +17,7 @@ public class SecurityObject {
     private List<Object> object;
 
     private static Map<String , String> SecurityAccessControl = new HashMap<>();
-    private static Map<String , User> systemUsers = new HashMap<>();
+   // private static Map<String , User> systemUsers = new HashMap<>();
 
     public static boolean  Verification(String UserID , String reqID){
         if(UserID == null || reqID == null) return false;
@@ -24,7 +25,7 @@ public class SecurityObject {
     }
     public static User Authorization(String UserID , String reqID){
         if(Verification(UserID, reqID)){
-            return systemUsers.get(UserID);
+            return DataComp.getInstance().getUserByMail(null,UserID) ;// systemUsers.get(UserID);
         }
         return null;
     }
@@ -37,8 +38,8 @@ public class SecurityObject {
      * @return a security key
      */
     public static boolean  addUserToSystem(User user){
-        if(systemUsers.containsKey(user.getEmail())) return false ;
-        systemUsers.put(user.getEmail(), user) ;
+//        if(systemUsers.containsKey(user.getEmail())) return false ;
+//        systemUsers.put(user.getEmail(), user) ;
         return true;
     }
 

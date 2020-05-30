@@ -2,12 +2,10 @@ package com.football_system.football_system.FMserver.LogicLayer;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.football_system.football_system.FMserver.DataLayer.IDataManager;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,6 +21,9 @@ public class Alert implements Serializable {
     private String description;
     String date;
     private boolean readed;
+    @Transient
+    @JsonIgnore
+    private static int Id_Generator = 2;
 
     // hour is missing
 
@@ -35,10 +36,17 @@ public class Alert implements Serializable {
 //                '}';
 //    }
 
+    private static IDataManager data(){
+        return DataComp.getInstance();
+    }
+
+
     public Alert(User user, String description, String date) {
         this.user = user;
         this.description = description;
         this.date = date;
+        A_id = Id_Generator;
+        Id_Generator = Id_Generator + 10;
     }
 
     public Alert(User user, String description, String date , boolean readed) {
@@ -46,6 +54,8 @@ public class Alert implements Serializable {
         this.description = description;
         this.date = date;
         this.readed = readed;
+        A_id = Id_Generator;
+        Id_Generator = Id_Generator + 10;
     }
 
     public Alert(){}
@@ -56,6 +66,7 @@ public class Alert implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+        data().addAlert(this);
     }
 
     public String getDescription() {
@@ -64,6 +75,7 @@ public class Alert implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+        data().addAlert(this);
     }
 
     public String getDate() {
@@ -72,6 +84,7 @@ public class Alert implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+        data().addAlert(this);
     }
 
     public boolean isReaded() {
@@ -80,6 +93,22 @@ public class Alert implements Serializable {
 
     public void setReaded(boolean readed) {
         this.readed = readed;
+        data().addAlert(this);
+    }
+
+    public int getA_id() {
+        return A_id;
+    }
+
+    public void setA_id(int a_id) {
+        A_id = a_id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.A_id == ((Alert)obj).A_id)
+            return true;
+        return false;
     }
 
 }

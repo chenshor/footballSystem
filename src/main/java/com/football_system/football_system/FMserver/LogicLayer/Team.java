@@ -1,28 +1,43 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.football_system.football_system.FMserver.DataLayer.*;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.*;
+import javax.persistence.Table;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
-
+@Entity
+@EnableAutoConfiguration
+@Table(name = "Teams")
 public class Team implements Serializable {
 
     public enum TeamStatus {
         activityClosed, activityOpened
     }
+    @Id
     private String name;
     private String stadium;
+    @OneToOne
     @JsonIgnore private Page page;
+    @OneToMany
     @JsonIgnore private List<Player> playerList;
+    @OneToMany
     @JsonIgnore private List<Manager> managerList;
+    @OneToMany
     @JsonIgnore private List<Owner> ownerList;
+    @OneToMany
     @JsonIgnore private List<Game> away;
+    @OneToMany
     @JsonIgnore private List<Game> home;
+    @OneToOne
     private League league;
+    @OneToMany
     @JsonIgnore private List<Coach> coachList;
+    @Transient
     @JsonIgnore private List<RoleHolder> roleHolders;
     private TeamStatus status;
     @JsonIgnore private boolean finalClose; // true if the admin closed (cant be changed after true)
@@ -41,10 +56,6 @@ public class Team implements Serializable {
         away.add(game);
     }
 
-    public void setStatus(TeamStatus status) {
-        this.status = status;
-    }
-
     public Team(String name, String stadium, Page page) {
         this.name=name;
         this.stadium = stadium;
@@ -58,6 +69,8 @@ public class Team implements Serializable {
         roleHolders = new LinkedList<>();
         finalClose = false;
     }
+
+    public Team(){}
 
     /***
      * id: Team@4
@@ -75,12 +88,19 @@ public class Team implements Serializable {
     }
     public void addOwner(Owner owner) {
         if (!this.ownerList.contains(owner))
+        {
             ownerList.add(owner);
+            data().addOwner(owner);
+            data().addTeam(this);
+        }
+
     }
 
     public void addManager(Manager manager){
         if(!this.managerList.contains(manager)){
             managerList.add(manager);
+            data().addManager(manager);
+            data().addTeam(this);
         }
     }
 
@@ -90,6 +110,7 @@ public class Team implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+        data().addTeam(this);
     }
 
     public String getStadium() {
@@ -98,6 +119,7 @@ public class Team implements Serializable {
 
     public void setStadium(String stadium) {
         this.stadium = stadium;
+        data().addTeam(this);
     }
 
     public Page getPage() {
@@ -106,6 +128,7 @@ public class Team implements Serializable {
 
     public void setPage(Page page) {
         this.page = page;
+        data().addTeam(this);
     }
 
     public List<Player> getPlayerList() {
@@ -114,7 +137,14 @@ public class Team implements Serializable {
 
     public void setPlayerList(List<Player> playerList) {
         this.playerList = playerList;
+        data().addTeam(this);
     }
+
+    public void setStatus(TeamStatus status) {
+        this.status = status;
+        data().addTeam(this);
+    }
+
 
     public Manager getManager(User user) {
         for (Manager manager : managerList) {
@@ -153,8 +183,11 @@ public class Team implements Serializable {
     }
 
     public void setManager(Manager manager) {
-        if (!managerList.contains(manager))
+        if (!managerList.contains(manager)){
             managerList.add(manager);
+            data().addTeam(this);
+            data().addManager(manager);
+        }
     }
 
     /**
@@ -206,6 +239,7 @@ public class Team implements Serializable {
 
     public void setOwnerList(List<Owner> ownerList) {
         this.ownerList = ownerList;
+        data().addTeam(this);
     }
 
     public List<Game> getAway() {
@@ -214,6 +248,7 @@ public class Team implements Serializable {
 
     public void setAway(List<Game> away) {
         this.away = away;
+        data().addTeam(this);
     }
 
     public List<Game> getHome() {
@@ -222,6 +257,7 @@ public class Team implements Serializable {
 
     public void setHome(List<Game> home) {
         this.home = home;
+        data().addTeam(this);
     }
 
     public League getLeague() {
@@ -230,6 +266,8 @@ public class Team implements Serializable {
 
     public void setLeague(League league) {
         this.league = league;
+        data().addTeam(this);
+        data().addLeague(league);
     }
 
 
@@ -248,13 +286,19 @@ public class Team implements Serializable {
     }
 
     public void setPlayer(Player player) {
-        if(!playerList.contains(player))
+        if(!playerList.contains(player)) {
             playerList.add(player);
+            data().addTeam(this);
+            data().addPlayer(player);
+        }
     }
 
     public void setCoach(Coach coach) {
-        if (!coachList.contains(coach))
+        if (!coachList.contains(coach)){
             coachList.add(coach);
+            data().addTeam(this);
+            data().addCoach(coach);
+        }
     }
 
     public List<Coach> getCoachList() {
@@ -263,6 +307,7 @@ public class Team implements Serializable {
 
     public void setCoachList(List<Coach> coachList) {
         this.coachList = coachList;
+        data().addTeam(this);
     }
     public boolean isFinalClose() {
         return finalClose;
@@ -275,6 +320,7 @@ public class Team implements Serializable {
         }
         else{
             this.finalClose=finalClose;
+            data().addTeam(this);
             return true;
 
         }
@@ -299,10 +345,11 @@ public class Team implements Serializable {
                         alert = new Alert(roleHolder.getUser(), "The team: " + this.getName() + " is closed temporarily",date);
                     else // Opened
                         alert = new Alert(roleHolder.getUser(), "The team: " + this.getName() + " is open", date);
-                    data().addAlert(roleHolder.getUser(),alert);
+                    data().addAlert(alert);
                 }
             }
             setStatus(newStatus);
+            data().addTeam(this);
         }
         else {
             throw new IOException("This team can not be closed without official owner premission");

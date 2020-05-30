@@ -40,7 +40,8 @@ public class AdministratorService extends AUserService {
      */
     @Override
     public Collection<List<Complaint>> showComplaints(){
-        return administrator.showComplaints();
+//        return administrator.showComplaints();
+        return null;
     }
 
     /**
@@ -51,7 +52,8 @@ public class AdministratorService extends AUserService {
      */
     @Override
     public void commentComplaint(Complaint complaint,String comment){
-        administrator.commentComplaint(complaint,comment);
+//        administrator.commentComplaint(complaint,comment);
+
     }
 
     /**

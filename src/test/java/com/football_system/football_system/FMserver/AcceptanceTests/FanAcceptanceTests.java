@@ -118,8 +118,8 @@ public class FanAcceptanceTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        assertTrue(DataComp.getInstance().getComplaint().containsKey(testUser));
-        assertTrue(DataComp.getInstance().getComplaint().get(testUser).get(0).getDescription().equals("basa"));
+        assertTrue(DataComp.getInstance().getComplaint().contains(testUser));
+        assertTrue(DataComp.getInstance().getComplaint().get(0).getDescription().equals("basa"));
     }
 
     /**
@@ -134,7 +134,7 @@ public class FanAcceptanceTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        assertFalse(DataComp.getInstance().getComplaint().containsKey(testUser));
+        assertFalse(DataComp.getInstance().getComplaint().contains(testUser));
     }
 
     /**

@@ -5,26 +5,32 @@ import com.football_system.football_system.FMserver.LogicLayer.*;
 import com.football_system.football_system.FMserver.ServiceLayer.*;
 import com.football_system.football_system.serverObjects.SecurityObject;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import javax.xml.crypto.Data;
+
 @SpringBootApplication
-public class FootballSystemApplication {
+public class FootballSystemApplication implements ApplicationRunner {
 
 	public static IController system;
 	private static User user ;
 	public static Representative representative ;
 	private static Logger errorsLogger = Logger.getLogger("errors");
 	private static Logger eventsLogger = Logger.getLogger("events");
+	@Autowired
+	private DataManager dataManager;
 
 	public static void main(String[] args) {
 		SpringApplication.run(FootballSystemApplication.class, args);
-		run();
 	}
 
-
-	public static void run(){
-		DataComp.setDataManager(new DataManager());
+	@Override
+	public  void run(ApplicationArguments args)throws Exception{
+		DataComp.setDataManager(dataManager);
 		Administrator administrator = new Administrator("A", "B", "C");
 		user = new User("rep@gmail.com", "12345678", "Lior");
 		DataComp.getInstance().addNewUser(user);
@@ -49,7 +55,9 @@ public class FootballSystemApplication {
 			representativeService.addSeason("2020", "2021", League.getLeagueByType("MAJOR_LEAGUE"));
 			representativeService.addSeason("2021", "2022", League.getLeagueByType("MAJOR_LEAGUE"));
 			representativeService.addSeason("2022", "2023", League.getLeagueByType("LEAGUE_A"));
-		}catch (Exception e){}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 // ------ add user
 		try {
 			Guest guest = new Guest();
@@ -69,7 +77,8 @@ public class FootballSystemApplication {
 
 			representativeService.addNewRefereeFromUsers(referee, "very nice referee", "alon");
 			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2020","2021")) ;
-			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2021","2023")) ;
+			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2021","2022")) ;
+			representativeService.addJudgmentApproval(representativeService.showAllReferees().get(0), League.getLeagueByType("MAJOR_LEAGUE") , Season.getSeason("2022","2023")) ;
 
 
 			Team barcelona = new Team("FC Barcelona", "Camp Nou", null);
@@ -83,7 +92,9 @@ public class FootballSystemApplication {
 			barcelona.setStatus(Team.TeamStatus.activityOpened);
 			realMadrid.setStatus(Team.TeamStatus.activityOpened);
 			new Game( Season.getSeason("2020","2021") , barcelona,realMadrid, Referee.getReferees().get(0) ,Referee.getReferees().get(0) ,"2021-09-08","8:00","9:30");
-		}catch (Exception e){}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 
 	}
 

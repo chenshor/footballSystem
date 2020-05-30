@@ -138,6 +138,4 @@ public class RefereeService extends AUserService {
         map.put("away",game1.getAway().getName());
         return map ;
     }
-
-
 }

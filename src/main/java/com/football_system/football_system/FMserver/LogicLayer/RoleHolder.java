@@ -1,8 +1,16 @@
 package com.football_system.football_system.FMserver.LogicLayer;
 
-import java.io.Serializable;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import javax.persistence.*;
+import javax.persistence.Table;
+import java.io.Serializable;
+@Entity
+@EnableAutoConfiguration
+@Table(name = "RoleHolders")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class RoleHolder extends Role implements Serializable {
+    @OneToOne
     protected Team team;
     public RoleHolder(User user) {
         super(user);
