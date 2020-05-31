@@ -142,6 +142,7 @@ $(document).ready(function () {
         postSend("/Login", SecureObj).then(function (data) {
             // data is 'null' when authentication fail
             if (data == null) {
+                window.alert("Invalid User or Password.. \nPlease Try Again");
                 return;
             }
             secretKey = data.reqID;
@@ -467,7 +468,7 @@ function createGameOption(gameOptionInfo) {
     return gameOptionGenerated;
 }
 
-let activeGame = false;
+var activeGame = false;
 let interval;
 let minute;
 let strip = 10;
@@ -614,6 +615,10 @@ let homeGoals = 0;
 let awayGoals = 0;
 
 $("#addEvent").click(function (event) {
+    if(activeGame == false) {
+        window.alert("Inactive Game! \nGame must be active before adding events");
+        return;
+    }
     event.preventDefault();
     let team = document.getElementById("teamSelectAddEvent").value;
     let eventType = document.getElementById("eventTypeSelectAddEvent").value;
