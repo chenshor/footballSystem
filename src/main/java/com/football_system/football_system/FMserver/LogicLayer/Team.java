@@ -277,8 +277,9 @@ public class Team implements Serializable {
      * @param team the team we want to compare to
      * @return true if the teams are equal
      */
-    public boolean equals(Team team){
-        if(this.name.equals(team.getName())&& this.stadium.equals(team.getStadium())){
+    @Override
+    public boolean equals(Object team){
+        if(this.name.equals(((Team)team).getName())){
             return true;
         }else{
             return false;

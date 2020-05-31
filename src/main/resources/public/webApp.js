@@ -96,13 +96,12 @@ $(document).ready(function () {
 //<editor-fold desc="LOGIN">
 
 // LOGIN function
-const url = 'http://localhost:8080';
 let stompClient;
 let newMessages = new Array();
 
 function connectToChat(userName) {
     console.log("connecting to chat...");
-    let socket = new SockJS(url + '/chat');
+    let socket = new SockJS('/chat');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log("connected to: " + frame);

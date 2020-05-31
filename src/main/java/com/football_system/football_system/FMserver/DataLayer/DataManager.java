@@ -31,7 +31,6 @@ public class DataManager implements IDataManager {
     private Map<User, List<Complaint>> complaints;
     private List<Page> pageList;
     private List<Administrator> administrators;
-    private static final Logger systemLogger = Logger.getLogger(DataManager.class);
     private List<Guest> guestsList;
 
     @Autowired
@@ -268,7 +267,6 @@ public class DataManager implements IDataManager {
     public void addLeague(League league) {
         if (!ILR.findById(league.getType()).isPresent()) {
             ILR.save(league);
-            systemLogger.info("league been added , type:" + league.getType());
         }
     }
 
@@ -294,15 +292,7 @@ public class DataManager implements IDataManager {
      * @param season season to add
      */
     public void addSeason(Season season) {
-        //rewrite this func
-        if (true) {
             ISR.save(season);
-            systemLogger.info("Season been added , linked to League:" + " , Start date:" + season.getStart() +
-                    " , End date:" + season.getEnd());
-        } else if (SearchSeason(season.getStart(), season.getEnd()).getLeagueList().contains(season.getLeagueList())) {
-            systemLogger.info("Season Linked to existing League:" + " , Start date:" + season.getStart() +
-                    " , End date:" + season.getEnd());
-        }
     }
 
     /**
@@ -315,7 +305,6 @@ public class DataManager implements IDataManager {
     public boolean addReferee(Referee referee) {
         if (!IFR.findById(referee.getR_id()).isPresent()) {
             IFR.save(referee);
-            systemLogger.info("new Referee been added , belong to user : " + referee.getUser().getUserName());
             return true;
         }
         return false;
@@ -332,7 +321,6 @@ public class DataManager implements IDataManager {
     public boolean removeReferee(Referee referee) {
         if (IFR.findById(referee.getR_id()) != null) {
             IFR.deleteById(referee.getR_id());
-            systemLogger.info("Referee been removed , belong to user : " + referee.getUser().getUserName());
             return true;
         }
         return false;

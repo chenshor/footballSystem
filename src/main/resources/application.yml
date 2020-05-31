@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://db.cia1m2bpvigf.eu-west-1.rds.amazonaws.com:3306/DB
+    url: jdbc:mysql://localhost:3306/football_system_db
     username: root
     password: Eitan1121
   jpa:

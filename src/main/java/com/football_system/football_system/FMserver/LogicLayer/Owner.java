@@ -37,16 +37,16 @@ public class Owner extends RoleHolder implements Serializable {
 
     public Owner(){}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Owner owner = (Owner) o;
-        return Objects.equals(name, owner.name) &&
-                Objects.equals(teamList, owner.teamList) &&
-                Objects.equals(nominatedBy, owner.nominatedBy);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        if (!super.equals(o)) return false;
+//        Owner owner = (Owner) o;
+//        return Objects.equals(name, owner.name) &&
+//                Objects.equals(teamList, owner.teamList) &&
+//                Objects.equals(nominatedBy, owner.nominatedBy);
+//    }
 
     @Override
     public int hashCode() {
