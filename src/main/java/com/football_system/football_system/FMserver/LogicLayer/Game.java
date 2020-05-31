@@ -284,7 +284,7 @@ public class Game  implements Serializable{
             user.addAlerts(alert);
             userListHashMap.put(user , alert) ;
         }
-
+        data().addGame(this);
         return userListHashMap;
     }
 
@@ -319,6 +319,7 @@ public class Game  implements Serializable{
         }
         if(! fan.getGames().contains(this)){
             fan.addGameToSubscribe(this);
+            data().addFan(fan);
         }
         data().addGame(this);
     }
@@ -329,6 +330,7 @@ public class Game  implements Serializable{
         }
         if(fan.getGames().contains(this)){
             fan.removeGameFromSubscribe(this);
+            data().addFan(fan);
         }
         data().addGame(this);
     }

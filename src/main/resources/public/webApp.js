@@ -450,15 +450,21 @@ function createGameOption(gameOptionInfo) {
         '<input type="radio" class="radio" id="gameOption',
         gameOptionInfo.id || 'undefined',
         '" name="GameOption">',
-        '<label for=gameOption',
+        '<label for="gameOption',
         gameOptionInfo.id || 'undefined',
-        '>',
+        '">',
         gameOptionInfo.home.name || 'undefined',
         ' VS ',
         gameOptionInfo.away.name || 'undefined',
         '</label></div>'
     ];
-    return $(gameOptionTemplate.join(''));
+    var gameOptionGenerated = $(gameOptionTemplate.join(''));
+    gameOptionGenerated.click(function () {
+        document.querySelector(".selected").innerHTML = gameOptionInfo.home.name + ' VS ' + gameOptionInfo.away.name;
+        GameOptionID = gameOptionInfo.id;
+        document.querySelector(".option-container").classList.remove("active");
+    });
+    return gameOptionGenerated;
 }
 
 let activeGame = false;
@@ -505,6 +511,10 @@ var GameOptions = $();
 var GameOptionID;
 let game_id;
 
+function setID(id){
+    GameOptionID =id;
+}
+
 $('#refereeButton').click(function () {
     hideAll();
     $("#leaguesView").css("display", "none");
@@ -523,11 +533,6 @@ $('#refereeButton').click(function () {
         GameOptions = $();
         data.forEach(game => {
             GameOptions = (createGameOption(game));
-            GameOptions.click(function () {
-                document.querySelector(".selected").innerHTML = GameOptions.find("label").html();
-                GameOptionID = GameOptions.find("label").attr('for');
-                document.querySelector(".option-container").classList.remove("active");
-            });
             $('#gameOptions').append(GameOptions);
         });
     }).catch(function (data) {
@@ -547,8 +552,8 @@ let game_id_chosen;
 $("#selectGame").click(function () {
     let gameID = [];
     gameID[0] = new Object();
-    gameID[0].game_id = GameOptionID.substr(10);
-    game_id_chosen = GameOptionID.substr(10);
+    gameID[0].game_id = GameOptionID;
+    game_id_chosen = GameOptionID;
     let SecureObj = new SecurityObj(email, secretKey, "startGame", gameID);
     postSend("/Referee/getEventProperties", SecureObj).then(function (data) {
         $('#eventTypeSelectAddEvent').empty();
@@ -568,14 +573,15 @@ $("#selectGame").click(function () {
         option.text = data[1].away;
         document.querySelector('#awayTeam').innerHTML = data[1].away;
         teamSelector.add(option);
+        $('#RefView').hide();
+        $('#RefereeView').removeAttr('hidden');
+        $('#RefereeView').css('display', 'block');
+        $('#HomeEvents').empty();
+        $('#AwayEvents').empty();
     }).catch(function (data) {
         console.log(data);
     });
-    $('#RefView').hide();
-    $('#RefereeView').removeAttr('hidden');
-    $('#RefereeView').css('display', 'block');
-    $('#HomeEvents').empty();
-    $('#AwayEvents').empty();
+
 });
 
 function createHomeEvent(data) {

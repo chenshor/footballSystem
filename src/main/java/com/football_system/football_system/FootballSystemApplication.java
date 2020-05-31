@@ -55,9 +55,7 @@ public class FootballSystemApplication implements ApplicationRunner {
 			representativeService.addSeason("2020", "2021", League.getLeagueByType("MAJOR_LEAGUE"));
 			representativeService.addSeason("2021", "2022", League.getLeagueByType("MAJOR_LEAGUE"));
 			representativeService.addSeason("2022", "2023", League.getLeagueByType("LEAGUE_A"));
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+		}catch (Exception e){}
 // ------ add user
 		try {
 			Guest guest = new Guest();
@@ -92,9 +90,7 @@ public class FootballSystemApplication implements ApplicationRunner {
 			barcelona.setStatus(Team.TeamStatus.activityOpened);
 			realMadrid.setStatus(Team.TeamStatus.activityOpened);
 			new Game( Season.getSeason("2020","2021") , barcelona,realMadrid, Referee.getReferees().get(0) ,Referee.getReferees().get(0) ,"2021-09-08","8:00","9:30");
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+		}catch (Exception e){}
 
 	}
 

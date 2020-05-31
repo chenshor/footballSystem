@@ -1,0 +1,8 @@
+2020-05-30 22:31:10 ERROR General Error - reject login to user:referre@walla.com
+2020-05-30 22:31:12 ERROR General Error - reject login to user:referre@walla.com
+2020-05-30 22:31:18 ERROR General Error - reject login to user:referre@walla.com
+2020-05-30 22:48:52 ERROR General Error - reject login to user:referee@walla.com.com
+2020-05-30 22:48:52 ERROR General Error - reject login to user:referee@walla.com.com
+2020-05-30 22:48:54 ERROR General Error - reject login to user:referee@walla.com.com
+2020-05-30 22:48:58 ERROR General Error - reject login to user:referee@walla.com.com
+2020-05-30 22:48:59 ERROR General Error - reject login to user:referee@walla.com.com
